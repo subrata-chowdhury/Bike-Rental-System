@@ -1,6 +1,71 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.form-container {
+    width: min(95%, 400px);
+    justify-self: center;
+}
+
+.form label {
+    width: 100%;
+}
+
+.bg-white {
+    background: #fff;
+}
+
+.scroll {
+    overflow: auto;
+    /* or overflow: scroll; */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+}
+
+.scroll::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.bg-glass {
+    backdrop-filter: blur(10px);
+}
+
+.bg-transparant {
+    background: transparent;
+}
+
+.bg-light-white {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.bg-mid-white {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.bg-deep-white {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.bg-light-black {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.bg-light-green {
+    background: rgba(10, 206, 10, 0.2);
+}
+
+.bg-primary,
+.btn-primary {
+    background: rgba(30, 143, 255, 0.7) !important;
+}
+
+.btn-danger {
+    background: rgba(255, 36, 36, 0.61);
+}
+
+.btn {
+    border-width: 0;
 }
