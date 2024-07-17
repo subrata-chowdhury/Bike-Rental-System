@@ -6,7 +6,7 @@ type LogInPageProp = {
     setIsLogIn: (val: boolean) => void
 }
 
-const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }) => {
+const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }): JSX.Element => {
     const [isSignInState, setIsSignInState] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
