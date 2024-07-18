@@ -1,6 +1,7 @@
 .form-container {
     width: min(95%, 400px);
     justify-self: center;
+    align-self: center;
 }
 
 .form label {
@@ -30,7 +31,7 @@
 }
 
 .bg-glass {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
 }
 
 .bg-transparant {
