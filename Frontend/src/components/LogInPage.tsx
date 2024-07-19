@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { login, register } from '../scripts/API Calls/authApiCalls';
 import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires';
+import { useNavigate } from 'react-router-dom';
 
-type LogInPageProp = {
-    setIsLogIn: (val: boolean) => void
-}
-
-const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }): JSX.Element => {
+const LogInPage: React.FC = (): JSX.Element => {
     const [isSignInState, setIsSignInState] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -14,6 +11,8 @@ const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }): JSX.Element => {
     const [password, setPassword] = useState<string>('');
 
     const loginBtn = useRef<HTMLButtonElement>(null)
+
+    const navigate = useNavigate()
 
     function inputHandler(e: React.ChangeEvent<HTMLInputElement>) {
         switch (e.currentTarget.name) {
@@ -31,7 +30,7 @@ const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }): JSX.Element => {
     // Check if user is already logged in
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            setIsLogIn(true)
+            navigate('/Home')
         }
     }, [])
 
@@ -41,7 +40,9 @@ const LogInPage: React.FC<LogInPageProp> = ({ setIsLogIn }): JSX.Element => {
         e.preventDefault()
         if (email && password)
             verifyFieldsForLogIn(email, password) ?
-                login(email.trim(), password, () => setIsLogIn(true)) : ""
+                login(email.trim(), password, () => {
+                    navigate('/Home')
+                }) : ""
     }
 
     return (
