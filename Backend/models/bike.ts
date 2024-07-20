@@ -7,7 +7,7 @@ export interface IBike extends Document {
     // Rental details
     pricePerHour: number;
     isAvailable: boolean;
-    
+
     // Bike details
     brand: string;
     cc: number;
@@ -26,6 +26,8 @@ const bikeSchema = new Schema<IBike>({
     horsePower: { type: Number, required: true },
     type: { type: String, required: true },
 });
+
+export { bikeSchema as BikeSchema }
 
 const Bike = model<IBike>('Bike', bikeSchema);
 export default Bike;

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import envVariables from '../config/config';
+import User from '../models/user';
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
@@ -9,8 +10,11 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
     }
     try {
         const decoded = jwt.verify(token, envVariables.jwtSecret) as { [key: string]: any };
-        req.body += decoded;
-        console.log(req.body);
+        req.body.user = decoded;
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
         next();
     } catch (error) {
         res.status(401).json({ message: 'Invalid token' });

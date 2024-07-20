@@ -1,11 +1,13 @@
 import express from 'express';
-import { deleteUser } from '../controllers/authController';
 import authMiddleware from '../middlewares/auth';
+import { createBooking, getBookingById, getBookingHistoryByUserId, updateBookingById, returnBikeByBikeId, getBookingThatHasToReturnByUserId } from '../controllers/bookingController';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, deleteUser);
-router.post('/', authMiddleware, deleteUser);
-router.delete('/:bookId', authMiddleware, deleteUser);
+// router.delete('/:bookId', authMiddleware, );
+router.get('/', authMiddleware, getBookingHistoryByUserId);
+router.get('/returnBikes', authMiddleware, getBookingThatHasToReturnByUserId);
+router.post('/bike/:bikeId', authMiddleware, returnBikeByBikeId);
+router.post('/', authMiddleware, createBooking);
 
 export default router;

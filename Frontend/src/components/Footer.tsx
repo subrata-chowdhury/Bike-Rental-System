@@ -3,7 +3,7 @@ import './styles/Footer.css'
 
 const Footer: React.FC = (): JSX.Element => {
     return (
-        <div className='footer mt-auto bg-glass bg-deep-white'>
+        <div id='footer' className='footer mt-auto bg-glass bg-deep-white'>
             <div className='container py-5'>
                 <div className='row'>
                     <div className='col-12 col-md-4'>

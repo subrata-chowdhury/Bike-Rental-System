@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BikeCardProp as Bike } from './BikeCard';
 
 interface Tags {
@@ -47,6 +47,10 @@ const Filter: React.FC<FilterProp> = ({ bikeData, setBikeData }): JSX.Element =>
             setBikeData(filteredData);
         }
     }
+
+    useEffect(() => {   
+        setBikeData(bikeData)
+    }, [bikeData])
 
     return (
         <div className='filter card align-self-start bg-glass bg-mid-white' style={{ zIndex: 5 }}>
