@@ -27,7 +27,7 @@ export const getBikeCounts = async (logOut: () => void): Promise<any> => {
                 'authorization': `${token}`
             }
         });
-        if(response.status === 401) {
+        if (response.status === 401) {
             logOut();
         }
         const data = await response.json();

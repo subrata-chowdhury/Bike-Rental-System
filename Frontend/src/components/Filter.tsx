@@ -48,7 +48,7 @@ const Filter: React.FC<FilterProp> = ({ bikeData, setBikeData }): JSX.Element =>
         }
     }
 
-    useEffect(() => {   
+    useEffect(() => {
         setBikeData(bikeData)
     }, [bikeData])
 
@@ -56,7 +56,7 @@ const Filter: React.FC<FilterProp> = ({ bikeData, setBikeData }): JSX.Element =>
         <div className='filter card align-self-start bg-glass bg-mid-white' style={{ zIndex: 5 }}>
             <div className='card-body'>
                 <div className='input-group mb-3'>
-                    <input type='text' className='form-control border-secondary' placeholder='Search by Bike Model' onChange={inputOnChangeHandler} />
+                    <input type='text' className='form-control border-secondary bg-deep-white' placeholder='Search by Bike Model' onChange={inputOnChangeHandler} />
                     <button className='btn btn-secondary' type='button' id='button-addon2'>Search</button>
                 </div>
                 <div>

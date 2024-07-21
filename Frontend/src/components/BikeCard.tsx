@@ -18,71 +18,15 @@ export type BikeCardProp = {
     horsePower: number;
     type: string;
     showReturnBtn?: boolean;
+    onPageChange?: (index: number) => Promise<void>;
 }
-
-export const sampleData: BikeCardProp[] = [
-    {
-        bikeModel: 'Bike Model 1',
-        pricePerHour: 100,
-        isAvailable: true,
-        brand: 'Brand 1',
-        cc: 150,
-        horsePower: 150,
-        type: 'Type 1'
-    },
-    {
-        bikeModel: 'Bike Model 2',
-        pricePerHour: 200,
-        isAvailable: true,
-        brand: 'Brand 2',
-        cc: 200,
-        horsePower: 200,
-        type: 'Type 2'
-    },
-    {
-        bikeModel: 'Bike Model 3',
-        pricePerHour: 300,
-        isAvailable: false,
-        brand: 'Brand 3',
-        cc: 250,
-        horsePower: 250,
-        type: 'Type 3'
-    },
-    {
-        bikeModel: 'Bike Model 2',
-        pricePerHour: 200,
-        isAvailable: true,
-        brand: 'Brand 2',
-        cc: 200,
-        horsePower: 200,
-        type: 'Type 2'
-    },
-    {
-        bikeModel: 'Bike Model 3',
-        pricePerHour: 300,
-        isAvailable: false,
-        brand: 'Brand 3',
-        cc: 250,
-        horsePower: 250,
-        type: 'Type 3'
-    },
-    {
-        bikeModel: 'Bike Model 3',
-        pricePerHour: 300,
-        isAvailable: false,
-        brand: 'Brand 3',
-        cc: 250,
-        horsePower: 250,
-        type: 'Type 3'
-    }
-]
 
 type BikeCardsContainerProp = {
     bikeData: BikeCardProp[];
     heading?: string;
     showReturnBtn?: boolean;
     noOfPages?: number;
-    onPageChange?: (index: number) => void;
+    onPageChange?: (index: number) => Promise<void>;
 }
 
 export const BikeCardsContainer: React.FC<BikeCardsContainerProp> = ({ bikeData, heading, showReturnBtn = false, noOfPages, onPageChange }): JSX.Element => {
@@ -103,6 +47,7 @@ export const BikeCardsContainer: React.FC<BikeCardsContainerProp> = ({ bikeData,
                                 horsePower={bike.horsePower}
                                 type={bike.type}
                                 showReturnBtn={showReturnBtn}
+                                onPageChange={onPageChange}
                                 key={index} />
                         ))
                 }
@@ -121,7 +66,8 @@ const BikeCard: React.FC<BikeCardProp> = ({
     cc,
     horsePower,
     type,
-    showReturnBtn = false
+    showReturnBtn = false,
+    onPageChange = () => { }
 }): JSX.Element => {
     const [startTime, setStartTime] = useState<Date>(new Date());
     const [endTime, setEndTime] = useState<Date>(new Date());
@@ -142,7 +88,11 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         </div>
                         <div className='d-flex flex-column'>
                             {isAvailable && <button className='btn btn-primary float-end' data-bs-toggle="modal" data-bs-target={"#" + _id}>Book</button>}
-                            {showReturnBtn && <button className='btn btn-warning float-end mt-2' onClick={() => returnBikeByBikeId(_id)}>Return</button>}
+                            {showReturnBtn && <button className='btn btn-warning float-end mt-2' onClick={async () => {
+                                await returnBikeByBikeId(_id).then(data => {
+                                    onPageChange(1)
+                                })
+                            }}>Return</button>}
                         </div>
                     </div>
                 </div>
@@ -160,11 +110,11 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         </div>
                         <div className='modal-body row mx-auto' style={{ whiteSpace: 'nowrap' }}>
                             <div className='col'>
-                                <p className='m-0'>Brand: {brand}</p>
-                                <p className='m-0'>CC: {cc}</p>
-                                <p className='m-0'>Horse Power: {horsePower}</p>
-                                <p className='m-0'>Type: {type}</p>
-                                <p className='m-0'>Price per hour: {pricePerHour}₹</p>
+                                <p className='m-0'><b>Brand:</b> {brand}</p>
+                                <p className='m-0'><b>CC:</b> {cc}</p>
+                                <p className='m-0'><b>Horse Power:</b> {horsePower}</p>
+                                <p className='m-0'><b>Type:</b> {type}</p>
+                                <p className='m-0'><b>Price per hour:</b> {pricePerHour}₹</p>
                                 <p className={'d-flex align-items-center' + (isAvailable ? " text-success" : " text-danger")}>{isAvailable ? 'Available ' : 'Not Available '}
                                     {isAvailable && <img width={15} height={15} className='ms-2' src='tick.svg'></img>}
                                 </p>
@@ -178,9 +128,10 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         </div>
                         <div className="modal-footer mx-auto">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" ref={closeBtn}>Close</button>
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                createBooking({ _id, startTime, endTime }).then(() => {
+                            <button type="button" className="btn btn-primary" onClick={async () => {
+                                await createBooking({ _id, startTime, endTime }).then(() => {
                                     closeBtn.current?.click()
+                                    onPageChange(1)
                                 })
                             }}>Book</button>
                         </div>

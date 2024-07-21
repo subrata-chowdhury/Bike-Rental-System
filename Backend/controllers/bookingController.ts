@@ -76,8 +76,10 @@ export const getBookingHistoryByUserId = async (req: Request, res: Response) => 
         const bikeList: IBike[] = [];
         for (let i = 0; i < bookings.length; i++) {
             const bike = await Bike.findById(bookings[i].bikeId);
-            if(bike) {
+            if (bike) {
                 bikeList[i] = bike;
+            } else {
+                bikeList[i] = bookings[i].bike;
             }
         }
 
@@ -96,7 +98,12 @@ export const getBookingThatHasToReturnByUserId = async (req: Request, res: Respo
         }
         const bikeList: IBike[] = [];
         for (let i = 0; i < bookings.length; i++) {
-            bikeList[i] = bookings[i].bike;
+            const bike = await Bike.findById(bookings[i].bikeId);
+            if (bike) {
+                bikeList[i] = bike;
+            } else {
+                bikeList[i] = bookings[i].bike;
+            }
         }
         res.status(200).json(bikeList);
     } catch (error) {
@@ -109,7 +116,8 @@ export const getBookingThatHasToReturnByUserId = async (req: Request, res: Respo
 export const updateBookingById = async (req: Request, res: Response) => {
     try {
         const bookingId = req.params.id;
-        const { userId, bikeId, startTime, endTime, status } = req.body;
+        const userId = req.body.user.id;
+        const { bikeId, startTime, endTime, status } = req.body;
 
         const updatedBooking = await Booking.findByIdAndUpdate(
             bookingId,

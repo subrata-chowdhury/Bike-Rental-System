@@ -64,7 +64,11 @@
 }
 
 .btn-danger {
-    background: rgba(255, 36, 36, 0.61);
+    background: rgba(255, 68, 0, 0.57);
+}
+
+.btn-warning {
+    background: rgba(255, 166, 0, 0.623);
 }
 
 .btn {

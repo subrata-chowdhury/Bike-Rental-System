@@ -3,7 +3,7 @@ import './styles/HomePage.css';
 import Footer from './Footer';
 import Menubar from './Menubar';
 import Filter from './Filter';
-import BikeCardsContainer, { BikeCardProp as Bike, sampleData } from './BikeCard';
+import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
 import { getBikeCounts, getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,9 +18,9 @@ const HomePage: React.FC = (): JSX.Element => {
         navigator('/');
     }
 
-    const getBikesByPage = (index: number): void => {
-        if (index <= 0) return;
-        getBikesByIndex((index - 1) * 6, (data: object[]) => {
+    const getBikesByPage = async (page: number): Promise<void> => {
+        if (page <= 0) return;
+        getBikesByIndex((page - 1) * 6, (data: object[]) => {
             setBikeData(data as Bike[]);
         })
     }
@@ -44,7 +44,7 @@ type BikeFinderProp = {
     bikeData: Bike[];
     header?: string;
     noOfPages?: number;
-    onPageChange?: (index: number) => void;
+    onPageChange?: (index: number) => Promise<void>;
 }
 
 export const BikeFinder: React.FC<BikeFinderProp> = ({ bikeData, header, noOfPages, onPageChange }): JSX.Element => {

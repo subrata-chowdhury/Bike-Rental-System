@@ -94,9 +94,8 @@ export const returnBikeByBikeId = async (bikeId: string | undefined) => {
             throw new Error('Failed to update booking');
         }
 
-        // Return any response data if needed
-        // const data = await response.json();
-        // return data;
+        const data = await response.json();
+        return data;
     } catch (error) {
         console.error(error);
         // Handle error
