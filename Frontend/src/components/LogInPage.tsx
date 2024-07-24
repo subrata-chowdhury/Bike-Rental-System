@@ -52,12 +52,21 @@ const LogInPage: React.FC = (): JSX.Element => {
                     <p>Welcome to,</p>
                     <p className='fw-bolder text-primary'>Bike Booker</p>
                 </h1>
-                <div className='card p-4 bg-glass bg-light-white'>
+                <div className='card p-4 pt-0 bg-glass bg-light-white'>
                     {/* log in form */}
-                    <form className='form card-body d-flex flex-column' style={{ gap: (!isSignInState ? '1rem' : '0.5rem') }}>
+                    <form className='form card-body d-flex flex-column' style={{ gap: (!isSignInState ? '0.5rem' : '0.5rem') }}>
+                        <ul className="nav justify-content-lg-start justify-content-center flex-0 mb-2" style={{ fontWeight: 600 }} >
+                            <li className="">
+                                <div className={"nav-link cursor-pointer" + (isSignInState ? ' text-grey text-secondary' : " active text-primary border-1 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(false)}>Sign In</div>
+                            </li>
+                            <li className="">
+                                <div className={"nav-link cursor-pointer" + (!isSignInState ? ' text-grey text-secondary' : " active text-primary border-1 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(true)}>Join In</div>
+                            </li>
+                        </ul>
+
                         {!isSignInState && <>
                             <div>
-                                <label className='form-label'>
+                                <label className='form-label w-100'>
                                     Email:
                                     <input
                                         type="text"
@@ -71,7 +80,7 @@ const LogInPage: React.FC = (): JSX.Element => {
                                 </label>
                             </div>
                             <div>
-                                <label className='form-label'>
+                                <label className='form-label w-100'>
                                     Password:
                                     <div className='input-group'>
                                         <input
@@ -154,7 +163,7 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState }) => {
     // form submit handler
     async function registerUser(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault()
-        if (verifyFieldsForRegister(email, password, confirmPassword, firstName, lastName)) {
+        if (verifyFieldsForRegister(email, password, password, firstName, lastName)) {
             await register(firstName.trim() + ' ' + lastName.trim(), email.trim(), password, () => {
                 setIsSignInState(false)
             });
@@ -163,7 +172,7 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState }) => {
     return (
         <>
             <div>
-                <label className='form-label'>
+                <label className='form-label w-100'>
                     Email:
                     <input
                         type="text"
@@ -177,7 +186,7 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState }) => {
                 </label>
             </div>
             <div>
-                <label className='form-label'>
+                <label className='form-label w-100'>
                     Password:
                     <div className='input-group'>
                         <input
@@ -198,8 +207,8 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState }) => {
                     </div>
                 </label>
             </div>
-            <div>
-                <label className='form-label'>
+            {/* <div>
+                <label className='form-label w-100'>
                     Confirm Password:
                     <input
                         type={showPassword ? "text" : "password"}
@@ -211,9 +220,9 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState }) => {
                         required
                     />
                 </label>
-            </div>
+            </div> */}
             <div>
-                <label className='form-label '>
+                <label className='form-label w-100'>
                     Name:
                     <div className='input-group'>
                         <input

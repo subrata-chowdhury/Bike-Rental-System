@@ -1,3 +1,4 @@
+import { FilterData } from '../../components/Filter';
 import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
@@ -19,13 +20,16 @@ export const getAllBikes = async (): Promise<any> => {
     }
 };
 
-export const getBikeCounts = async (logOut: () => void): Promise<any> => {
+export const getBikeCounts = async (logOut: () => void, filterData?: FilterData, searchData?: string | undefined,): Promise<any> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes`, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'authorization': `${token}`
-            }
+            },
+            body: JSON.stringify({ filterData: filterData, searchData: searchData })
         });
         if (response.status === 401) {
             logOut();
@@ -56,13 +60,16 @@ export const getBikeById = async (id: number): Promise<any> => {
 };
 
 // Get bikes by index and limit
-export const getBikesByIndex = async (index: number, onSuccess: (data: object[]) => void = (data: object[]) => { }): Promise<any> => {
+export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = (data: object[]) => { }): Promise<any> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes/${index}`, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'authorization': `${token}`
-            }
+            },
+            body: JSON.stringify({ filterData: filterData, searchData: searchData })
         });
         const data = await response.json();
         onSuccess(data);
@@ -127,6 +134,23 @@ export const updateBike = async (bikeId: number, bikeData: any): Promise<any> =>
         return data;
     } catch (error) {
         console.error(`Error updating bike with ID ${bikeId}:`, error);
+        throw error;
+    }
+};
+
+// Get all types
+export const getTypes = async (): Promise<any> => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/bikes`, {
+            headers: {
+                'authorization': `${token}`
+            }
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error getting all types:', error);
         throw error;
     }
 };

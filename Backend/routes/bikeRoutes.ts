@@ -1,12 +1,13 @@
 import express from 'express';
-import { getAllBikes, getBikesByIndexAndLimit, getBikeCount, createBike, deleteBike } from '../controllers/bikeController';
+import { getBikesByIndexAndLimit, getBikeCount, createBike, deleteBike, getTypes } from '../controllers/bikeController';
 import authMiddleware from '../middlewares/auth';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, getBikeCount);
-router.get('/:index', authMiddleware, getBikesByIndexAndLimit);
-router.post('/', authMiddleware, createBike);
-router.delete('/:bikeId', authMiddleware, deleteBike);
+router.post('/', authMiddleware, getBikeCount);
+router.get('/', getTypes);
+router.post('/:index', authMiddleware, getBikesByIndexAndLimit);
+router.post('/new', authMiddleware, createBike);
+router.delete('/delete/:bikeId', authMiddleware, deleteBike);
 
 export default router;
