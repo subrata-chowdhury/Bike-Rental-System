@@ -1,6 +1,6 @@
 # Bike Rental System
 
-It is a Full Stack Bike Rental System Web Application created using ReactJS, Bootstrap 5, CSS, HTML as Frontend and NodeJS with Express, Mongoose library as Backend and MongoDB as Database. 
+It is a Full Stack Bike Rental System Web Application created using ReactJS, Bootstrap 5, CSS, HTML as Frontend and NodeJS with Express, Mongoose library as Backend and MongoDB as Database and TypeScript in both side.
 
 # Features 
 
