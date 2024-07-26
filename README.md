@@ -33,8 +33,13 @@ It is a Full Stack Bike Rental System Web Application created using ReactJS, Boo
 
 **Step 5:** Next Open the MongoDB compass and create a database called bikeRentalSystem and a collection in it called bike.
 
-**Step 6:** Now navigate to the bike collection and add the below data (click the below link to download the bike data) using `MonogoDB Compass` -> `ADD DATA` -> `import JSON or CSV file` -> `Select the Downloaded JSON file` then click `select` to initilize the database.<br>
+![Screenshot 2024-07-26 080554](https://github.com/user-attachments/assets/ef7cca73-50fa-4dc6-9eab-496a73536d7d)
+
+**Step 6:** Now navigate to the bike collection. <br>
+Then add the below data (click the below link to download the bike data) using `MonogoDB Compass` -> `ADD DATA` -> `import JSON or CSV file` -> `Select the Downloaded JSON file` then click `select` to initilize the database.<br>
 [bikeRentalSystem.bikes.json](https://github.com/user-attachments/files/16385930/bikeRentalSystem.bikes.json)
+
+![Screenshot 2024-07-26 080907](https://github.com/user-attachments/assets/c230df24-17e4-4f20-b3cf-601e594d5216)
 
 **Step 7:** Now you have to create a `config.ts` on `backend/config` folder and set your jwt secret on an js object. <br>
 
