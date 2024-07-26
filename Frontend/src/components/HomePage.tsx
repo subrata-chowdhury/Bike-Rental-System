@@ -6,10 +6,36 @@ import Filter, { FilterData } from './Filter';
 import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
 import { getBikeCounts, getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
 import { useNavigate } from 'react-router-dom';
+import { getBookingDetailsThatHasToReturn } from '../scripts/API Calls/bookingApiCalls';
 
 const HomePage: React.FC = (): JSX.Element => {
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [alertData, setAlertData] = useState<Bike[]>([]);
+    useEffect(() => {
+        getBookingDetailsThatHasToReturn().then((data) => {
+            if (data.length === 0) {
+                return;
+            }
+            setAlertData(data);
+            setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 5000);
+        })
+    }, [])
     return (
         <>
+            {showAlert && <div className='position-fixed t-0 mt-4 d-flex flex-column' style={{ left: '50%', transform: 'translate(-50%,0)', zIndex: 20 }}>
+                {
+                    alertData.map((booking: Bike) => (
+                        <div key={booking._id} className="alert alert-danger d-flex" role="alert">
+                            Bike with Model&nbsp;<b>{booking.bikeModel}</b>&nbsp;has to be returned today
+                            <div className='btn-close cursor-pointer ms-2' data-bs-dismiss="alert" aria-label="Close"></div>
+                            {/* <div className={'bg-danger alert-time-bar'}></div> */}
+                        </div>
+                    ))
+                }
+            </div>}
             <Menubar />
             <BikeFinder />
             <Footer />

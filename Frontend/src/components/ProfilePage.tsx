@@ -57,7 +57,7 @@ const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, setActiveTab 
     )
 }
 
-type UserDetails = {
+export type UserDetails = {
     firstName: string,
     lastName: string,
     email: string,

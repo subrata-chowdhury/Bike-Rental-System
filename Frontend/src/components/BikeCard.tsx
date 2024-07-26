@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createBike } from '../scripts/API Calls/bikeApiCalls';
+import React, { useRef, useState } from 'react';
 import Pages from './Pages';
 import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
 
@@ -89,7 +88,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         <div className='d-flex flex-column'>
                             {isAvailable && <button className='btn btn-primary float-end' data-bs-toggle="modal" data-bs-target={"#" + _id}>Book</button>}
                             {showReturnBtn && <button className='btn btn-warning float-end mt-2' onClick={async () => {
-                                await returnBikeByBikeId(_id).then(data => {
+                                await returnBikeByBikeId(_id).then(() => {
                                     onPageChange(1)
                                 })
                             }}>Return</button>}

@@ -157,3 +157,24 @@ export const returnBikeByBikeId = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to return bike' });
     }
 }
+
+export const getBookingThatHasToReturnToday = async (req: Request, res: Response) => {
+    try {
+        const bookings = await Booking.find({ endTime: { $lt: new Date() }, status: 'booked' });
+        if (!bookings) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        const bikeList: IBike[] = [];
+        for (let i = 0; i < bookings.length; i++) {
+            const bike = await Bike.findById(bookings[i].bikeId);
+            if (bike) {
+                bikeList[i] = bike;
+            } else {
+                bikeList[i] = bookings[i].bike;
+            }
+        }
+        res.status(200).json(bikeList);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get bookings by user ID' });
+    }
+}

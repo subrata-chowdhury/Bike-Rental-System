@@ -2,7 +2,6 @@ import apiUrl from './apiUrl';
 const API_BASE_URL = apiUrl + '/api';
 
 export const createBooking = async (bookingData: any) => {
-    console.log(bookingData)
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_BASE_URL}/booking`, {
@@ -32,7 +31,6 @@ export const getBookingThatHasToReturn = async () => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_BASE_URL}/booking/returnBikes`, {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': `${token}`,
@@ -101,3 +99,25 @@ export const returnBikeByBikeId = async (bikeId: string | undefined) => {
         // Handle error
     }
 };
+
+export const getBookingDetailsThatHasToReturn = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/booking/bookingDetailsOfToday`, {
+            headers: {
+                'authorization': `${token}`,
+                // Add any additional headers if required
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get booking');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        // Handle error
+    }
+}
