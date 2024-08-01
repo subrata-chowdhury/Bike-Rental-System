@@ -1,11 +1,10 @@
 import express from 'express';
-import { deleteUser } from '../controllers/authController';
 import authMiddleware from '../middlewares/auth';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, deleteUser);
-router.post('/', authMiddleware, deleteUser);
-router.delete('/:reviewId', authMiddleware, deleteUser);
+// router.get('/', authMiddleware, );
+// router.post('/', authMiddleware, );
+// router.delete('/:reviewId', authMiddleware, );
 
 export default router;

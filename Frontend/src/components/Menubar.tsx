@@ -20,7 +20,7 @@ const Menubar: React.FC = (): JSX.Element => {
                 setShowMenus(false)
             }
         }
-        
+
         if (window.innerWidth > 576) {
             setShowMenus(true)
         } else {
@@ -49,7 +49,9 @@ const Menubar: React.FC = (): JSX.Element => {
                             </ul>
                         </div>
 
-                        <div className="d-flex justify-content-center align-items-center float-end d-sm-none d-block me-1 cursor-pointer" onClick={e => setShowMenus(val => !val)}>
+                        <div
+                            className="d-flex justify-content-center align-items-center float-end d-sm-none d-block me-1 cursor-pointer"
+                            onClick={() => setShowMenus(val => !val)}>
                             <img src="./bars.svg" width={25} height={25}></img>
                         </div>
                     </div>
@@ -102,7 +104,9 @@ const MiniProfile: React.FC = (): JSX.Element => {
             <div><span className="fw-bold">Name:</span> {userDetails.firstName} {userDetails.lastName}</div>
             <div><span className="fw-bold">Email:</span> {userDetails.email}</div>
             <Link to={'/Profile'} className="btn btn-outline-secondary mt-2 border border-2 border-secondary w-100">View Profile</Link>
-            <button className="btn btn-outline-primary mt-2 border border-2 border-primary w-100 d-flex justify-content-center align-items-center" onClick={logout}>
+            <button
+                className="btn btn-outline-primary mt-2 border border-2 border-primary w-100 d-flex justify-content-center align-items-center"
+                onClick={logout}>
                 Log Out
                 <img src="log-out.svg" width={18} height={18} className="ms-2"></img>
             </button>

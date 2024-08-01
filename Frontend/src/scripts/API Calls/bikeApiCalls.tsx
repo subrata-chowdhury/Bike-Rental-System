@@ -1,4 +1,5 @@
 import { FilterData } from '../../components/Filter';
+import logOut from '../logOut';
 import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
@@ -12,6 +13,9 @@ export const getAllBikes = async (): Promise<any> => {
                 'authorization': `${token}`
             }
         });
+        if (response.status === 401) {
+            logOut();
+        }
         const data = await response.json();
         return data;
     } catch (error) {
@@ -20,7 +24,7 @@ export const getAllBikes = async (): Promise<any> => {
     }
 };
 
-export const getBikeCounts = async (logOut: () => void, filterData?: FilterData, searchData?: string | undefined,): Promise<any> => {
+export const getBikeCounts = async (filterData?: FilterData, searchData?: string | undefined,): Promise<any> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes`, {
@@ -60,7 +64,7 @@ export const getBikeById = async (id: number): Promise<any> => {
 };
 
 // Get bikes by index and limit
-export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = (data: object[]) => { }): Promise<any> => {
+export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = () => { }): Promise<any> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes/${index}`, {
@@ -71,6 +75,9 @@ export const getBikesByIndex = async (index: number, filterData?: FilterData, se
             },
             body: JSON.stringify({ filterData: filterData, searchData: searchData })
         });
+        if (response.status === 401) {
+            logOut();
+        }
         const data = await response.json();
         onSuccess(data);
         return data;
@@ -147,6 +154,9 @@ export const getTypes = async (): Promise<any> => {
                 'authorization': `${token}`
             }
         });
+        if (response.status === 401) {
+            logOut();
+        }
         const data = await response.json();
         return data;
     } catch (error) {

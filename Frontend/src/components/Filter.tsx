@@ -9,7 +9,7 @@ interface Tags {
 }
 
 type FilterProp = {
-    getBikesByPage: (page: number, filterData?: FilterData, searchData?: string | undefined) => Promise<void>;
+    onChange: (page: number, filterData?: FilterData, searchData?: string | undefined) => Promise<void>;
 }
 
 export type FilterData = {
@@ -19,7 +19,7 @@ export type FilterData = {
     horsePower: number[];
 }
 
-const Filter: React.FC<FilterProp> = ({ getBikesByPage }): JSX.Element => {
+const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
     const [searchData, setSearchData] = useState<string | undefined>('');
     const [filterData, setFilterData] = useState<FilterData>({
         brand: [],
@@ -36,9 +36,14 @@ const Filter: React.FC<FilterProp> = ({ getBikesByPage }): JSX.Element => {
     })
 
     useEffect(() => {
-        getBikesByPage(1, filterData, searchData);
-        getTypes().then((data: Tags) => setTags(data))
+        onChange(1, filterData, searchData);
     }, [filterData, searchData])
+
+    useEffect(() => {
+        getTypes().then((data) => {
+            setTags(data);
+        })
+    }, [])
 
     return (
         <div className='filter card align-self-start bg-glass bg-mid-white' style={{ zIndex: 5 }}>

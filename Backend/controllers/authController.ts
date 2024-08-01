@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import envVars from '../config/config';
-import Booking from '../models/booking';
 
 // Handle user registration
 export const register = async (req: Request, res: Response) => {
@@ -75,31 +74,3 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const verifyEmail = async (req: Request, res: Response) => {
     // TODO: Implement email verification logic
 };
-
-export const deleteUser = async (req: Request, res: Response) => {
-    try {
-        const id = req.body.user.id;
-        const { password } = req.body;
-
-        const user: IUser | null = await User.findById(id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Compare password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
-
-        // Delete user's bookings
-        await Booking.deleteMany({ userId: id });
-
-        // Delete the user
-        await User.findByIdAndDelete(id);
-
-        res.json({ message: 'User deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
-}

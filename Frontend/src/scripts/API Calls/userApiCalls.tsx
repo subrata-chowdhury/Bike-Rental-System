@@ -1,3 +1,4 @@
+import logOut from '../logOut';
 import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
@@ -11,10 +12,14 @@ export const getUser = async (): Promise<any> => {
                 'authorization': `${token}`
             }
         });
+
+        if (!response.ok) {
+            logOut();
+        }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error getting all bikes:', error);
+        console.error('Error getting user details:', error);
         throw error;
     }
 };
@@ -39,3 +44,32 @@ export const updateUser = async (username: string, email: string, password: stri
         throw error;
     }
 }
+
+export const deleteUser = async (password: string, onDelete: () => void) => {
+    try {
+        const token = localStorage.getItem('token'); // Get token from local storage or state
+
+        if (!token) {
+            alert('User is not authenticated');
+            return;
+        }
+
+        const response = await fetch(API_URL + `/user/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${token}`,
+            },
+            body: JSON.stringify({ password })
+        });
+
+        if (response.ok) {
+            onDelete(); // Update parent component or state
+        } else {
+            const data = await response.json();
+            alert(data.message || 'Error deleting user');
+        }
+    } catch (err) {
+        alert('Error deleting user');
+    }
+};

@@ -1,3 +1,4 @@
+import logOut from '../logOut';
 import apiUrl from './apiUrl';
 const API_BASE_URL = apiUrl + '/api';
 
@@ -41,6 +42,9 @@ export const getBookingThatHasToReturn = async () => {
         if (!response.ok) {
             throw new Error('Failed to get booking');
         }
+        if (response.status === 401) {
+            logOut();
+        }
 
         // Return the booking data
         const data = await response.json();
@@ -65,6 +69,9 @@ export const getBookingHistoryByUserId = async () => {
 
         if (!response.ok) {
             throw new Error('Failed to get booking');
+        }
+        if (response.status === 401) {
+            logOut();
         }
 
         // Return the booking data
