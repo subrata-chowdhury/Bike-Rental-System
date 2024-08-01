@@ -89,7 +89,7 @@ const UserDetails: React.FC = (): JSX.Element => {
     return (
         <div>
             <h1>User Details</h1>
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column mb-4">
                 <div className="flex-grow-1">
                     <div className="form-group">
                         <label htmlFor="username" className="mb-1 fw-bold">User Name</label>
