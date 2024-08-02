@@ -53,6 +53,12 @@ export const deleteUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        // chcek if user has bikes to return
+        const bookings = await Booking.find({ userId: id, status: 'booked' });
+        if (bookings.length > 0) {
+            return res.status(400).json({ message: 'User has bikes to return' });
+        }
+
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
