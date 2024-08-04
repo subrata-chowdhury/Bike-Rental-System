@@ -27,14 +27,18 @@ const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): JSX.Elemen
                 newPage--
                 if (newPage > 0)
                     setCurrentPage(newPage)
-            }}>{'<'}</div>
+            }}>
+                <img src='arrow-right.svg' width={20} style={{transform: 'rotate(-180deg)'}}></img>
+            </div>
             {pages}
             <div className='rounded-circle bg-white pages mx-1 cursor-pointer' onClick={() => {
                 let newPage = currentPage;
                 newPage++
                 if (newPage <= noOfPages)
                     setCurrentPage(newPage)
-            }}>{'>'}</div>
+            }}>
+                <img src='arrow-right.svg' width={20}></img>
+            </div>
         </div>
     )
 }
@@ -47,7 +51,7 @@ type PageProp = {
 
 const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage }): JSX.Element => {
     return (
-        <div className={'rounded-circle pages mx-1 cursor-pointer' + (isActive ? ' bg-secondary text-light' : ' bg-white text-secondary')} onClick={() => {
+        <div className={'rounded-circle pages mx-1 cursor-pointer' + (isActive ? ' bg-dark text-light' : ' bg-white text-dark')} onClick={() => {
             setCurrentPage(page)
         }}>{page}</div>
     )

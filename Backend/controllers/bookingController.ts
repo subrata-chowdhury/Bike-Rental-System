@@ -72,7 +72,7 @@ export const getBookingHistoryByUserId = async (req: Request, res: Response) => 
     try {
         const userId = req.body.user.id;
 
-        const bookings = await Booking.find({ userId, status: { $ne: 'booked' } });
+        const bookings = await Booking.find({ userId, status: { $ne: 'booked' } }).sort({ endTime: -1 });
         const bikeList: IBike[] = [];
         for (let i = 0; i < bookings.length; i++) {
             const bike = await Bike.findById(bookings[i].bikeId);

@@ -16,6 +16,9 @@ export type BikeCardProp = {
     cc: number;
     horsePower: number;
     type: string;
+
+    imageURL?: string;
+
     showReturnBtn?: boolean;
     onPageChange?: (index: number) => Promise<void>;
 }
@@ -64,6 +67,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
     cc,
     horsePower,
     type,
+    imageURL,
 
     showReturnBtn = false,
     onPageChange = () => { }
@@ -74,7 +78,10 @@ const BikeCard: React.FC<BikeCardProp> = ({
     const closeBtn = useRef<HTMLButtonElement>(null)
     return (
         <>
-            <div className='card bg-glass bg-mid-white cursor-pointer'>
+            <div
+                className='card bg-glass bg-mid-white cursor-pointer'
+                data-bs-toggle="modal"
+                data-bs-target={"#" + _id}>
                 <div className='card-body'>
                     <div className='d-flex'>
                         <div className='flex-grow-1'>
@@ -87,17 +94,13 @@ const BikeCard: React.FC<BikeCardProp> = ({
                             </p>
                         </div>
                         <div className='d-flex flex-column'>
-                            {isAvailable && <button
-                                className='btn btn-primary float-end'
-                                data-bs-toggle="modal"
-                                data-bs-target={"#" + _id}>Book</button>}
-                            {showReturnBtn && <button
-                                className='btn btn-warning float-end mt-2'
-                                onClick={async () => {
-                                    await returnBikeByBikeId(_id).then(() => {
-                                        onPageChange(1)
-                                    })
-                                }}>Return</button>}
+                            <img
+                                src={imageURL ? ('http://localhost:5000/uploads/' + imageURL) : 'bike.svg'}
+                                width={120}
+                                height={120}
+                                className='my-auto rounded-2'
+                                style={{ background: `rgba(0, 0, 0, 0.1)`, objectFit: 'cover', objectPosition: 'center' }}
+                                alt='bike' />
                         </div>
                     </div>
                 </div>
@@ -108,12 +111,12 @@ const BikeCard: React.FC<BikeCardProp> = ({
 
             <div className='modal' id={_id} aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
-                    <div className="modal-content">
+                    <div className="modal-content bg-glass bg-deep-white rounded rounded-2">
                         <div className="modal-header mx-3">
                             <h5 className="modal-title" id="exampleModalLabel">{bikeModel}</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className='modal-body row mx-auto' style={{ whiteSpace: 'nowrap' }}>
+                        <div className='modal-body row mx-2' style={{ whiteSpace: 'nowrap' }}>
                             <div className='col'>
                                 <p className='m-0'><b>Brand:</b> {brand}</p>
                                 <p className='m-0'><b>CC:</b> {cc}</p>
@@ -145,15 +148,23 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         <div className="modal-footer mx-auto">
                             <button
                                 type="button"
-                                className="btn btn-secondary"
+                                className="btn btn-outline-dark border-2 border-dark"
                                 data-bs-dismiss="modal"
                                 ref={closeBtn}>Close</button>
-                            <button type="button" className="btn btn-primary" onClick={async () => {
+                            {!showReturnBtn && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
                                 await createBooking({ _id, startTime, endTime }).then(() => {
                                     closeBtn.current?.click()
                                     onPageChange(1)
                                 })
-                            }}>Book</button>
+                            }}>Book</button>}
+                            {showReturnBtn && <button
+                                className='btn btn-warning float-end mt-2'
+                                onClick={async () => {
+                                    await returnBikeByBikeId(_id).then(() => {
+                                        closeBtn.current?.click()
+                                        onPageChange(1)
+                                    })
+                                }}>Return</button>}
                         </div>
                     </div>
                 </div>

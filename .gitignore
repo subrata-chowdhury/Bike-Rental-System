@@ -24,6 +24,7 @@ SQL Config
 *.sln
 *.sw?
 UI Demo
+uploads
 
 init.bat
 

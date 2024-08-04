@@ -71,15 +71,15 @@ const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBtnClick,
     }
 
     return (
-        <div className='card p-4 pt-0 bg-glass bg-light-white'>
+        <div className='card p-4 pt-0 bg-glass bg-mid-white'>
             {/* log in form */}
             <form className='form card-body d-flex flex-column' style={{ gap: (!isSignInState ? '0.5rem' : '0.5rem') }}>
                 <ul className="nav justify-content-lg-start justify-content-center flex-0 mb-2" style={{ fontWeight: 600 }} >
                     <li className="">
-                        <div className={"nav-link cursor-pointer" + (isSignInState ? ' text-grey text-secondary' : " active text-primary border-1 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(false)}>Sign In</div>
+                        <div className={"nav-link cursor-pointer" + (isSignInState ? ' text-grey text-secondary' : " active text-primary border-2 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(false)}>Sign In</div>
                     </li>
                     <li className="">
-                        <div className={"nav-link cursor-pointer" + (!isSignInState ? ' text-grey text-secondary' : " active text-primary border-1 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(true)}>Join In</div>
+                        <div className={"nav-link cursor-pointer" + (!isSignInState ? ' text-grey text-secondary' : " active text-primary border-2 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(true)}>Join In</div>
                     </li>
                 </ul>
 

@@ -49,8 +49,8 @@ const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
         <div className='filter card align-self-start bg-glass bg-mid-white' style={{ zIndex: 5 }}>
             <div className='card-body'>
                 <div className='input-group mb-3'>
-                    <input type='text' className='form-control border-secondary bg-deep-white' placeholder='Search by Bike Model' value={searchData} onChange={e => setSearchData(e.target.value)} />
-                    <button className='btn btn-secondary' type='button' id='button-addon2'>Search</button>
+                    <input type='text' className='form-control border-dark bg-deep-white' placeholder='Search by Bike Model' value={searchData} onChange={e => setSearchData(e.target.value)} />
+                    <button className='btn btn-dark' type='button' id='button-addon2'>Search</button>
                 </div>
                 <div>
                     <div>Filter By</div>
@@ -68,7 +68,7 @@ const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
                                                     <span key={index} className="form-check m-1 cursor-pointer" style={{ display: 'inline-block' }}>
                                                         <label className="form-check-label">
                                                             {value}
-                                                            <input type="checkbox" className='form-check-input border-2 border-secondary bg-secondary rounded-pill p-2 cursor-pointer' onChange={() => {
+                                                            <input type="checkbox" className='form-check-input border-2 border-dark bg-dark rounded-pill p-2 cursor-pointer' onChange={() => {
                                                                 if (filterData[tag as keyof FilterData].includes(value as never)) {
                                                                     setFilterData({
                                                                         ...filterData,

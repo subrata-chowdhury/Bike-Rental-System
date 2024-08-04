@@ -74,9 +74,9 @@ const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, setActiveTab 
     return (
         <ul className="nav nav-pills flex-column me-3">
             {tabs.map((tab, index) => (
-                <li className="nav-item mb-1" key={index}>
+                <li className="nav-item mb-2" key={index}>
                     <div
-                        className={`nav-link cursor-pointer ${activeTab === index ? 'active bg-secondary' : ' text-secondary'}`}
+                        className={`nav-link cursor-pointer bg-glass bg-light-white ${activeTab === index ? 'active bg-dark' : ' text-dark'}`}
                         onClick={() => setActiveTab(index)}>{tab.name}</div>
                 </li>
             ))}
@@ -120,7 +120,7 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
     }
 
     return (
-        <div>
+        <div className="py-1 px-4 bg-glass bg-light-white rounded-2">
             <h1>User Details</h1>
             <div className="d-flex flex-column mb-4">
                 <div className="flex-grow-1">

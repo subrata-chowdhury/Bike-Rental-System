@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import bikeRoutes from './routes/bikeRoutes';
@@ -22,6 +23,8 @@ connectDB();
 
 app.use(cors());
 app.use(express.json())
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads', 'bikeImages')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);

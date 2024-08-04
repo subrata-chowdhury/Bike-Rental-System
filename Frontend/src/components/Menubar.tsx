@@ -38,15 +38,15 @@ const Menubar: React.FC = (): JSX.Element => {
                                 src="user.svg"
                                 width={35}
                                 height={35}
-                                className="p-2 rounded dropdown-toggle"
+                                className="p-2 rounded bg-dark dropdown-toggle"
                                 alt="logout"
                                 style={{ background: 'rgba(0,0,0,0.2)' }}
                                 id='smallProfileSection'
                                 data-bs-toggle='dropdown'
                                 aria-expanded='false' />
-                            <ul className="dropdown-menu p-4" aria-labelledby='dropdownMenuButton1'>
+                            <div className="dropdown-menu p-4 bg-glass bg-deep-white" aria-labelledby='dropdownMenuButton1'>
                                 <MiniProfile />
-                            </ul>
+                            </div>
                         </div>
 
                         <div
@@ -57,8 +57,8 @@ const Menubar: React.FC = (): JSX.Element => {
                     </div>
                     {
                         showMenus && menus.map((menu, index) => (
-                            <li className="nav-item ms-3 d-flex justify-content-center" key={index}>
-                                <Link to={menu.link} className="nav-link">{menu.name}</Link>
+                            <li className="nav-item ms-3 me-3 d-flex justify-content-center" key={index}>
+                                <Link to={menu.link} className="nav-link" style={{ fontWeight: 500 }}>{menu.name}</Link>
                             </li>
                         ))
                     }
@@ -95,7 +95,7 @@ const MiniProfile: React.FC = (): JSX.Element => {
     }
 
     return (
-        <div className="d-flex flex-column text-center">
+        <div className="d-flex flex-column bg-glass text-center">
             <img src="user.svg"
                 width={60}
                 height={60}
@@ -103,7 +103,7 @@ const MiniProfile: React.FC = (): JSX.Element => {
                 style={{ background: 'rgba(0,0,0,0.2)' }}></img>
             <div><span className="fw-bold">Name:</span> {userDetails.firstName} {userDetails.lastName}</div>
             <div><span className="fw-bold">Email:</span> {userDetails.email}</div>
-            <Link to={'/Profile'} className="btn btn-outline-secondary mt-2 border border-2 border-secondary w-100">View Profile</Link>
+            <Link to={'/Profile'} className="btn btn-dark mt-2 border border-2 border-dark w-100">View Profile</Link>
             <button
                 className="btn btn-outline-primary mt-2 border border-2 border-primary w-100 d-flex justify-content-center align-items-center"
                 onClick={logout}>
