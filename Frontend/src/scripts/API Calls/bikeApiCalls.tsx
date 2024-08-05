@@ -87,64 +87,6 @@ export const getBikesByIndex = async (index: number, filterData?: FilterData, se
     }
 };
 
-// Create a new bike
-export const createBike = async (bikeData: any): Promise<any> => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `${token}`
-            },
-            body: JSON.stringify(bikeData)
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error creating bike:', error);
-        throw error;
-    }
-};
-
-// Delete a bike by ID
-export const deleteBike = async (bikeId: number): Promise<any> => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes/${bikeId}`, {
-            method: 'DELETE',
-            headers: {
-                'authorization': `${token}`
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`Error deleting bike with ID ${bikeId}:`, error);
-        throw error;
-    }
-};
-
-// Update a bike by ID
-export const updateBike = async (bikeId: number, bikeData: any): Promise<any> => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes/${bikeId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `${token}`
-            },
-            body: JSON.stringify(bikeData)
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`Error updating bike with ID ${bikeId}:`, error);
-        throw error;
-    }
-};
-
 // Get all types
 export const getTypes = async (): Promise<any> => {
     try {
@@ -161,6 +103,74 @@ export const getTypes = async (): Promise<any> => {
         return data;
     } catch (error) {
         console.error('Error getting all types:', error);
+        throw error;
+    }
+};
+
+
+
+
+//ADMIN CALLS
+
+
+
+
+// Create a new bike
+export const createBike = async (bikeData: FormData): Promise<any> => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/bikes/new/newBike`, {
+            method: 'POST',
+            headers: {
+                // 'Content-Type': 'multipart/form-data',
+                'authorization': `${token}`
+            },
+            body: bikeData
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error creating bike:', error);
+        throw error;
+    }
+};
+
+// Delete a bike by ID
+export const deleteBike = async (bikeId: string, onSuccess: () => void): Promise<any> => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/bikes/delete/${bikeId}`, {
+            method: 'DELETE',
+            headers: {
+                'authorization': `${token}`
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            onSuccess();
+        }
+        return data;
+    } catch (error) {
+        console.error(`Error deleting bike with ID ${bikeId}:`, error);
+        throw error;
+    }
+};
+
+// Update a bike by ID
+export const updateBike = async (bikeId: string, bikeData: FormData): Promise<any> => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/bikes/update/${bikeId}`, {
+            method: 'PUT',
+            headers: {
+                'authorization': `${token}`
+            },
+            body: bikeData
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error updating bike with ID ${bikeId}:`, error);
         throw error;
     }
 };

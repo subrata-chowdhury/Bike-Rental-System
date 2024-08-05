@@ -4,6 +4,7 @@ import LogInPage from './components/LogInPage'
 import HomePage from './components/HomePage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ProfilePage from './components/ProfilePage'
+import AdminPage from './components/AdminPage/AdminPage'
 
 const App: React.FC = (): JSX.Element => {
     return (
@@ -14,6 +15,8 @@ const App: React.FC = (): JSX.Element => {
                     <Route path="/Home" element={<HomePage />} />
                     <Route path="/Profile" element={<ProfilePage />} />
                     <Route path="/" element={<LogInPage />} />
+
+                    <Route path="/Admin" element={<AdminPage />} />
                 </Routes>
             </BrowserRouter>
         </div >

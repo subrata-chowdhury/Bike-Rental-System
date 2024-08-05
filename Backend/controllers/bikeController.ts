@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Bike from '../models/bike';
+import fs from 'fs';
+import path from 'path';
 
 // GET /bikes
 export const getAllBikes = async (req: Request, res: Response) => {
@@ -79,46 +81,6 @@ export const getBikeById = async (req: Request, res: Response) => {
     }
 };
 
-// POST /bikes
-export const createBike = async (req: Request, res: Response) => {
-    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
-    try {
-        const bike = await Bike.create({ bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type });
-        res.status(201).json(bike);
-    } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
-// PUT /bikes/:id
-export const updateBike = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
-    try {
-        const bike = await Bike.findByIdAndUpdate(id, { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type }, { new: true });
-        if (!bike) {
-            return res.status(404).json({ message: 'Bike not found' });
-        }
-        res.status(200).json(bike);
-    } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
-// DELETE /bikes/:id
-export const deleteBike = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    try {
-        const bike = await Bike.findByIdAndDelete(id);
-        if (!bike) {
-            return res.status(404).json({ message: 'Bike not found' });
-        }
-        res.status(204).end();
-    } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
 export const getTypes = async (req: Request, res: Response) => {
     try {
         const distinctValuesOfBrand = await Bike.distinct('brand');
@@ -136,3 +98,71 @@ export const getTypes = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+
+
+
+// ADMIN CONTOLS
+
+
+
+
+
+// POST /bikes
+export const createBike = async (req: Request, res: Response) => {
+    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
+    const imageFile = req.file;
+
+    // if (!imageFile) {
+    //     return res.status(400).send('No file uploaded.');
+    // }
+    try {
+        const bike = await Bike.create({ bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile ? (imageFile?.filename) : "" });
+        res.status(201).json(bike);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// PUT /bikes/:id
+export const updateBike = async (req: Request, res: Response) => {
+    const { bikeId } = req.params;
+    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
+    const imageFile = req.file;
+    if (!imageFile) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    try {
+        const bike = await Bike.findByIdAndUpdate(bikeId, { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile.filename }, { new: true });
+        if (!bike) {
+            return res.status(404).json({ message: 'Bike not found' });
+        }
+        res.status(200).json(bike);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// DELETE /bikes/:id
+export const deleteBike = async (req: Request, res: Response) => {
+    const { bikeId } = req.params;
+    try {
+        const bike = await Bike.findByIdAndDelete(bikeId);
+        if (!bike) {
+            return res.status(404).json({ message: 'Bike not found' });
+        }
+        if (bike.imageURL) {
+            const imagePath = path.join(__dirname, '../uploads/bikeImages', bike.imageURL);
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).json({ message: 'Internal server error' });
+                }
+            });
+        }
+        res.status(204).end();
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

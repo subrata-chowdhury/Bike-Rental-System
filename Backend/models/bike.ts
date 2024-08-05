@@ -28,7 +28,7 @@ const bikeSchema = new Schema<IBike>({
     horsePower: { type: Number, required: true },
     type: { type: String, required: true },
 
-    imageURL: { type: String, required: true }
+    imageURL: { type: String, required: false }
 });
 
 export { bikeSchema as BikeSchema }

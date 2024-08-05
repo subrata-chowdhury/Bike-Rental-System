@@ -53,7 +53,7 @@ const ProfilePage: React.FC = (): JSX.Element => {
             <Menubar />
             <div className="container mt-4">
                 <div className="d-flex flex-column flex-md-row">
-                    <ProfileTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <ProfileTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
                     <div className="flex-grow-1">
                         {tabs[activeTab].component}
                     </div>
@@ -67,17 +67,17 @@ const ProfilePage: React.FC = (): JSX.Element => {
 type ProfileTabsProp = {
     tabs: Tabs[];
     activeTab: number;
-    setActiveTab: (index: number) => void;
+    onChange: (index: number) => void;
 }
 
-const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, setActiveTab }): JSX.Element => {
+const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): JSX.Element => {
     return (
         <ul className="nav nav-pills flex-column me-3">
             {tabs.map((tab, index) => (
                 <li className="nav-item mb-2" key={index}>
                     <div
                         className={`nav-link cursor-pointer bg-glass bg-light-white ${activeTab === index ? 'active bg-dark' : ' text-dark'}`}
-                        onClick={() => setActiveTab(index)}>{tab.name}</div>
+                        onClick={() => onChange(index)}>{tab.name}</div>
                 </li>
             ))}
         </ul>

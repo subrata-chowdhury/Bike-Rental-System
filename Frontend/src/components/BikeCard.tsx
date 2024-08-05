@@ -87,7 +87,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         <div className='flex-grow-1'>
                             <h5 className='card-title'>{bikeModel}</h5>
                             <h6 className='card-subtitle mb-2 text-muted'>{brand}</h6>
-                            <p className='card-text'>Price per hour: {pricePerHour}₹</p>
+                            <p className='card-text'>Price: {pricePerHour}₹<span style={{ fontWeight: 600 }}>/hr</span></p>
                             <p className={'card-text d-flex align-items-center' + (isAvailable ? " text-success" : " text-danger")}>
                                 {isAvailable ? 'Available ' : 'Not Available '}
                                 {isAvailable && <img width={15} height={15} className='ms-2' src='tick.svg'></img>}
@@ -122,7 +122,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                 <p className='m-0'><b>CC:</b> {cc}</p>
                                 <p className='m-0'><b>Horse Power:</b> {horsePower}</p>
                                 <p className='m-0'><b>Type:</b> {type}</p>
-                                <p className='m-0'><b>Price per hour:</b> {pricePerHour}₹</p>
+                                <p className='m-0'><b>Price:</b> {pricePerHour}₹<span style={{ fontWeight: 600 }}>/hr</span></p>
                                 <p className={'d-flex align-items-center' + (isAvailable ? " text-success" : " text-danger")}>
                                     {isAvailable ? 'Available ' : 'Not Available '}
                                     {isAvailable && <img width={15} height={15} className='ms-2' src='tick.svg'></img>}
@@ -143,6 +143,13 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                     className='form-control mt-1'
                                     value={endTime.toISOString().split('T')[0]}
                                     onChange={e => setEndTime(new Date(e.target.value))} />
+                            </div>
+                            <div className='d-flex flex-column'>
+                                <img
+                                    src={imageURL ? ('http://localhost:5000/uploads/' + imageURL) : 'bike.svg'}
+                                    className='my-auto rounded-2'
+                                    style={{ background: `rgba(0, 0, 0, 0.1)`, objectFit: 'cover', objectPosition: 'center' }}
+                                    alt='bike' />
                             </div>
                         </div>
                         <div className="modal-footer mx-auto">
