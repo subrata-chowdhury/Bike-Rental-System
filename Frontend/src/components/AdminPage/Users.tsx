@@ -134,7 +134,7 @@ const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element 
                                     email: '',
                                     password: '',
                                 });
-                                setRole('user');
+                                setRole('customer');
                             }}>Clear</button>
                             <button type="button" className="btn border-2 btn-dark" onClick={onSubmitHandler} >SAVE</button>
                         </div>

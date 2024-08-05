@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Pages from './Pages';
 import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
 
@@ -18,6 +18,9 @@ export type BikeCardProp = {
     type: string;
 
     imageURL?: string;
+
+    startTime?: Date;
+    endTime?: Date;
 
     showReturnBtn?: boolean;
     onPageChange?: (index: number) => Promise<void>;
@@ -69,11 +72,19 @@ const BikeCard: React.FC<BikeCardProp> = ({
     type,
     imageURL,
 
+    startTime,
+    endTime,
+
     showReturnBtn = false,
     onPageChange = () => { }
 }): JSX.Element => {
-    const [startTime, setStartTime] = useState<Date>(new Date());
-    const [endTime, setEndTime] = useState<Date>(new Date());
+    const [newStartTime, setStartTime] = useState<Date>(startTime ? new Date(startTime) : new Date());
+    const [newEndTime, setEndTime] = useState<Date>(endTime ? new Date(endTime) : new Date());
+
+    useEffect(() => {
+        setStartTime(startTime ? new Date(startTime) : new Date());
+        setEndTime(endTime ? new Date(endTime) : new Date());
+    }, [startTime, endTime])
 
     const closeBtn = useRef<HTMLButtonElement>(null)
     return (
@@ -134,14 +145,14 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                     type='date'
                                     id='startDate'
                                     className='form-control mt-1'
-                                    value={startTime.toISOString().split('T')[0]}
+                                    value={newStartTime.toISOString().split('T')[0]}
                                     onChange={e => setStartTime(new Date(e.target.value))} />
                                 <label htmlFor='returnDate' className=' mt-2'>Return Date:</label>
                                 <input
                                     type='date'
                                     id='returnDate'
                                     className='form-control mt-1'
-                                    value={endTime.toISOString().split('T')[0]}
+                                    value={newEndTime.toISOString().split('T')[0]}
                                     onChange={e => setEndTime(new Date(e.target.value))} />
                             </div>
                             <div className='d-flex flex-column'>
@@ -158,14 +169,14 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                 className="btn btn-outline-dark border-2 border-dark"
                                 data-bs-dismiss="modal"
                                 ref={closeBtn}>Close</button>
-                            {!showReturnBtn && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
-                                await createBooking({ _id, startTime, endTime }).then(() => {
+                            {!showReturnBtn && isAvailable && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
+                                await createBooking({ _id, newStartTime, newEndTime }).then(() => {
                                     closeBtn.current?.click()
                                     onPageChange(1)
                                 })
                             }}>Book</button>}
                             {showReturnBtn && <button
-                                className='btn btn-warning float-end mt-2'
+                                className='btn btn-dark border-2 border-dark float-end mt-2'
                                 onClick={async () => {
                                     await returnBikeByBikeId(_id).then(() => {
                                         closeBtn.current?.click()

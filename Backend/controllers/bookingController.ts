@@ -62,14 +62,39 @@ export const getBookingHistoryByUserId = async (req: Request, res: Response) => 
         const userId = req.body.user.id;
 
         const bookings = await Booking.find({ userId, status: { $ne: 'booked' } }).sort({ endTime: -1 });
-        const bikeList: IBike[] = [];
+        const bikeList: any = [];
         for (let i = 0; i < bookings.length; i++) {
             const bike = await Bike.findById(bookings[i].bikeId);
             if (bike) {
-                bikeList[i] = bike;
+                bikeList[i] = {
+                    _id: bike._id,
+                    bikeModel: bike.bikeModel,
+                    pricePerHour: bike.pricePerHour,
+                    isAvailable: bike.isAvailable,
+                    brand: bike.brand,
+                    cc: bike.cc,
+                    horsePower: bike.horsePower,
+                    type: bike.type,
+                    imageURL: bike.imageURL,
+                    startTime: bookings[i].startTime,
+                    endTime: bookings[i].endTime,
+                };
             } else {
-                bikeList[i] = bookings[i].bike;
+                bikeList[i] = {
+                    _id: bookings[i].bike._id,
+                    bikeModel: bookings[i].bike.bikeModel,
+                    pricePerHour: bookings[i].bike.pricePerHour,
+                    isAvailable: bookings[i].bike.isAvailable,
+                    brand: bookings[i].bike.brand,
+                    cc: bookings[i].bike.cc,
+                    horsePower: bookings[i].bike.horsePower,
+                    type: bookings[i].bike.type,
+                    imageURL: bookings[i].bike.imageURL,
+                    startTime: bookings[i].startTime,
+                    endTime: bookings[i].endTime,
+                };
             }
+
         }
 
         res.status(200).json(bikeList);

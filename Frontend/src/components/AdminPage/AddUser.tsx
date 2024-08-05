@@ -19,7 +19,7 @@ const AddUser: React.FC<Props> = () => {
         email: '',
         password: '',
     });
-    const [role, setRole] = useState<string>('user');
+    const [role, setRole] = useState<string>('customer');
 
     function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
@@ -71,6 +71,7 @@ const AddUser: React.FC<Props> = () => {
                             <label className='mb-2'>
                                 <b>Password:</b> <input className='m-0 form-control' name="password" value={userDetails.password} onChange={onChangeHandler} placeholder="Password" />
                             </label>
+
                             <label className='mb-2'>
                                 <b>Role:</b>
                                 <input type='checkbox' onChange={() => {
@@ -86,15 +87,6 @@ const AddUser: React.FC<Props> = () => {
                                     </div>
                                 </div>
                             </label>
-                            <label className='mb-2'>
-                                <b>Role:</b>
-                                <select className='form-select' value={role} onChange={(e) => {
-                                    setRole(e.target.value);
-                                }}>
-                                    <option value='admin'>Admin</option>
-                                    <option value='user'>User</option>
-                                </select>
-                            </label>
                         </div>
                         <div className="modal-footer mx-auto">
                             <button
@@ -109,6 +101,7 @@ const AddUser: React.FC<Props> = () => {
                                     email: '',
                                     password: '',
                                 });
+                                setRole('customer')
                             }}>Clear</button>
                             <button type="button" className="btn border-2 btn-dark" onClick={onSubmitHandler} >ADD</button>
                         </div>
