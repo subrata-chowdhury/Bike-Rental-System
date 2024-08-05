@@ -24,9 +24,9 @@ export const getAllBikes = async (): Promise<any> => {
     }
 };
 
-export const getBikeCounts = async (filterData?: FilterData, searchData?: string | undefined,): Promise<any> => {
+export const getBikeCounts = async (filterData?: FilterData, searchData?: string | undefined, isAdminReq: boolean = false): Promise<any> => {
     try {
-        const token = localStorage.getItem('token');
+        const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes`, {
             method: 'POST',
             headers: {
@@ -64,9 +64,9 @@ export const getBikeById = async (id: number): Promise<any> => {
 };
 
 // Get bikes by index and limit
-export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = () => { }): Promise<any> => {
+export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = () => { }, isAdminReq: boolean = false): Promise<any> => {
     try {
-        const token = localStorage.getItem('token');
+        const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes/${index}`, {
             method: 'POST',
             headers: {
@@ -118,7 +118,7 @@ export const getTypes = async (): Promise<any> => {
 // Create a new bike
 export const createBike = async (bikeData: FormData): Promise<any> => {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/bikes/new/newBike`, {
             method: 'POST',
             headers: {
@@ -138,7 +138,7 @@ export const createBike = async (bikeData: FormData): Promise<any> => {
 // Delete a bike by ID
 export const deleteBike = async (bikeId: string, onSuccess: () => void): Promise<any> => {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/bikes/delete/${bikeId}`, {
             method: 'DELETE',
             headers: {
@@ -159,7 +159,7 @@ export const deleteBike = async (bikeId: string, onSuccess: () => void): Promise
 // Update a bike by ID
 export const updateBike = async (bikeId: string, bikeData: FormData): Promise<any> => {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/bikes/update/${bikeId}`, {
             method: 'PUT',
             headers: {

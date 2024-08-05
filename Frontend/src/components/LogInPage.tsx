@@ -45,10 +45,11 @@ const LogInPage: React.FC = (): JSX.Element => {
 
 type LogInAndSingUpFormProp = {
     onLogInBtnClick: (formData: { email: string, password: string }) => void,
-    onSignUpBtnClick: (formData: { email: string, password: string, firstName: string, lastName: string }) => Promise<void>
+    onSignUpBtnClick: (formData: { email: string, password: string, firstName: string, lastName: string }) => Promise<void>,
+    showSignUpForm?: boolean
 }
 
-const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBtnClick, onSignUpBtnClick }) => {
+export const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBtnClick, onSignUpBtnClick, showSignUpForm = true }) => {
     const [isSignInState, setIsSignInState] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -78,9 +79,9 @@ const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBtnClick,
                     <li className="">
                         <div className={"nav-link cursor-pointer" + (isSignInState ? ' text-grey text-secondary' : " active text-primary border-2 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(false)}>Sign In</div>
                     </li>
-                    <li className="">
+                    {showSignUpForm && <li className="">
                         <div className={"nav-link cursor-pointer" + (!isSignInState ? ' text-grey text-secondary' : " active text-primary border-2 border-bottom border-primary")} style={{ fontSize: '1.25rem' }} onClick={() => setIsSignInState(true)}>Join In</div>
-                    </li>
+                    </li>}
                 </ul>
 
                 {!isSignInState && <>
@@ -139,7 +140,7 @@ const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBtnClick,
                 </>}
 
                 {/* sign up form */}
-                {isSignInState && <SignUpForm setIsSignInState={setIsSignInState} onSignUpBtnClick={onSignUpBtnClick} />}
+                {showSignUpForm && isSignInState && <SignUpForm setIsSignInState={setIsSignInState} onSignUpBtnClick={onSignUpBtnClick} />}
             </form>
         </div>
     )

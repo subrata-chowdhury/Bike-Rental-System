@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/bikeImages'); // Directory to save files
     },
     filename: function (req, file, cb) {
-        const { bikeModel } = req.body; 
+        const { bikeModel } = req.body;
         const name = bikeModel + ' (' + Date.now() + ')' + path.extname(file.originalname);
         cb(null, name); // Add a timestamp to avoid name conflicts
     }
@@ -21,6 +21,10 @@ const router = express.Router();
 router.post('/', authMiddleware, getBikeCount);
 router.get('/', getTypes);
 router.post('/:index', authMiddleware, getBikesByIndexAndLimit);
+
+
+// ADMIN ROUTES
+
 router.post('/new/newBike', authMiddleware, upload.single('image'), createBike);
 router.put('/update/:bikeId', authMiddleware, upload.single('image'), updateBike);
 router.delete('/delete/:bikeId', authMiddleware, deleteBike);

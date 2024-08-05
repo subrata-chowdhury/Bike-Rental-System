@@ -39,17 +39,6 @@ export const createBooking = async (req: Request, res: Response) => {
     }
 };
 
-// Get all bookings
-export const getAllBookings = async (req: Request, res: Response) => {
-    try {
-        const bookings = await Booking.find();
-
-        res.status(200).json(bookings);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to get bookings' });
-    }
-};
-
 // Get a single booking by ID
 export const getBookingById = async (req: Request, res: Response) => {
     try {
@@ -178,3 +167,20 @@ export const getBookingThatHasToReturnToday = async (req: Request, res: Response
         res.status(500).json({ error: 'Failed to get bookings by user ID' });
     }
 }
+
+
+
+// ADMIN CONTROLS
+
+
+
+// Get all bookings
+export const getAllBookings = async (req: Request, res: Response) => {
+    try {
+        const bookings = await Booking.find();
+
+        res.status(200).json(bookings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get bookings' });
+    }
+};

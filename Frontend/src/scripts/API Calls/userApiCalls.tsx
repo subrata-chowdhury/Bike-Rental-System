@@ -3,7 +3,7 @@ import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
 
-// Get all bikes
+// Get user details
 export const getUser = async (): Promise<any> => {
     try {
         const token = localStorage.getItem('token');
@@ -73,3 +73,55 @@ export const deleteUser = async (password: string, onDelete: () => void) => {
         alert('Error deleting user');
     }
 };
+
+
+
+
+// ADMIN CALLS
+
+
+
+export const getAllUsers = async (onSuccess: (data: any) => void, logout: () => void): Promise<any> => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_URL}/user/all`, {
+            headers: {
+                'authorization': `${token}`
+            }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            onSuccess(data);
+        } else if (response.status === 401) {
+            logout();
+        }
+        return data;
+    } catch (error) {
+        console.error('Error getting users:', error);
+        throw error;
+    }
+}
+
+export const updateUserByAdmin = async (id: string, username: string, email: string, password: string, role: string, onSuccess: () => void, logout: () => void = () => { }): Promise<void> => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_URL}/user/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`
+            },
+            body: JSON.stringify({ id, username, email, password, role })
+        });
+        if (!response.ok) {
+            throw new Error('Error updating user');
+        }
+        if (response.status === 401) {
+            logout();
+        }
+        if (response.ok && onSuccess) onSuccess()
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error;
+    }
+}

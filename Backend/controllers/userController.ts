@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import User, { IUser } from "../models/user";
 import Booking from '../models/booking';
+import { isAdmin } from './roleChecker';
 
 export const getUser = async (req: Request, res: Response) => {
     try {
@@ -72,6 +73,47 @@ export const deleteUser = async (req: Request, res: Response) => {
         await User.findByIdAndDelete(id);
 
         res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+
+
+
+// ADMIN CONTROLS
+
+
+
+
+export const getAllUsers = async (req: Request, res: Response) => {
+    if (!isAdmin(req)) return res.status(401).json({ message: 'Unauthorized' });
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+export const updateUserByAdmin = async (req: Request, res: Response) => {
+    if (!isAdmin(req)) return res.status(401).json({ message: 'Unauthorized' });
+    try {
+        const { id, username, email, password, role } = req.body;
+        const user: IUser | null = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (password != "") {
+            const hashedPassword = await bcrypt.hash(password, 10)
+            user.password = hashedPassword;
+        }
+
+        user.username = username;
+        user.email = email;
+        user.role = role;
+        await user.save();
+        res.status(200).json({ message: 'User updated successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

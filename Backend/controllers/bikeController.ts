@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Bike from '../models/bike';
 import fs from 'fs';
 import path from 'path';
+import { isAdmin } from './roleChecker';
 
 // GET /bikes
 export const getAllBikes = async (req: Request, res: Response) => {
@@ -110,6 +111,7 @@ export const getTypes = async (req: Request, res: Response) => {
 
 // POST /bikes
 export const createBike = async (req: Request, res: Response) => {
+    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
     const imageFile = req.file;
 
@@ -126,6 +128,7 @@ export const createBike = async (req: Request, res: Response) => {
 
 // PUT /bikes/:id
 export const updateBike = async (req: Request, res: Response) => {
+    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
     const { bikeId } = req.params;
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
     const imageFile = req.file;
@@ -146,6 +149,7 @@ export const updateBike = async (req: Request, res: Response) => {
 
 // DELETE /bikes/:id
 export const deleteBike = async (req: Request, res: Response) => {
+    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
     const { bikeId } = req.params;
     try {
         const bike = await Bike.findByIdAndDelete(bikeId);

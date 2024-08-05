@@ -16,8 +16,8 @@ const Bikes: React.FC<Props> = (): JSX.Element => {
         if (page <= 0) return;
         getBikesByIndex((page - 1) * 6, filterData, searchData, (data) => {
             setBikeData(data as BikeCardProp[]);
-        })
-        getBikeCounts(filterData, searchData).then((data: any) => {
+        }, true)
+        getBikeCounts(filterData, searchData, true).then((data: any) => {
             setNoOfPages(Math.ceil(data.total / 6));
         })
     }
@@ -29,7 +29,7 @@ const Bikes: React.FC<Props> = (): JSX.Element => {
             <div className='col flex-grow-1'>
                 <div className='scroll flex-grow-1' style={{ maxHeight: '88vh' }}>
                     {bikeData ? bikeData.map((bike: BikeCardProp) => (
-                        <Bike
+                        <AdminBikeCard
                             {...bike}
                             key={bike._id}
                         />
@@ -73,7 +73,7 @@ type BikeCardProp = {
     onChange?: (bikeData: BikeInput) => void
 }
 
-const Bike: React.FC<BikeCardProp> = ({
+const AdminBikeCard: React.FC<BikeCardProp> = ({
     _id,
     bikeModel,
     pricePerHour,

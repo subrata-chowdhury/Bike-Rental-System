@@ -59,7 +59,7 @@ const AddBike: React.FC = (): JSX.Element => {
     return (
         <>
             <button
-                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-2'
+                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-4 me-5'
                 style={{ lineHeight: 1, zIndex: 15 }}
                 data-bs-toggle="modal"
                 data-bs-target={"#addBikeModel"}>
