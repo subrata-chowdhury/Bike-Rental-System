@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom";
-import { UserDetails } from "./ProfilePage";
 import { getUser } from "../scripts/API Calls/userApiCalls";
+import { User } from "../Types";
 
 const Menubar: React.FC = (): JSX.Element => {
     const menus = [
@@ -69,21 +69,17 @@ const Menubar: React.FC = (): JSX.Element => {
 }
 
 const MiniProfile: React.FC = (): JSX.Element => {
-    const [userDetails, setUserDetails] = useState<UserDetails>({
-        firstName: "",
-        lastName: "",
+    const [userDetails, setUserDetails] = useState<User>({
+        _id: "",
+        username: " ",
         email: "",
-        password: ""
+        password: "",
+        role: ""
     });
 
     useEffect(() => {
         getUser().then(data => {
-            setUserDetails({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                password: ""
-            })
+            setUserDetails(data)
         })
     }, [])
 
@@ -101,7 +97,7 @@ const MiniProfile: React.FC = (): JSX.Element => {
                 height={60}
                 className="p-3 mb-2 rounded rounded-circle dropdown-toggle mx-auto"
                 style={{ background: 'rgba(0,0,0,0.2)' }}></img>
-            <div><span className="fw-bold">Name:</span> {userDetails.firstName} {userDetails.lastName}</div>
+            <div><span className="fw-bold">Name:</span> {userDetails.username}</div>
             <div><span className="fw-bold">Email:</span> {userDetails.email}</div>
             <Link to={'/Profile'} className="btn btn-dark mt-2 border border-2 border-dark w-100">View Profile</Link>
             <button

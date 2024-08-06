@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { deleteBike, getBikeCounts, getBikesByIndex, updateBike } from '../../scripts/API Calls/bikeApiCalls';
 import AddBike from './AddBike';
-import Filter, { FilterData } from '../Filter';
+import Filter from '../Filter';
 import Pages from '../Pages';
+import { Bike, FilterData } from '../../Types';
 
-interface Props {
-    // Define your component props here
-}
-
-const Bikes: React.FC<Props> = (): JSX.Element => {
+const Bikes: React.FC = (): JSX.Element => {
     const [bikeData, setBikeData] = useState<BikeCardProp[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(3)
 
@@ -53,23 +50,7 @@ export type BikeInput = {
     image?: File | String | null;
 }
 
-type BikeCardProp = {
-    _id?: string;
-    // Bike (uniqeness)
-    bikeModel: string;
-
-    // Rental details
-    pricePerHour: number;
-    isAvailable: boolean;
-
-    // Bike details
-    brand: string;
-    cc: number;
-    horsePower: number;
-    type: string;
-
-    imageURL?: string;
-
+interface BikeCardProp extends Bike {
     onChange?: (bikeData: BikeInput) => void
 }
 
@@ -137,9 +118,7 @@ const AdminBikeCard: React.FC<BikeCardProp> = ({
     function onDeleteHandler(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         if (_id)
-            deleteBike(_id, () => {
-                alert("Bike deleted Successfully");
-            })
+            deleteBike(_id)
     }
 
     return (

@@ -27,7 +27,7 @@ const AdminPageWrapper: React.FC = (): JSX.Element => {
     )
 }
 
-type AdminPageProp = {
+interface AdminPageProp {
     logout: () => void;
 }
 
@@ -59,7 +59,7 @@ const AdminPage: React.FC<AdminPageProp> = ({ logout }): JSX.Element => {
     )
 }
 
-type AdminPanelProp = {
+interface AdminPanelProp {
     tabs: Tabs[];
     activeTab: number;
     onChange: (index: number) => void;

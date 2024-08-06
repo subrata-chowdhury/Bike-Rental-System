@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import BikeCardsContainer from "./BikeCard";
 import { getBookingHistoryByUserId, getBookingThatHasToReturn } from "../scripts/API Calls/bookingApiCalls";
 import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls";
+import { Bike, BookingData, User } from "../Types";
 
 type Tabs = {
     name: string;
@@ -13,22 +14,20 @@ type Tabs = {
 const ProfilePage: React.FC = (): JSX.Element => {
     const [activeTab, setActiveTab] = useState<number>(0);
 
-    async function updateUserDetails(userDetails: UserDetails) {
-        userDetails.firstName = userDetails.firstName.trim();
-        userDetails.lastName = userDetails.lastName.trim();
+    async function updateUserDetails(userDetails: User) {
         userDetails.email = userDetails.email.trim();
 
-        if (userDetails.firstName === "" || userDetails.lastName === "" || userDetails.email === "" || userDetails.password === "") {
+        if (userDetails.username === "" || userDetails.email === "" || userDetails.password === "") {
             alert("Please fill in all the fields");
             return;
         }
 
-        updateUser(userDetails.firstName + ' ' + userDetails.lastName, userDetails.email, userDetails.password,
+        updateUser(userDetails.username, userDetails.email, userDetails.password,
             () => { alert('User details updated successfully') }
         )
     }
 
-    async function deleteUserAccount(userDetails: UserDetails) {
+    async function deleteUserAccount(userDetails: User) {
         userDetails.password = userDetails.password.trim();
         if (userDetails.password === "") {
             alert("Please enter your password to delete your account");
@@ -64,10 +63,10 @@ const ProfilePage: React.FC = (): JSX.Element => {
     )
 }
 
-type ProfileTabsProp = {
-    tabs: Tabs[];
-    activeTab: number;
-    onChange: (index: number) => void;
+interface ProfileTabsProp {
+    tabs: Tabs[],
+    activeTab: number,
+    onChange: (index: number) => void
 }
 
 const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): JSX.Element => {
@@ -84,39 +83,38 @@ const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): 
     )
 }
 
-export type UserDetails = {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-}
 
 type UserDetailsProp = {
-    onUpdate: (userDetails: UserDetails) => Promise<void>;
-    onDelete: (userDetails: UserDetails) => Promise<void>;
+    onUpdate: (userDetails: User) => Promise<void>;
+    onDelete: (userDetails: User) => Promise<void>;
 }
 
 const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Element => {
-    const [userDetails, setUserDetails] = useState<UserDetails>({
-        firstName: "",
-        lastName: "",
+    const [userDetails, setUserDetails] = useState<User>({
+        _id: "",
+        username: " ",
         email: "",
-        password: ""
+        password: "",
+        role: ""
     });
 
     useEffect(() => {
         getUser().then(data => {
-            setUserDetails({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                password: ""
-            })
+            setUserDetails(data)
         })
     }, [])
 
     const inputOnChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserDetails({ ...userDetails, [e.target.id]: e.target.value })
+        switch (e.target.id) {
+            case 'firstName':
+                setUserDetails({ ...userDetails, username: e.target.value.trim() + ' ' + userDetails.username.split(' ')[1] })
+                break;
+            case 'lastName':
+                setUserDetails({ ...userDetails, username: userDetails.username.split(' ')[0] + ' ' + e.target.value.trim() })
+                break;
+            default:
+                setUserDetails({ ...userDetails, [e.target.id]: e.target.value })
+        }
     }
 
     return (
@@ -132,14 +130,14 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
                                 id="firstName"
                                 className="form-control bg-glass bg-deep-white"
                                 placeholder="First Name"
-                                value={userDetails.firstName}
+                                value={userDetails.username.split(' ')[0]}
                                 onChange={inputOnChangeHandler} />
                             <input
                                 type="text"
                                 id="lastName"
                                 className="form-control bg-glass bg-deep-white"
                                 placeholder="Last Name"
-                                value={userDetails.lastName}
+                                value={userDetails.username.split(' ')[1]}
                                 onChange={inputOnChangeHandler} />
                         </div>
                     </div>
@@ -178,11 +176,11 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
 }
 
 const BookingHistory: React.FC = (): JSX.Element => {
-    const [bookingData, setBookingData] = useState<any[]>([]);
-    const [allBookings, setAllBookings] = useState<any[]>([]);
+    const [bookingData, setBookingData] = useState<BookingData[]>([]);
+    const [allBookings, setAllBookings] = useState<BookingData[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(0);
     useEffect(() => {
-        getBookingHistoryByUserId().then((data) => {
+        getBookingHistoryByUserId((data) => {
             setAllBookings(data);
             setBookingData(data.slice(0, 6))
             setNoOfPages(Math.ceil(data.length / 6))
@@ -200,13 +198,13 @@ const BookingHistory: React.FC = (): JSX.Element => {
 }
 
 const BikeToReturn: React.FC = (): JSX.Element => {
-    const [bookingData, setBookingData] = useState<any[]>([]);
+    const [bookingData, setBookingData] = useState<Bike[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(0);
 
     function getReturnBikesByIndex(index: number) {
-        getBookingThatHasToReturn().then((data) => {
-            setBookingData(data.slice(index * 6, (index + 1) * 6))
-            setNoOfPages(Math.ceil(data.length / 6))
+        getBookingThatHasToReturn((bikesData: Bike[]) => {
+            setBookingData(bikesData.slice(index * 6, (index + 1) * 6))
+            setNoOfPages(Math.ceil(bikesData.length / 6))
         })
     }
 

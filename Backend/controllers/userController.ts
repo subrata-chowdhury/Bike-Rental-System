@@ -8,13 +8,9 @@ export const getUser = async (req: Request, res: Response) => {
     try {
         const id = req.body.user.id;
         const user: IUser | null = await User.findById(id);
-        const customUser = {
-            firstName: user?.username.split(' ')[0],
-            lastName: user?.username.split(' ')[1],
-            email: user?.email,
-            role: user?.role
-        };
-        res.status(200).json(customUser);
+        if (user)
+            user.password = "";
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -106,10 +102,10 @@ export const updateUserByAdmin = async (req: Request, res: Response) => {
         if (!emailRegex.test(email.trim())) {
             return res.status(400).json({ message: 'Invalid email format' });
         }
-        if (password.length < 8) {
+        if (password && password.length < 8) {
             return res.status(400).json({ message: 'Password must be at least 8 characters long' });
         }
-        if (email.trim() === '' || password === '') {
+        if (email.trim() === '') {
             return res.status(400).json({ message: 'Fields cannot be empty' });
         }
         if (!nameRegex.test(username.trim())) {

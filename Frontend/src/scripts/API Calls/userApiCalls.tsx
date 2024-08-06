@@ -1,10 +1,11 @@
+import { User } from '../../Types';
 import logOut from '../logOut';
 import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
 
 // Get user details
-export const getUser = async (): Promise<any> => {
+export const getUser = async (): Promise<User> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/user`, {
@@ -16,7 +17,7 @@ export const getUser = async (): Promise<any> => {
         if (!response.ok) {
             logOut();
         }
-        const data = await response.json();
+        const data: User = await response.json();
         return data;
     } catch (error) {
         console.error('Error getting user details:', error);
@@ -81,7 +82,7 @@ export const deleteUser = async (password: string, onDelete: () => void) => {
 
 
 
-export const getAllUsers = async (onSuccess: (data: any) => void, logout: () => void): Promise<any> => {
+export const getAllUsers = async (onSuccess: (data: User[]) => void, logout: () => void): Promise<any> => {
     try {
         const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/user/all`, {
@@ -89,7 +90,7 @@ export const getAllUsers = async (onSuccess: (data: any) => void, logout: () => 
                 'authorization': `${token}`
             }
         });
-        const data = await response.json();
+        const data: User[] = await response.json();
         if (response.ok) {
             onSuccess(data);
         } else if (response.status === 401) {
@@ -114,6 +115,8 @@ export const updateUserByAdmin = async (id: string, username: string, email: str
             body: JSON.stringify({ id, username, email, password, role })
         });
         if (!response.ok) {
+            const msg = await response.json()
+            alert(msg.message || 'Error updating user');
             throw new Error('Error updating user');
         }
         if (response.status === 401) {

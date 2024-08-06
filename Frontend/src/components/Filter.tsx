@@ -1,26 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getTypes } from "../scripts/API Calls/bikeApiCalls";
+import { FilterData } from "../Types";
 
-interface Tags {
-    brand: string[];
-    cc: number[];
-    type: string[];
-    horsePower: number[];
-}
-
-type FilterProp = {
-    onChange: (page: number, filterData?: FilterData, searchData?: string | undefined) => Promise<void>;
-}
-
-export type FilterData = {
-    brand: string[];
-    cc: number[];
-    type: string[];
-    horsePower: number[];
+interface FilterProp {
+    onChange: (page: number, filterData?: FilterData, searchData?: string) => Promise<void>;
 }
 
 const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
-    const [searchData, setSearchData] = useState<string | undefined>('');
+    const [searchData, setSearchData] = useState<string>('');
     const [filterData, setFilterData] = useState<FilterData>({
         brand: [],
         cc: [],
@@ -28,7 +15,7 @@ const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
         horsePower: []
     });
 
-    const [tags, setTags] = useState<Tags>({
+    const [tags, setTags] = useState<FilterData>({
         brand: ['Brand 1', 'Brand 2', 'Brand 3', 'Brand 4'],
         cc: [100, 150, 200, 250],
         type: ['Type 1', 'Type 2', 'Type 3', 'Type 4'],
@@ -64,7 +51,7 @@ const Filter: React.FC<FilterProp> = ({ onChange }): JSX.Element => {
                                         </div>
                                         <div className='pb-2'>
                                             {
-                                                tags[tag as keyof Tags].map((value: string | number, index: number) => (
+                                                tags[tag as keyof FilterData].map((value: string | number, index: number) => (
                                                     <span key={index} className="form-check m-1 cursor-pointer" style={{ display: 'inline-block' }}>
                                                         <label className="form-check-label">
                                                             {value}

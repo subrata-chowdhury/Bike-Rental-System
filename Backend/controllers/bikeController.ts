@@ -84,17 +84,11 @@ export const getBikeById = async (req: Request, res: Response) => {
 
 export const getTypes = async (req: Request, res: Response) => {
     try {
-        const distinctValuesOfBrand = await Bike.distinct('brand');
-        const distinctValuesOfCc = await Bike.distinct('cc');
-        const distinctValuesOfHorsePower = await Bike.distinct('horsePower');
-        const distinctValuesOfType = await Bike.distinct('type');
-        const types = {
-            brand: distinctValuesOfBrand,
-            cc: distinctValuesOfCc,
-            type: distinctValuesOfType,
-            horsePower: distinctValuesOfHorsePower
-        };
-        res.status(200).json(types);
+        const types = await Bike.aggregate([
+            { $group: { _id: null, brand: { $addToSet: "$brand" }, cc: { $addToSet: "$cc" }, horsePower: { $addToSet: "$horsePower" }, type: { $addToSet: "$type" } } },
+            { $project: { _id: 0, brand: 1, cc: 1, horsePower: 1, type: 1 } }
+        ]);
+        res.status(200).json(types[0]);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }

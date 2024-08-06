@@ -1,20 +1,14 @@
 import React, { useEffect } from 'react';
 import AddUser from './AddUser';
 import { deleteUserByAdmin, getAllUsers, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
+import { User } from '../../Types';
 
-interface UserProps {
-    _id: string;
-    username: string;
-    email: string;
-    role: string;
-}
-
-type UserProp = {
+interface UserProp {
     logout: () => void;
 }
 
 const Users: React.FC<UserProp> = ({ logout }): JSX.Element => {
-    const [users, setUsers] = React.useState<UserProps[]>([]);
+    const [users, setUsers] = React.useState<User[]>([]);
     useEffect(() => {
         getAllUsers((data) => {
             setUsers(data);
@@ -24,7 +18,7 @@ const Users: React.FC<UserProp> = ({ logout }): JSX.Element => {
         <>
             <div className=''>
                 {users.map((user) => (
-                    <User key={user.email} {...user} />
+                    <UserCard key={user.email} {...user} />
                 ))}
             </div>
             <AddUser />
@@ -32,28 +26,38 @@ const Users: React.FC<UserProp> = ({ logout }): JSX.Element => {
     );
 };
 
-const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element => {
-    const [userDetails, setUserDetails] = React.useState({
-        firstName: username.split(' ')[0],
-        lastName: username.split(' ')[1],
+const UserCard: React.FC<User> = ({ _id, username, email, role }): JSX.Element => {
+    const [userDetails, setUserDetails] = React.useState<User>({
+        _id: "",
+        username: username,
         email: email,
         password: '',
+        role: ""
     });
     const [userRole, setRole] = React.useState<string>(role);
 
     function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
-        setUserDetails(prevData => ({
-            ...prevData,
-            [name]: name === "password" ? value : value.trim()
-        }));
+        switch (name) {
+            case 'firstName':
+                setUserDetails({ ...userDetails, username: value.trim() + ' ' + userDetails.username.split(' ')[1] });
+                break;
+            case 'lastName':
+                setUserDetails({ ...userDetails, username: userDetails.username.split(' ')[0] + ' ' + value.trim() });
+                break;
+            default:
+                setUserDetails(prevData => ({
+                    ...prevData,
+                    [name]: name === "password" ? value : value.trim()
+                }));
+        }
     }
 
     function onSubmitHandler(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
-        updateUserByAdmin(_id, userDetails.firstName + ' ' + userDetails.lastName, userDetails.email, userDetails.password, userRole, () => {
+        updateUserByAdmin(_id, userDetails.username, userDetails.email, userDetails.password, userRole, () => {
             alert('User Updated Successfully');
-        });
+        })
     }
 
     return (
@@ -96,8 +100,8 @@ const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element 
                             <label className='mb-2'>
                                 <b>Name:</b>
                                 <div className='input-group'>
-                                    <input className='m-0 form-control' name="firstName" value={userDetails.firstName} onChange={onChangeHandler} placeholder="First Name" />
-                                    <input className='m-0 form-control' name="lastName" value={userDetails.lastName} onChange={onChangeHandler} placeholder="Last Name" />
+                                    <input className='m-0 form-control' name="firstName" value={userDetails.username.split(' ')[0]} onChange={onChangeHandler} placeholder="First Name" />
+                                    <input className='m-0 form-control' name="lastName" value={userDetails.username.split(' ')[1]} onChange={onChangeHandler} placeholder="Last Name" />
                                 </div>
                             </label>
                             <label className='mb-2'>
@@ -106,6 +110,7 @@ const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element 
                             <label className='mb-2'>
                                 <b>Password:</b> <input className='m-0 form-control' name="password" value={userDetails.password} onChange={onChangeHandler} placeholder="Password" />
                             </label>
+
                             <label className='mb-2'>
                                 <b>Role:</b>
                                 <input type='checkbox' onChange={() => {
@@ -129,10 +134,11 @@ const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element 
                                 data-bs-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-outline-dark border-2" onClick={() => {
                                 setUserDetails({
-                                    firstName: '',
-                                    lastName: '',
+                                    _id: "",
+                                    username: " ",
                                     email: '',
                                     password: '',
+                                    role: ""
                                 });
                                 setRole('customer');
                             }}>Clear</button>

@@ -1,30 +1,10 @@
-import { FilterData } from '../../components/Filter';
+import { Bike, FilterData } from '../../Types';
 import logOut from '../logOut';
 import BASE_URL from './apiUrl';
 
 const API_URL = `${BASE_URL}/api`;
 
-// Get all bikes
-export const getAllBikes = async (): Promise<any> => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes`, {
-            headers: {
-                'authorization': `${token}`
-            }
-        });
-        if (response.status === 401) {
-            logOut();
-        }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error getting all bikes:', error);
-        throw error;
-    }
-};
-
-export const getBikeCounts = async (filterData?: FilterData, searchData?: string | undefined, isAdminReq: boolean = false): Promise<any> => {
+export const getBikeCounts = async (filterData?: FilterData, searchData?: string, isAdminReq: boolean = false): Promise<number> => {
     try {
         const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes`, {
@@ -38,33 +18,16 @@ export const getBikeCounts = async (filterData?: FilterData, searchData?: string
         if (response.status === 401) {
             logOut();
         }
-        const data = await response.json();
+        const data: number = await response.json();
         return data;
     } catch (error) {
         console.error('Error getting all bikes:', error);
         throw error;
     }
-}
-
-// Get a single bike by ID
-export const getBikeById = async (id: number): Promise<any> => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes/${id}`, {
-            headers: {
-                'authorization': `${token}`
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`Error getting bike with ID ${id}:`, error);
-        throw error;
-    }
 };
 
 // Get bikes by index and limit
-export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string | undefined, onSuccess: (data: object[]) => void = () => { }, isAdminReq: boolean = false): Promise<any> => {
+export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string, onSuccess: (data: Bike[]) => void = () => { }, isAdminReq: boolean = false): Promise<any> => {
     try {
         const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes/${index}`, {
@@ -78,7 +41,7 @@ export const getBikesByIndex = async (index: number, filterData?: FilterData, se
         if (response.status === 401) {
             logOut();
         }
-        const data = await response.json();
+        const data: Bike[] = await response.json();
         onSuccess(data);
         return data;
     } catch (error) {
@@ -88,7 +51,7 @@ export const getBikesByIndex = async (index: number, filterData?: FilterData, se
 };
 
 // Get all types
-export const getTypes = async (): Promise<any> => {
+export const getTypes = async (): Promise<FilterData> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/bikes`, {
@@ -99,7 +62,7 @@ export const getTypes = async (): Promise<any> => {
         if (response.status === 401) {
             logOut();
         }
-        const data = await response.json();
+        const data: FilterData = await response.json();
         return data;
     } catch (error) {
         console.error('Error getting all types:', error);
@@ -136,7 +99,7 @@ export const createBike = async (bikeData: FormData): Promise<any> => {
 };
 
 // Delete a bike by ID
-export const deleteBike = async (bikeId: string, onSuccess: () => void): Promise<any> => {
+export const deleteBike = async (bikeId: string, onSuccess: () => void = () => { }): Promise<any> => {
     try {
         const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/bikes/delete/${bikeId}`, {
@@ -145,11 +108,13 @@ export const deleteBike = async (bikeId: string, onSuccess: () => void): Promise
                 'authorization': `${token}`
             }
         });
-        const data = await response.json();
         if (response.ok) {
+            alert("Bike deleted Successfully");
             onSuccess();
+        } else {
+            const data = await response.json();
+            alert(data.message || 'Error deleting bike');
         }
-        return data;
     } catch (error) {
         console.error(`Error deleting bike with ID ${bikeId}:`, error);
         throw error;

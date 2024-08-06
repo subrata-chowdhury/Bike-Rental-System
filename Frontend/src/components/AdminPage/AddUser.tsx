@@ -1,42 +1,42 @@
 import React, { useState } from 'react';
 import { adminRegister, register } from '../../scripts/API Calls/authApiCalls';
+import { User } from '../../Types';
 
-interface Props {
-    // Define your component props here
-}
-
-type UserDetails = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-}
-
-const AddUser: React.FC<Props> = () => {
-    const [userDetails, setUserDetails] = useState<UserDetails>({
-        firstName: '',
-        lastName: '',
+const AddUser: React.FC = () => {
+    const [userDetails, setUserDetails] = useState<User>({
+        _id: "",
+        username: " ",
         email: '',
         password: '',
+        role: ""
     });
     const [role, setRole] = useState<string>('customer');
 
     function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = e.target;
-        setUserDetails(prevData => ({
-            ...prevData,
-            [name]: name === "password" ? value : value.trim()
-        }));
+        switch (name) {
+            case 'firstName':
+                setUserDetails({ ...userDetails, username: value.trim() + ' ' + userDetails.username.split(' ')[1] });
+                break;
+            case 'lastName':
+                setUserDetails({ ...userDetails, username: userDetails.username.split(' ')[0] + ' ' + value.trim() });
+                break;
+            default:
+                setUserDetails(prevData => ({
+                    ...prevData,
+                    [name]: name === "password" ? value : value.trim()
+                }));
+        }
     }
 
     async function onSubmitHandler(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         if (role === 'admin')
-            adminRegister(userDetails.firstName + ' ' + userDetails.lastName, userDetails.email, userDetails.password, () => {
+            adminRegister(userDetails.username, userDetails.email, userDetails.password, () => {
                 alert('Admin Added Successfully');
             });
         else
-            register(userDetails.firstName + ' ' + userDetails.lastName, userDetails.email, userDetails.password, () => {
+            register(userDetails.username, userDetails.email, userDetails.password, () => {
                 alert('User Added Successfully');
             });
     }
@@ -61,8 +61,8 @@ const AddUser: React.FC<Props> = () => {
                             <label className='mb-2'>
                                 <b>Name:</b>
                                 <div className='input-group'>
-                                    <input className='m-0 form-control' name="firstName" value={userDetails.firstName} onChange={onChangeHandler} placeholder="First Name" />
-                                    <input className='m-0 form-control' name="lastName" value={userDetails.lastName} onChange={onChangeHandler} placeholder="Last Name" />
+                                    <input className='m-0 form-control' name="firstName" value={userDetails.username.split(' ')[0]} onChange={onChangeHandler} placeholder="First Name" />
+                                    <input className='m-0 form-control' name="lastName" value={userDetails.username.split(' ')[1]} onChange={onChangeHandler} placeholder="Last Name" />
                                 </div>
                             </label>
                             <label className='mb-2'>
@@ -96,10 +96,11 @@ const AddUser: React.FC<Props> = () => {
                             >Close</button>
                             <button type="button" className="btn btn-outline-dark border-2" onClick={() => {
                                 setUserDetails({
-                                    firstName: '',
-                                    lastName: '',
+                                    _id: "",
+                                    username: " ",
                                     email: '',
                                     password: '',
+                                    role: ""
                                 });
                                 setRole('customer')
                             }}>Clear</button>

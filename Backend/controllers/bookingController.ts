@@ -2,16 +2,16 @@ import { Request, Response } from 'express';
 import { IBooking } from '../models/booking';
 import Booking from '../models/booking';
 import Bike, { IBike } from '../models/bike';
-import User from '../models/user';
 import { isValidObjectId } from 'mongoose';
+import User from '../models/user';
 
 // Create a new booking
 export const createBooking = async (req: Request, res: Response) => {
     try {
-        const { _id, startTime, endTime } = req.body;
+        const { bikeId, startTime, endTime } = req.body;
         const userId = req.body.user.id;
 
-        const bike = await Bike.findById(_id);
+        const bike = await Bike.findById(bikeId);
         if (!bike) {
             return res.status(404).json({ error: 'Bike not found' });
         }
@@ -24,7 +24,7 @@ export const createBooking = async (req: Request, res: Response) => {
 
         const newBooking: IBooking = new Booking({
             userId: userId,
-            bikeId: _id,
+            bikeId: bikeId,
             bike: bike,
             startTime,
             endTime,
@@ -78,6 +78,7 @@ export const getBookingHistoryByUserId = async (req: Request, res: Response) => 
                     horsePower: bike.horsePower,
                     type: bike.type,
                     imageURL: bike.imageURL,
+
                     startTime: bookings[i].startTime,
                     endTime: bookings[i].endTime,
                 };
@@ -92,6 +93,7 @@ export const getBookingHistoryByUserId = async (req: Request, res: Response) => 
                     horsePower: bookings[i].bike.horsePower,
                     type: bookings[i].bike.type,
                     imageURL: bookings[i].bike.imageURL,
+
                     startTime: bookings[i].startTime,
                     endTime: bookings[i].endTime,
                 };

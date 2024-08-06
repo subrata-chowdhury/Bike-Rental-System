@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { getBookingByPage, getBookingCount } from '../../scripts/API Calls/bookingApiCalls';
 import Pages from '../Pages';
+import { User, Booking } from '../../Types'
 
 interface BookingProps {
     // Define your props here
 }
 
-const Booking: React.FC<BookingProps> = () => {
-    const [bookingData, setBookingData] = useState<BookingDetails[]>([])
-    const [usersData, setUsersData] = useState<UserDetails[]>([])
+type BookingData = Booking & {
+    startTime: string,
+    endTime: string
+}
+
+const BookingComp: React.FC<BookingProps> = () => {
+    const [bookingData, setBookingData] = useState<BookingData[]>([])
+    const [usersData, setUsersData] = useState<User[]>([])
     const [noOfPages, setNoOfPages] = useState<number>(0);
 
     const searchBookingIdData = '';
     const [searchUserIdData, setSearchUserIdData] = useState<string>('');
 
     async function downloadBookings(page: number) {
-        getBookingByPage(page, searchBookingIdData, searchUserIdData, (data) => {
+        getBookingByPage(page, searchBookingIdData, searchUserIdData, (data: AdminBookingData) => {
             setBookingData(data.bookingData)
             setUsersData(data.usersData)
             getBookingCount(searchBookingIdData, searchUserIdData, (count) => {
-                setNoOfPages(count as number / 7)
+                setNoOfPages(count / 7)
             })
         })
     }
@@ -50,37 +56,13 @@ const Booking: React.FC<BookingProps> = () => {
 };
 
 interface BookingCardProps {
-    booking: BookingDetails;
-    user: UserDetails;
+    booking: BookingData;
+    user: User;
 }
 
-export type BookingData = {
-    bookingData: BookingDetails[];
-    usersData: UserDetails[];
-}
-
-type BookingDetails = {
-    _id: string;
-    bike: {
-        bikeModel: string;
-        brand: string;
-        type: string;
-        cc: number;
-        horsePower: number;
-        pricePerHour: number;
-        imageURL: string;
-    };
-    startTime: string;
-    endTime: string;
-    userId: string;
-    status: string;
-}
-
-type UserDetails = {
-    _id: string;
-    username: string;
-    email: string;
-    role: string;
+export type AdminBookingData = {
+    bookingData: BookingData[];
+    usersData: User[];
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
@@ -149,4 +131,4 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
     );
 };
 
-export default Booking;
+export default BookingComp;

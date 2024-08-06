@@ -1,24 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Pages from './Pages';
 import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
+import { Bike } from '../Types';
 
-export type BikeCardProp = {
-    _id?: string;
-    // Bike (uniqeness)
-    bikeModel: string;
-
-    // Rental details
-    pricePerHour: number;
-    isAvailable: boolean;
-
-    // Bike details
-    brand: string;
-    cc: number;
-    horsePower: number;
-    type: string;
-
-    imageURL?: string;
-
+export interface BikeCardProp extends Bike {
     startTime?: Date;
     endTime?: Date;
 
@@ -26,8 +11,8 @@ export type BikeCardProp = {
     onPageChange?: (index: number) => Promise<void>;
 }
 
-type BikeCardsContainerProp = {
-    bikeData: BikeCardProp[];
+interface BikeCardsContainerProp {
+    bikeData: Bike[];
     heading?: string;
     showReturnBtn?: boolean;
     noOfPages?: number;
@@ -170,7 +155,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                 data-bs-dismiss="modal"
                                 ref={closeBtn}>Close</button>
                             {!showReturnBtn && isAvailable && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
-                                await createBooking({ _id, startTime: newStartTime, endTime: newEndTime }).then(() => {
+                                await createBooking(_id, newStartTime, newEndTime).then(() => {
                                     closeBtn.current?.click()
                                     onPageChange(1)
                                 })

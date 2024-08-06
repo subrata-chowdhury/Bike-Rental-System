@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import './styles/HomePage.css';
 import Footer from './Footer';
 import Menubar from './Menubar';
-import Filter, { FilterData } from './Filter';
+import Filter from './Filter';
 import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
 import { getBikeCounts, getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
-import { getBookingDetailsThatHasToReturn } from '../scripts/API Calls/bookingApiCalls';
+import { getBookingDetailsThatHasToReturnToday } from '../scripts/API Calls/bookingApiCalls';
+import { FilterData } from '../Types';
 
 const HomePage: React.FC = (): JSX.Element => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [alertData, setAlertData] = useState<Bike[]>([]);
     useEffect(() => {
-        getBookingDetailsThatHasToReturn().then((data) => {
-            if (data.length === 0) {
+        getBookingDetailsThatHasToReturnToday((bikesData: Bike[]) => {
+            if (bikesData.length === 0) {
                 return;
             }
-            setAlertData(data);
+            setAlertData(bikesData);
             setShowAlert(true);
             setTimeout(() => {
                 setShowAlert(false);
@@ -47,7 +48,7 @@ const HomePage: React.FC = (): JSX.Element => {
     )
 }
 
-type BikeFinderProp = {
+interface BikeFinderProp {
     header?: string;
 }
 
@@ -56,7 +57,7 @@ export const BikeFinder: React.FC<BikeFinderProp> = ({ header }): JSX.Element =>
     const [bikeData, setBikeData] = useState<Bike[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(3)
 
-    const getBikesByPage = async (page: number, filterData?: FilterData, searchData?: string | undefined): Promise<void> => {
+    const getBikesByPage = async (page: number, filterData?: FilterData, searchData?: string): Promise<void> => {
         if (page <= 0) return;
         getBikesByIndex((page - 1) * 6, filterData, searchData, (data) => {
             setBikeData(data as Bike[]);
