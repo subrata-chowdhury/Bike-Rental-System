@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getBookingByPage, getBookingCount } from '../../scripts/API Calls/bookingApiCalls';
 import Pages from '../Pages';
 import { User, Booking } from '../../Types'
+import Model from '../Model';
 
 interface BookingProps {
     // Define your props here
@@ -68,7 +69,7 @@ export type AdminBookingData = {
 const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
     return (
         <>
-            <div className='card bg-glass bg-mid-white mb-2'
+            <div className='card bg-glass bg-mid-white mb-2 cursor-pointer'
                 data-bs-toggle="modal"
                 data-bs-target={"#bookingDetails" + booking._id}>
                 <div className='card-body d-grid' style={{ gridAutoFlow: 'column' }}>
@@ -86,47 +87,39 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
                 </div>
             </div>
 
-            <div className='modal' aria-labelledby="exampleModalLabel" aria-hidden="true" id={"bookingDetails" + booking._id}>
-                <div className="modal-dialog">
-                    <div className="modal-content bg-glass bg-deep-white rounded rounded-2">
-                        <div className="modal-header mx-3">
-                            <h5 className="modal-title" id="exampleModalLabel">All Details</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <Model heading="Booking Details" id={"bookingDetails" + booking._id}>
+                <div className='modal-body form d-flex flex-column px-5'>
+                    <div>
+                        <h5>User Details:</h5>
+                        <div><span style={{ fontWeight: 500 }}>UserID:</span> {booking.userId}</div>
+                        <div><span style={{ fontWeight: 500 }}>Username:</span> {user.username}</div>
+                        <div><span style={{ fontWeight: 500 }}>Email:</span> {user.email}</div>
+                        <div><span style={{ fontWeight: 500 }}>Role:</span> {user.role}</div>
+                    </div>
+                    <div className='mt-3'>
+                        <h5>Booking Details:</h5>
+                        <div><span style={{ fontWeight: 500 }}>Bike Model:</span> {booking.bike.bikeModel}</div>
+                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
+                            <div><span style={{ fontWeight: 500 }}>Brand:</span> {booking.bike.brand}</div>
+                            <div><span style={{ fontWeight: 500 }}>Type:</span> {booking.bike.type}</div>
                         </div>
-                        <div className='modal-body form d-flex flex-column px-5'>
-                            <div>
-                                <h5>User Details:</h5>
-                                <div><span style={{ fontWeight: 500 }}>UserID:</span> {booking.userId}</div>
-                                <div><span style={{ fontWeight: 500 }}>Username:</span> {user.username}</div>
-                                <div><span style={{ fontWeight: 500 }}>Email:</span> {user.email}</div>
-                                <div><span style={{ fontWeight: 500 }}>Role:</span> {user.role}</div>
-                            </div>
-                            <div className='mt-3'>
-                                <h5>Booking Details:</h5>
-                                <div><span style={{ fontWeight: 500 }}>Bike Model:</span> {booking.bike.bikeModel}</div>
-                                <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
-                                    <div><span style={{ fontWeight: 500 }}>Brand:</span> {booking.bike.brand}</div>
-                                    <div><span style={{ fontWeight: 500 }}>Type:</span> {booking.bike.type}</div>
-                                </div>
-                                <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
-                                    <div><span style={{ fontWeight: 500 }}>CC:</span> {booking.bike.cc}</div>
-                                    <div><span style={{ fontWeight: 500 }}>Price (₹/hr):</span> {booking.bike.pricePerHour}</div>
-                                </div>
-                                <div><span style={{ fontWeight: 500 }}>Start Time:</span> {booking.startTime.split('T')[0]}</div>
-                                <div><span style={{ fontWeight: 500 }}>End Time:</span> {booking.endTime.split('T')[0]}</div>
-                                <div><span style={{ fontWeight: 500 }}>Status:</span> {booking.status}</div>
-                            </div>
+                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
+                            <div><span style={{ fontWeight: 500 }}>CC:</span> {booking.bike.cc}</div>
+                            <div><span style={{ fontWeight: 500 }}>Price (₹/hr):</span> {booking.bike.pricePerHour}</div>
                         </div>
-                        <div className="modal-footer mx-auto">
-                            <button
-                                type="button"
-                                className="btn btn-outline-dark border-2 border-dark"
-                                data-bs-dismiss="modal"
-                            >Close</button>
-                        </div>
+                        <div><span style={{ fontWeight: 500 }}>Start Time:</span> {booking.startTime.split('T')[0]}</div>
+                        <div><span style={{ fontWeight: 500 }}>End Time:</span> {booking.endTime.split('T')[0]}</div>
+                        <div><span style={{ fontWeight: 500 }}>Status:</span> {booking.status}</div>
                     </div>
                 </div>
-            </div>
+                <div className="modal-footer mx-auto">
+                    <button
+                        type="button"
+                        className="btn btn-outline-dark border-2 border-dark"
+                        data-bs-dismiss="modal"
+                    >Close</button>
+                </div>
+            </Model>
         </>
     );
 };
