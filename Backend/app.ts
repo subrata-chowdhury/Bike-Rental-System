@@ -4,7 +4,6 @@ import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import bikeRoutes from './routes/bikeRoutes';
 import bookingRoutes from './routes/bookingRoutes';
-import reviewRoutes from './routes/reviewRoutes';
 
 import config from './config/config';
 import cors from 'cors';
@@ -31,7 +30,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/bikes', bikeRoutes);
 app.use('/api/booking', bookingRoutes);
-app.use('/api/review', reviewRoutes);
 
 const PORT = config.port || 5000;
 app.listen(PORT, () => {

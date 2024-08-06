@@ -41,23 +41,6 @@ export const createBooking = async (req: Request, res: Response) => {
     }
 };
 
-// Get a single booking by ID
-export const getBookingById = async (req: Request, res: Response) => {
-    try {
-        const bookingId = req.params.id;
-
-        const booking = await Booking.findById(bookingId);
-
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
-
-        res.status(200).json(booking);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to get booking' });
-    }
-};
-
 // Get bookings by user ID
 export const getBookingHistoryByUserId = async (req: Request, res: Response) => {
     try {
@@ -129,30 +112,7 @@ export const getBookingThatHasToReturnByUserId = async (req: Request, res: Respo
     }
 }
 
-
-// Update a booking by ID
-export const updateBookingById = async (req: Request, res: Response) => {
-    try {
-        const bookingId = req.params.id;
-        const userId = req.body.user.id;
-        const { bikeId, startTime, endTime, status } = req.body;
-
-        const updatedBooking = await Booking.findByIdAndUpdate(
-            bookingId,
-            { userId, bikeId, startTime, endTime, status },
-            { new: true }
-        );
-
-        if (!updatedBooking) {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
-
-        res.status(200).json(updatedBooking);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to update booking' });
-    }
-};
-
+// Return a bike by bike ID
 export const returnBikeByBikeId = async (req: Request, res: Response) => {
     try {
         const { bikeId } = req.params;
@@ -200,7 +160,9 @@ export const getBookingThatHasToReturnToday = async (req: Request, res: Response
 
 
 
+
 // ADMIN CONTROLS
+
 
 
 

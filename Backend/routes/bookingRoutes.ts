@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, updateBookingById, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex, getAllBookingCount } from '../controllers/bookingController';
+import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex, getAllBookingCount } from '../controllers/bookingController';
 
 const router = express.Router();
 
