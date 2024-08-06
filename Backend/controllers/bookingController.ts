@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { IBooking } from '../models/booking';
 import Booking from '../models/booking';
 import Bike, { IBike } from '../models/bike';
+import User from '../models/user';
+import { isValidObjectId } from 'mongoose';
 
 // Create a new booking
 export const createBooking = async (req: Request, res: Response) => {
@@ -173,8 +175,9 @@ export const returnBikeByBikeId = async (req: Request, res: Response) => {
 }
 
 export const getBookingThatHasToReturnToday = async (req: Request, res: Response) => {
+    const userId = req.body.user.id;
     try {
-        const bookings = await Booking.find({ endTime: { $lt: new Date() }, status: 'booked' });
+        const bookings = await Booking.find({ endTime: { $lt: new Date() }, status: 'booked', userId });
         if (!bookings) {
             return res.status(404).json({ error: 'Booking not found' });
         }
@@ -200,12 +203,38 @@ export const getBookingThatHasToReturnToday = async (req: Request, res: Response
 
 
 // Get all bookings
-export const getAllBookings = async (req: Request, res: Response) => {
-    try {
-        const bookings = await Booking.find();
+export const getBookingByIndex = async (req: Request, res: Response) => {
+    const limit = 8
+    const { pageNo } = req.params
+    let { bookingId, userId } = req.body
+    // if(!isValidObjectId(bookingId)) return res.status(400).json({ error: 'Invalid booking ID' });
+    if (userId)
+        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user ID' });
 
-        res.status(200).json(bookings);
+    const index = (parseInt(pageNo) - 1) * limit
+    try {
+        const bookings = await Booking.find(userId ? { userId } : {}).skip(index).limit(limit).sort({ endTime: -1 }).populate('bike');
+        let usersData = []
+        for (let i = 0; i < bookings.length; i++) {
+            const userData = await User.findById(bookings[i].userId)
+            usersData.push(userData)
+        }
+        res.status(200).json({ bookingData: bookings, usersData: usersData });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Failed to get bookings' });
     }
 };
+
+export const getAllBookingCount = async (req: Request, res: Response) => {
+    let { bookingId, userId } = req.body
+    if (userId)
+        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user ID' });
+
+    try {
+        const total: number = await Booking.countDocuments(userId ? { userId } : {});
+        res.status(200).json({ total: total });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get bookings count' });
+    }
+}

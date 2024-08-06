@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import AddUser from './AddUser';
-import { deleteUser, getAllUsers, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
+import { deleteUserByAdmin, getAllUsers, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
 
 interface UserProps {
     _id: string;
@@ -72,11 +72,11 @@ const User: React.FC<UserProps> = ({ _id, username, email, role }): JSX.Element 
                         if (window.confirm('Are you sure you want to delete this user?'))
                             if (role !== 'customer') {
                                 if (window.confirm('It is not recommended to delete a admin user, are you sure?'))
-                                    deleteUser(email, () => {
+                                    deleteUserByAdmin(_id, () => {
                                         alert('User deleted Successfully');
                                     });
                             }
-                            else deleteUser(email, () => {
+                            else deleteUserByAdmin(_id, () => {
                                 alert('User deleted Successfully');
                             });
                     }}>

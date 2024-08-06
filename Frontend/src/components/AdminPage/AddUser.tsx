@@ -61,8 +61,8 @@ const AddUser: React.FC<Props> = () => {
                             <label className='mb-2'>
                                 <b>Name:</b>
                                 <div className='input-group'>
-                                    <input className='m-0 form-control' name="name" value={userDetails.firstName} onChange={onChangeHandler} placeholder="First Name" />
-                                    <input className='m-0 form-control' name="name" value={userDetails.lastName} onChange={onChangeHandler} placeholder="Last Name" />
+                                    <input className='m-0 form-control' name="firstName" value={userDetails.firstName} onChange={onChangeHandler} placeholder="First Name" />
+                                    <input className='m-0 form-control' name="lastName" value={userDetails.lastName} onChange={onChangeHandler} placeholder="Last Name" />
                                 </div>
                             </label>
                             <label className='mb-2'>

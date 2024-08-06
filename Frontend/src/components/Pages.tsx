@@ -8,10 +8,58 @@ type PagesProp = {
 const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     let pages: JSX.Element[] = [];
-    for (let index = 1; index <= noOfPages; index++) {
-        pages.push(
-            <Page page={index} key={index} isActive={(currentPage === index ? true : false)} setCurrentPage={setCurrentPage} />
-        )
+    if (noOfPages < 12)
+        for (let index = 1; index <= noOfPages; index++) {
+            pages.push(
+                <Page page={index} key={index} isActive={(currentPage === index ? true : false)} setCurrentPage={setCurrentPage} />
+            )
+        }
+    else {
+        if (currentPage < 5) {
+            for (let index = 1; index <= 5; index++) {
+                pages.push(
+                    <Page page={index} key={index} isActive={(currentPage === index ? true : false)} setCurrentPage={setCurrentPage} />
+                )
+            }
+            pages.push(
+                <div className='rounded-circle pages mx-1 cursor-pointer bg-white text-dark'>...</div>
+            )
+            pages.push(
+                <Page page={noOfPages} key={noOfPages} isActive={(currentPage === noOfPages ? true : false)} setCurrentPage={setCurrentPage} />
+            )
+        }
+        else if (currentPage > noOfPages - 4) {
+            pages.push(
+                <Page page={1} key={1} isActive={(currentPage === 1 ? true : false)} setCurrentPage={setCurrentPage} />
+            )
+            pages.push(
+                <div className='rounded-circle pages mx-1 cursor-pointer bg-white text-dark'>...</div>
+            )
+            for (let index = noOfPages - 4; index <= noOfPages; index++) {
+                pages.push(
+                    <Page page={index} key={index} isActive={(currentPage === index ? true : false)} setCurrentPage={setCurrentPage} />
+                )
+            }
+        }
+        else {
+            pages.push(
+                <Page page={1} key={1} isActive={(currentPage === 1 ? true : false)} setCurrentPage={setCurrentPage} />
+            )
+            pages.push(
+                <div className='rounded-circle pages mx-1 cursor-pointer bg-white text-dark'>...</div>
+            )
+            for (let index = currentPage - 1; index <= currentPage + 1; index++) {
+                pages.push(
+                    <Page page={index} key={index} isActive={(currentPage === index ? true : false)} setCurrentPage={setCurrentPage} />
+                )
+            }
+            pages.push(
+                <div className='rounded-circle pages mx-1 cursor-pointer bg-white text-dark'>...</div>
+            )
+            pages.push(
+                <Page page={noOfPages} key={noOfPages} isActive={(currentPage === noOfPages ? true : false)} setCurrentPage={setCurrentPage} />
+            )
+        }
     }
     function pageOnClickHanlder() {
         // console.log(currentPage)
@@ -28,7 +76,7 @@ const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): JSX.Elemen
                 if (newPage > 0)
                     setCurrentPage(newPage)
             }}>
-                <img src='arrow-right.svg' width={20} style={{transform: 'rotate(-180deg)'}}></img>
+                <img src='arrow-right.svg' width={20} style={{ transform: 'rotate(-180deg)' }}></img>
             </div>
             {pages}
             <div className='rounded-circle bg-white pages mx-1 cursor-pointer' onClick={() => {

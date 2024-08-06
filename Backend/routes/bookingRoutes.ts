@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, updateBookingById, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getAllBookings } from '../controllers/bookingController';
+import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, updateBookingById, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex, getAllBookingCount } from '../controllers/bookingController';
 
 const router = express.Router();
 
@@ -14,6 +14,7 @@ router.post('/', authMiddleware, createBooking);
 
 // ADMIN ROUTES
 
-router.put('/get/all', authMiddleware, getAllBookings);
+router.post('/page/:pageNo', authMiddleware, getBookingByIndex);
+router.post('/pages/count', authMiddleware, getAllBookingCount);
 
 export default router;

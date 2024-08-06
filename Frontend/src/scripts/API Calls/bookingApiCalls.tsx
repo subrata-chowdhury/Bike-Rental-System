@@ -1,8 +1,10 @@
+import { BookingData } from '../../components/AdminPage/Booking';
 import logOut from '../logOut';
 import apiUrl from './apiUrl';
 const API_BASE_URL = apiUrl + '/api';
 
 export const createBooking = async (bookingData: any) => {
+    console.log(bookingData);
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_BASE_URL}/booking`, {
@@ -126,5 +128,68 @@ export const getBookingDetailsThatHasToReturn = async () => {
     } catch (error) {
         console.error(error);
         // Handle error
+    }
+}
+
+
+
+
+
+// ADMIN API CALLS
+
+
+
+
+export const getBookingByPage = async (page: number, bookingId: string = '', userId: string = '', onSuccess: (data: BookingData) => void = () => { }) => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_BASE_URL}/booking/page/${page}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`
+            },
+            body: JSON.stringify({ bookingId, userId })
+        });
+        if (response.status === 401) {
+        }
+        const data = await response.json();
+        if (response.ok)
+            onSuccess(data)
+        if (response.status === 400) {
+            alert("Invalid User ID")
+            // throw new Error('Invalid User ID');
+        }
+        return data;
+    } catch (error) {
+        console.error(`Error getting bikes with index ${page}:`, error);
+        throw error;
+    }
+}
+
+export const getBookingCount = async (bookingId: string = '', userId: string = '', onSuccess: (data: string | number) => void = () => { }) => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_BASE_URL}/booking/pages/count`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`
+            },
+            body: JSON.stringify({ bookingId, userId })
+        });
+        if (response.status === 401) {
+        }
+        const data = await response.json();
+        if (response.ok)
+            onSuccess(data.total)
+        if (response.status === 400) {
+            alert("Invalid User ID")
+            // throw new Error('Invalid User ID');
+        }
+        return data;
+    } catch (error) {
+        console.error(`Error getting bikes count`, error);
+        throw error;
     }
 }

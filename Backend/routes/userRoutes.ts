@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { deleteUser, getAllUsers, getUser, updateUser, updateUserByAdmin } from '../controllers/userController';
+import { deleteUser, deleteUserByAdmin, getAllUsers, getUser, updateUser, updateUserByAdmin } from '../controllers/userController';
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ router.put('/', authMiddleware, updateUser);
 
 router.get('/all', authMiddleware, getAllUsers);
 router.put('/update', authMiddleware, updateUserByAdmin);
+router.delete('/admin/deleteUser', authMiddleware, deleteUserByAdmin);
 
 export default router;

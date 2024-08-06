@@ -58,7 +58,7 @@ export const deleteUser = async (password: string, onDelete: () => void) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${token}`,
+                'authorization': `${token}`,
             },
             body: JSON.stringify({ password })
         });
@@ -125,3 +125,26 @@ export const updateUserByAdmin = async (id: string, username: string, email: str
         throw error;
     }
 }
+
+export const deleteUserByAdmin = async (userId: string, onDelete: () => void) => {
+    try {
+        const token = localStorage.getItem('adminToken'); // Get token from local storage or state
+        const response = await fetch(API_URL + `/user/admin/deleteUser`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`,
+            },
+            body: JSON.stringify({ userId })
+        });
+
+        if (response.ok) {
+            onDelete(); // Update parent component or state
+        } else {
+            const data = await response.json();
+            alert(data.message || 'Error deleting user');
+        }
+    } catch (err) {
+        alert('Error deleting user');
+    }
+};

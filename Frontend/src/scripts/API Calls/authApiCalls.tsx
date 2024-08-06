@@ -16,6 +16,7 @@ const login = async (email: string, password: string, onSuccess: () => void): Pr
             onSuccess(); // Call the success callback
         } else {
             const data = await response.json();
+            alert(data.message || 'Error logging in');
             throw new Error(data.message || 'Error logging in');
         }
     } catch (err) {
@@ -70,6 +71,7 @@ const adminLogin = async (email: string, password: string, onSuccess: () => void
             onSuccess(); // Call the success callback
         } else {
             const data = await response.json();
+            alert(data.message || 'Error logging in');
             throw new Error(data.message || 'Error logging in');
         }
     } catch (err) {

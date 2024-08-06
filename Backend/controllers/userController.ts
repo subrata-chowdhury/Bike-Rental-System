@@ -118,3 +118,30 @@ export const updateUserByAdmin = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server error', error });
     }
 }
+
+export const deleteUserByAdmin = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.body
+
+        const user: IUser | null = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // chcek if user has bikes to return
+        const bookings = await Booking.find({ userId: userId, status: 'booked' });
+        if (bookings.length > 0) {
+            return res.status(400).json({ message: 'User has bikes to return' });
+        }
+
+        // Delete user's bookings
+        await Booking.deleteMany({ userId: userId });
+
+        // Delete the user
+        await User.findByIdAndDelete(userId);
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}

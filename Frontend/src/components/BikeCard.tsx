@@ -170,7 +170,7 @@ const BikeCard: React.FC<BikeCardProp> = ({
                                 data-bs-dismiss="modal"
                                 ref={closeBtn}>Close</button>
                             {!showReturnBtn && isAvailable && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
-                                await createBooking({ _id, newStartTime, newEndTime }).then(() => {
+                                await createBooking({ _id, startTime: newStartTime, endTime: newEndTime }).then(() => {
                                     closeBtn.current?.click()
                                     onPageChange(1)
                                 })

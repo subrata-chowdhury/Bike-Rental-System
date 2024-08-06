@@ -132,12 +132,12 @@ export const updateBike = async (req: Request, res: Response) => {
     const { bikeId } = req.params;
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
     const imageFile = req.file;
-    if (!imageFile) {
-        return res.status(400).send('No file uploaded.');
-    }
+    // if (!imageFile) {
+    //     return res.status(400).send('No file uploaded.');
+    // }
 
     try {
-        const bike = await Bike.findByIdAndUpdate(bikeId, { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile.filename }, { new: true });
+        const bike = await Bike.findByIdAndUpdate(bikeId, { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile ? imageFile.filename : "" }, { new: true });
         if (!bike) {
             return res.status(404).json({ message: 'Bike not found' });
         }

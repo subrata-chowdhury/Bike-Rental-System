@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Users from './Users';
 import Bikes from './Bikes';
 import LoginPage from './LoginPage';
+import Booking from './Booking';
 
 type Tabs = {
     name: string;
@@ -43,7 +44,7 @@ const AdminPage: React.FC<AdminPageProp> = ({ logout }): JSX.Element => {
         },
         {
             name: 'Bookings',
-            component: <div>Bookings</div>
+            component: <Booking />
         }
     ]
     return (
