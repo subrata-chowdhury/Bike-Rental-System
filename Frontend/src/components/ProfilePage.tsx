@@ -120,7 +120,7 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
     }
 
     return (
-        <div className="py-1 px-4 bg-glass bg-light-white rounded-2">
+        <div className="py-1 px-4 bg-glass bg-light-white rounded-2 mb-3">
             <h1>User Details</h1>
             <div className="d-flex flex-column mb-4">
                 <div className="flex-grow-1">

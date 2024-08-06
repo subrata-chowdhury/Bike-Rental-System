@@ -204,7 +204,7 @@ export const getBookingThatHasToReturnToday = async (req: Request, res: Response
 
 // Get all bookings
 export const getBookingByIndex = async (req: Request, res: Response) => {
-    const limit = 8
+    const limit = 7
     const { pageNo } = req.params
     let { bookingId, userId } = req.body
     // if(!isValidObjectId(bookingId)) return res.status(400).json({ error: 'Invalid booking ID' });

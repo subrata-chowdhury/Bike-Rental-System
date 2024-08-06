@@ -4,7 +4,7 @@ import './styles/Footer.css'
 const Footer: React.FC = (): JSX.Element => {
     return (
         <div id='footer' className='footer mt-auto bg-glass bg-deep-white'>
-            <div className='container py-5'>
+            <div className='container py-5 px-5 px-mid-auto'>
                 <div className='row'>
                     <div className='col-12 col-md-4'>
                         <h5>Address</h5>

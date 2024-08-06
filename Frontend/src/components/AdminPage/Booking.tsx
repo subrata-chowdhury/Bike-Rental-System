@@ -19,7 +19,7 @@ const Booking: React.FC<BookingProps> = () => {
             setBookingData(data.bookingData)
             setUsersData(data.usersData)
             getBookingCount(searchBookingIdData, searchUserIdData, (count) => {
-                setNoOfPages(count as number / data.bookingData.length)
+                setNoOfPages(count as number / 7)
             })
         })
     }
