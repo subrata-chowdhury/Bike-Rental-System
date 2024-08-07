@@ -94,8 +94,6 @@ const AddBike: React.FC = (): JSX.Element => {
                     <label className='form-label d-flex justify-content-center'>
                         <input type='file' name='image' accept='image/*' className='m-0' style={{ display: 'none' }} onChange={handleBikeDataChange}></input>
                         <img
-                            width={120}
-                            height={120}
                             style={{ background: `rgba(0, 0, 0, 0.1)`, objectFit: 'cover', objectPosition: 'center' }}
                             src={imagePreview ? (imagePreview as string) : 'bike.svg'}
                             className='rounded'></img>

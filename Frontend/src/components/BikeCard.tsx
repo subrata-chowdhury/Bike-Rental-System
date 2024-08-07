@@ -126,14 +126,20 @@ const BikeCard: React.FC<BikeCardProp> = ({
                             id='startDate'
                             className='form-control mt-1'
                             value={newStartTime.toISOString().split('T')[0]}
-                            onChange={e => setStartTime(new Date(e.target.value))} />
+                            onChange={e => {
+                                if (new Date(e.target.value) > new Date()) setStartTime(new Date(e.target.value))
+                                if (new Date(e.target.value) > newEndTime) setEndTime(new Date(e.target.value))
+                            }} />
                         <label htmlFor='returnDate' className=' mt-2'>Return Date:</label>
                         <input
                             type='date'
                             id='returnDate'
                             className='form-control mt-1'
                             value={newEndTime.toISOString().split('T')[0]}
-                            onChange={e => setEndTime(new Date(e.target.value))} />
+                            onChange={e => {
+                                if (new Date(e.target.value) > new Date()) setEndTime(new Date(e.target.value))
+                                if (new Date(e.target.value) < newStartTime) setStartTime(new Date(e.target.value))
+                            }} />
                     </div>
                     <div className='d-flex flex-column'>
                         <img
@@ -150,6 +156,21 @@ const BikeCard: React.FC<BikeCardProp> = ({
                         data-bs-dismiss="modal"
                         ref={closeBtn}>Close</button>
                     {!showReturnBtn && isAvailable && <button type="button" className="btn border-2 btn-dark" onClick={async () => {
+                        const currentData = new Date()
+                        currentData.setHours(0, 0, 0, 0)
+                        if (newStartTime < currentData) {
+                            alert('Start time cannot be in the past')
+                            return
+                        }
+                        if (newEndTime < currentData) {
+                            alert('End time cannot be in the past')
+                            return
+                        }
+                        if (newStartTime > newEndTime) {
+                            alert('Start time cannot be greater than end time')
+                            return
+                        }
+
                         await createBooking(_id, newStartTime, newEndTime).then(() => {
                             closeBtn.current?.click()
                             onPageChange(1)

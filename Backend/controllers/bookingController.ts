@@ -11,6 +11,21 @@ export const createBooking = async (req: Request, res: Response) => {
         const { bikeId, startTime, endTime } = req.body;
         const userId = req.body.user.id;
 
+        const startDate = new Date(startTime);
+        const endDate = new Date(endTime);
+
+
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return res.status(400).json({ error: 'Invalid date format' });
+        }
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        if (startDate < currentDate || endDate < currentDate) {
+            return res.status(400).json({ error: 'Dates cannot be in the past' });
+        }
+        if (startDate > endDate) {
+            return res.status(400).json({ error: 'End time must be after start time' });
+        }
         const bike = await Bike.findById(bikeId);
         if (!bike) {
             return res.status(404).json({ error: 'Bike not found' });
