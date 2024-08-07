@@ -9,27 +9,36 @@ interface UserProp {
 
 const Users: React.FC<UserProp> = ({ logout }): JSX.Element => {
     const [users, setUsers] = React.useState<User[]>([]);
-    useEffect(() => {
+    function downloadUsers() {
         getAllUsers((data) => {
             setUsers(data);
         }, logout);
+    }
+    useEffect(() => {
+        downloadUsers()
     }, [])
     return (
         <>
             <div className=''>
                 {users.map((user) => (
-                    <UserCard key={user.email} {...user} />
+                    <UserCard key={user.email} {...user} onDelete={downloadUsers} onUpdate={downloadUsers} />
                 ))}
             </div>
-            <AddUser />
+            <AddUser onAdd={downloadUsers} />
         </>
     );
 };
 
-const UserCard: React.FC<User> = ({ _id, username, email, role }): JSX.Element => {
+interface UserCardProp extends User {
+    onUpdate?: () => void
+    onDelete?: () => void
+}
+
+const UserCard: React.FC<UserCardProp> = ({ _id, username, email, role, onUpdate = () => { }, onDelete = () => { } }): JSX.Element => {
 
     function updateUser(userDetails: User) {
         updateUserByAdmin(userDetails._id, userDetails.username, userDetails.email, userDetails.password, userDetails.role, () => {
+            onUpdate()
             alert('User Updated Successfully');
         })
     }
@@ -55,6 +64,7 @@ const UserCard: React.FC<User> = ({ _id, username, email, role }): JSX.Element =
                                     });
                             }
                             else deleteUserByAdmin(_id, () => {
+                                onDelete()
                                 alert('User deleted Successfully');
                             });
                     }}>

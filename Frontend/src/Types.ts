@@ -16,7 +16,7 @@ export type Bike = {
     horsePower: number;
     type: string;
 
-    imageURL?: string;
+    imageURL: string;
 }
 
 // Type for a User

@@ -3,14 +3,20 @@ import { adminRegister, register } from '../../scripts/API Calls/authApiCalls';
 import { User } from '../../Types';
 import Model from '../Model';
 
-const AddUser: React.FC = () => {
+interface AddUserProp {
+    onAdd?: () => void
+}
+
+const AddUser: React.FC<AddUserProp> = ({ onAdd = () => { } }) => {
     async function onSubmitHandler(userDetails: User) {
         if (userDetails.role === 'admin')
             adminRegister(userDetails.username, userDetails.email, userDetails.password, () => {
+                onAdd()
                 alert('Admin Added Successfully');
             });
         else
             register(userDetails.username, userDetails.email, userDetails.password, () => {
+                onAdd()
                 alert('User Added Successfully');
             });
     }

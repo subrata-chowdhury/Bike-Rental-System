@@ -107,6 +107,12 @@ export const getTypes = async (req: Request, res: Response) => {
 export const createBike = async (req: Request, res: Response) => {
     if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
+
+    // Verify data
+    if (!bikeModel || !pricePerHour || !isAvailable || !brand || !cc || !horsePower || !type) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
     const imageFile = req.file;
 
     // if (!imageFile) {
@@ -125,6 +131,12 @@ export const updateBike = async (req: Request, res: Response) => {
     if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
     const { bikeId } = req.params;
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
+
+    // Verify data
+    if (!bikeModel || !pricePerHour || !isAvailable || !brand || !cc || !horsePower || !type) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
+
     const imageFile = req.file;
     // if (!imageFile) {
     //     return res.status(400).send('No file uploaded.');
