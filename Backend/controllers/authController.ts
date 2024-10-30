@@ -12,23 +12,28 @@ export const register = async (req: Request, res: Response) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!emailRegex.test(email.trim())) {
-        return res.status(400).json({ message: 'Invalid email format' });
+        res.status(400).json({ message: 'Invalid email format' });
+        return;
     }
     if (password.length < 8) {
-        return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+        res.status(400).json({ message: 'Password must be at least 8 characters long' });
+        return;
     }
     if (email.trim() === '' || password === '') {
-        return res.status(400).json({ message: 'Fields cannot be empty' });
+        res.status(400).json({ message: 'Fields cannot be empty' });
+        return;
     }
     if (!nameRegex.test(username.trim())) {
-        return res.status(400).json({ message: 'Invalid username format' });
+        res.status(400).json({ message: 'Invalid username format' });
+        return;
     }
 
 
     try {
         const user: IUser | null = await User.findOne({ email });
         if (user) {
-            return res.status(400).json({ message: 'User already exists' });
+            res.status(400).json({ message: 'User already exists' });
+            return;
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = new User({ email: email, password: hashedPassword, username: username });
@@ -45,13 +50,15 @@ export const login = async (req: Request, res: Response) => {
         // Check if user exists
         const user: IUser | null = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            res.status(400).json({ message: 'Invalid credentials' });
+            return;
         }
 
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            res.status(400).json({ message: 'Invalid credentials' });
+            return;
         }
         // Create and send token
         const token = jwt.sign({ id: user._id }, envVars.jwtSecret, { expiresIn: '1d' });
@@ -90,16 +97,19 @@ export const adminLogin = async (req: Request, res: Response) => {
         // Check if user exists
         const user: IUser | null = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            res.status(400).json({ message: 'Invalid credentials' });
+            return;
         }
         if (!user.role || user.role !== 'admin') {
-            return res.status(403).json({ message: 'Unauthorized' });
+            res.status(403).json({ message: 'Unauthorized' });
+            return;
         }
 
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            res.status(400).json({ message: 'Invalid credentials' });
+            return;
         }
         // Create and send token
         const token = jwt.sign({ id: user._id }, envVars.jwtSecret, { expiresIn: '1d' });
@@ -110,29 +120,37 @@ export const adminLogin = async (req: Request, res: Response) => {
 };
 
 
-export const adminRegister = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
+export const adminRegister = async (req: Request, res: Response): Promise<void> => {
+    if (!isAdmin(req)) {
+        res.status(403).json({ message: 'Unauthorized' });
+        return;
+    }
     const { username, email, password } = req.body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!emailRegex.test(email.trim())) {
-        return res.status(400).json({ message: 'Invalid email format' });
+        res.status(400).json({ message: 'Invalid email format' });
+        return;
     }
     if (password.length < 8) {
-        return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+        res.status(400).json({ message: 'Password must be at least 8 characters long' });
+        return;
     }
     if (email.trim() === '' || password === '') {
-        return res.status(400).json({ message: 'Fields cannot be empty' });
+        res.status(400).json({ message: 'Fields cannot be empty' });
+        return;
     }
     if (!nameRegex.test(username.trim())) {
-        return res.status(400).json({ message: 'Invalid username format' });
+        res.status(400).json({ message: 'Invalid username format' });
+        return;
     }
 
     try {
         const user: IUser | null = await User.findOne({ email });
         if (user) {
-            return res.status(400).json({ message: 'Admin already exists' });
+            res.status(400).json({ message: 'Admin already exists' });
+            return;
         }
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = new User({ email: email, password: hashedPassword, username: username, role: 'admin' });

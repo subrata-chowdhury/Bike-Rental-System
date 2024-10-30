@@ -16,22 +16,27 @@ export const createBooking = async (req: Request, res: Response) => {
 
 
         if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            return res.status(400).json({ error: 'Invalid date format' });
+            res.status(400).json({ error: 'Invalid date format' });
+            return;
         }
         const currentDate = new Date();
         currentDate.setHours(0, 0, 0, 0);
         if (startDate < currentDate || endDate < currentDate) {
-            return res.status(400).json({ error: 'Dates cannot be in the past' });
+            res.status(400).json({ error: 'Dates cannot be in the past' });
+            return;
         }
         if (startDate > endDate) {
-            return res.status(400).json({ error: 'End time must be after start time' });
+            res.status(400).json({ error: 'End time must be after start time' });
+            return;
         }
         const bike = await Bike.findById(bikeId);
         if (!bike) {
-            return res.status(404).json({ error: 'Bike not found' });
+            res.status(404).json({ error: 'Bike not found' });
+            return;
         }
         if (!bike.isAvailable) {
-            return res.status(400).json({ error: 'Bike is not available' });
+            res.status(400).json({ error: 'Bike is not available' });
+            return;
         }
 
         bike.isAvailable = false;
@@ -110,7 +115,8 @@ export const getBookingThatHasToReturnByUserId = async (req: Request, res: Respo
         const userId = req.body.user.id;
         const bookings = await Booking.find({ userId, status: 'booked' });
         if (!bookings) {
-            return res.status(404).json({ error: 'Booking not found' });
+            res.status(404).json({ error: 'Booking not found' });
+            return;
         }
         const bikeList: IBike[] = [];
         for (let i = 0; i < bookings.length; i++) {
@@ -133,7 +139,8 @@ export const returnBikeByBikeId = async (req: Request, res: Response) => {
         const { bikeId } = req.params;
         const bike = await Bike.findById(bikeId);
         if (!bike) {
-            return res.status(404).json({ error: 'Bike not found' });
+            res.status(404).json({ error: 'Bike not found' });
+            return;
         }
         bike.isAvailable = true;
         await bike.save();
@@ -143,7 +150,8 @@ export const returnBikeByBikeId = async (req: Request, res: Response) => {
             booking.status = 'returned';
             await booking.save();
         } else {
-            return res.status(404).json({ error: 'Booking not found' });
+            res.status(404).json({ error: 'Booking not found' });
+            return;
         }
         res.status(200).json({ message: 'Bike returned successfully' });
     } catch (error) {
@@ -156,7 +164,8 @@ export const getBookingThatHasToReturnToday = async (req: Request, res: Response
     try {
         const bookings = await Booking.find({ endTime: { $lt: new Date() }, status: 'booked', userId });
         if (!bookings) {
-            return res.status(404).json({ error: 'Booking not found' });
+            res.status(404).json({ error: 'Booking not found' });
+            return;
         }
         const bikeList: IBike[] = [];
         for (let i = 0; i < bookings.length; i++) {
@@ -188,7 +197,10 @@ export const getBookingByIndex = async (req: Request, res: Response) => {
     let { bookingId, userId } = req.body
     // if(!isValidObjectId(bookingId)) return res.status(400).json({ error: 'Invalid booking ID' });
     if (userId)
-        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user ID' });
+        if (!isValidObjectId(userId)) {
+            res.status(400).json({ error: 'Invalid user ID' });
+            return;
+        }
 
     const index = (parseInt(pageNo) - 1) * limit
     try {
@@ -208,7 +220,10 @@ export const getBookingByIndex = async (req: Request, res: Response) => {
 export const getAllBookingCount = async (req: Request, res: Response) => {
     let { bookingId, userId } = req.body
     if (userId)
-        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user ID' });
+        if (!isValidObjectId(userId)) {
+            res.status(400).json({ error: 'Invalid user ID' });
+            return;
+        }
 
     try {
         const total: number = await Booking.countDocuments(userId ? { userId } : {});

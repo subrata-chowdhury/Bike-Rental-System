@@ -74,7 +74,8 @@ export const getBikeById = async (req: Request, res: Response) => {
     try {
         const bike = await Bike.findById(id);
         if (!bike) {
-            return res.status(404).json({ message: 'Bike not found' });
+            res.status(404).json({ message: 'Bike not found' });
+            return;
         }
         res.status(200).json(bike);
     } catch (error) {
@@ -105,12 +106,16 @@ export const getTypes = async (req: Request, res: Response) => {
 
 // POST /bikes
 export const createBike = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
+    if (!isAdmin(req)) {
+        res.status(403).json({ message: 'Unauthorized' });
+        return;
+    }
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
 
     // Verify data
     if (!bikeModel || !pricePerHour || !isAvailable || !brand || !cc || !horsePower || !type) {
-        return res.status(400).json({ message: 'Missing required fields' });
+        res.status(400).json({ message: 'Missing required fields' });
+        return;
     }
 
     const imageFile = req.file;
@@ -128,13 +133,17 @@ export const createBike = async (req: Request, res: Response) => {
 
 // PUT /bikes/:id
 export const updateBike = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
+    if (!isAdmin(req)) {
+        res.status(403).json({ message: 'Unauthorized' });
+        return;
+    }
     const { bikeId } = req.params;
     const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
 
     // Verify data
     if (!bikeModel || !pricePerHour || !isAvailable || !brand || !cc || !horsePower || !type) {
-        return res.status(400).json({ message: 'Missing required fields' });
+        res.status(400).json({ message: 'Missing required fields' });
+        return;
     }
 
     const imageFile = req.file;
@@ -145,7 +154,8 @@ export const updateBike = async (req: Request, res: Response) => {
     try {
         const bike = await Bike.findByIdAndUpdate(bikeId, { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile ? imageFile.filename : "" }, { new: true });
         if (!bike) {
-            return res.status(404).json({ message: 'Bike not found' });
+            res.status(404).json({ message: 'Bike not found' });
+            return;
         }
         res.status(200).json(bike);
     } catch (error) {
@@ -155,12 +165,15 @@ export const updateBike = async (req: Request, res: Response) => {
 
 // DELETE /bikes/:id
 export const deleteBike = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) return res.status(403).json({ message: 'Unauthorized' });
+    if (!isAdmin(req)) {
+        res.status(403).json({ message: 'Unauthorized' });
+    }
     const { bikeId } = req.params;
     try {
         const bike = await Bike.findByIdAndDelete(bikeId);
         if (!bike) {
-            return res.status(404).json({ message: 'Bike not found' });
+            res.status(404).json({ message: 'Bike not found' });
+            return;
         }
         if (bike.imageURL) {
             const imagePath = path.join(__dirname, '../uploads/bikeImages', bike.imageURL);
