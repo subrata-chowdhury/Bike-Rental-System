@@ -19,7 +19,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
 
     return (
-        <div className='log-in-page form-container'>
+        <div className='log-in-page form-container my-auto'>
             <h1>
                 <p>Welcome to,</p>
                 <p className='fw-bolder text-primary'>Bike Booker Admin</p>

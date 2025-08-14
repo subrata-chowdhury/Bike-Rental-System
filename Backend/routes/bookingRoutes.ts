@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex, getAllBookingCount } from '../controllers/bookingController';
+import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex } from '../controllers/bookingController';
+import { isAdmin } from '../controllers/roleChecker';
 
 const router = express.Router();
 
@@ -14,7 +15,6 @@ router.post('/', authMiddleware, createBooking);
 
 // ADMIN ROUTES
 
-router.post('/page/:pageNo', authMiddleware, getBookingByIndex);
-router.post('/pages/count', authMiddleware, getAllBookingCount);
+router.get('/page/:pageNo', authMiddleware, isAdmin, getBookingByIndex);
 
 export default router;

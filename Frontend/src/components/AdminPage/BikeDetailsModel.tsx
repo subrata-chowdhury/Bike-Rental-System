@@ -1,46 +1,6 @@
 import React, { useState } from 'react';
-import { createBike } from '../../scripts/API Calls/bikeApiCalls';
 import Model from '../Model';
 import { Bike } from '../../Types';
-
-const AddBike: React.FC = (): JSX.Element => {
-    function onSubmitHandler(bikeData: BikeDetailsInput) {
-        const formData = new FormData();
-
-        // Append JSON data
-        formData.append('bikeModel', bikeData.bikeModel || '');
-        formData.append('pricePerHour', bikeData.pricePerHour?.toString() || '');
-        formData.append('isAvailable', bikeData.isAvailable ? 'true' : 'false');
-        formData.append('brand', bikeData.brand || '');
-        formData.append('cc', bikeData.cc?.toString() || '');
-        formData.append('horsePower', bikeData.horsePower?.toString() || '');
-        formData.append('type', bikeData.type || '');
-        // Append file
-        if (bikeData.image instanceof File) {
-            formData.append('image', bikeData.image, bikeData.image.name);
-        }
-        createBike(formData).then(() => {
-            alert("Bike Added Successfully");
-        })
-    }
-
-    return (
-        <>
-            <button
-                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-4 me-5'
-                style={{ lineHeight: 1, zIndex: 15 }}
-                data-bs-toggle="modal"
-                data-bs-target={"#addBikeModel"}>
-                <div className='btn-close' style={{ transform: 'rotate(45deg)' }}></div>
-            </button>
-            <BikeDetailsModel
-                heading="ADD BIKE"
-                id="addBikeModel"
-                bikeDetails={{ _id: "", bikeModel: "", pricePerHour: 0, isAvailable: true, brand: "", cc: 0, horsePower: 0, type: "", imageURL: "" }}
-                onSubmit={onSubmitHandler} />
-        </>
-    )
-}
 
 export type BikeDetailsInput = Bike & {
     image: File | null;
@@ -48,26 +8,26 @@ export type BikeDetailsInput = Bike & {
 
 interface BikeDetailsModelProps {
     heading?: string;
-    id: string;
     bikeDetails: Bike;
     onSubmit?: (bikeData: BikeDetailsInput) => void;
+    onClose: () => void;
     submitBtnLabel?: string;
 }
 
-export const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "Bike Model", id, bikeDetails, onSubmit = () => { }, submitBtnLabel = "SUBMIT" }): JSX.Element => {
+const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "Bike Model", bikeDetails, onSubmit = () => { }, onClose, submitBtnLabel = "SUBMIT" }): React.JSX.Element => {
     const [bikeData, setBikeData] = useState<BikeDetailsInput>({
-        _id: bikeDetails._id || "",
-        bikeModel: bikeDetails.bikeModel || "",
-        pricePerHour: bikeDetails.pricePerHour || 0,
-        isAvailable: bikeDetails.isAvailable || true,
-        brand: bikeDetails.brand || "",
-        cc: bikeDetails.cc || 0,
-        horsePower: bikeDetails.horsePower || 0,
-        type: bikeDetails.type || "",
-        imageURL: bikeDetails.imageURL || "",
+        _id: bikeDetails?._id || "",
+        bikeModel: bikeDetails?.bikeModel || "",
+        pricePerHour: bikeDetails?.pricePerHour || 0,
+        isAvailable: bikeDetails?.isAvailable || true,
+        brand: bikeDetails?.brand || "",
+        cc: bikeDetails?.cc || 0,
+        horsePower: bikeDetails?.horsePower || 0,
+        type: bikeDetails?.type || "",
+        images: bikeDetails?.images || [],
         image: null
     });
-    const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(bikeDetails.imageURL || 'bike.svg');
+    const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(bikeDetails?.images[0] || 'bike.svg');
 
     const handleBikeDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
@@ -88,10 +48,11 @@ export const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "B
             }
         }
     };
+
     return (
-        <Model heading={heading} id={id}>
+        <Model heading={heading} onClose={onClose}>
             <div className='modal-body form d-flex flex-column px-5'>
-                {bikeData._id && <label className='form-label'>
+                {bikeData?._id && <label className='form-label'>
                     <input className='m-0 form-control' name="_id" value={bikeData._id} disabled readOnly placeholder="Bike ID" />
                 </label>}
                 <label className='form-label'>
@@ -128,7 +89,7 @@ export const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "B
                 <button
                     type="button"
                     className="btn btn-outline-dark border-2 border-dark"
-                    data-bs-dismiss="modal"
+                    onClick={onClose}
                 >Close</button>
                 <button type="button" className="btn btn-outline-dark border-2" onClick={() => {
                     setBikeData({
@@ -140,7 +101,7 @@ export const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "B
                         cc: 0,
                         horsePower: 0,
                         type: "",
-                        imageURL: "",
+                        images: [],
                         image: null
                     })
                     setImagePreview('bike.svg');
@@ -158,4 +119,4 @@ export const BikeDetailsModel: React.FC<BikeDetailsModelProps> = ({ heading = "B
     )
 }
 
-export default AddBike;
+export default BikeDetailsModel;

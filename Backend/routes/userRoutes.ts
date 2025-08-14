@@ -1,6 +1,7 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { deleteUser, deleteUserByAdmin, getAllUsers, getUser, updateUser, updateUserByAdmin } from '../controllers/userController';
+import { deleteUser, deleteUserByAdmin, getUsersByIndex, getUser, updateUser, updateUserByAdmin } from '../controllers/userController';
+import { isAdmin } from '../controllers/roleChecker';
 
 const router = express.Router();
 
@@ -11,8 +12,8 @@ router.put('/', authMiddleware, updateUser);
 
 // ADMIN ROUTES
 
-router.get('/all', authMiddleware, getAllUsers);
-router.put('/update', authMiddleware, updateUserByAdmin);
-router.delete('/admin/deleteUser', authMiddleware, deleteUserByAdmin);
+router.get('/page/:pageNo', authMiddleware, isAdmin, getUsersByIndex);
+router.put('/update', authMiddleware, isAdmin, updateUserByAdmin);
+router.delete('/admin/deleteUser', authMiddleware, isAdmin, deleteUserByAdmin);
 
 export default router;

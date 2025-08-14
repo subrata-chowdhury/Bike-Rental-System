@@ -1,4 +1,5 @@
 import { Bike, FilterData } from '../../Types';
+import debounce from '../debouncer';
 import logOut from '../logOut';
 import BASE_URL from './apiUrl';
 
@@ -27,25 +28,41 @@ export const getBikeCounts = async (filterData?: FilterData, searchData?: string
 };
 
 // Get bikes by index and limit
-export const getBikesByIndex = async (index: number, filterData?: FilterData, searchData?: string, onSuccess: (data: Bike[]) => void = () => { }, isAdminReq: boolean = false): Promise<any> => {
+export const getBikesByIndex = debounce(async (index: number, filterData?: FilterData, searchData?: string, onSuccess: (data: { bikes: Bike[], totalBikes: number }) => void = () => { }): Promise<any> => {
     try {
-        const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/bikes/${index}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `${token}`
-            },
-            body: JSON.stringify({ filterData: filterData, searchData: searchData })
-        });
+        const response = await fetch(`${API_URL}/bikes/${index}?filter=${JSON.stringify({ ...filterData, search: searchData })}`);
         if (response.status === 401) {
-            logOut();
+            // logOut();
         }
-        const data: Bike[] = await response.json();
+        const data: { bikes: Bike[], totalBikes: number } = await response.json();
         onSuccess(data);
         return data;
     } catch (error) {
         console.error(`Error getting bikes with index ${index}:`, error);
+        throw error;
+    }
+}, 500);
+
+
+// Get bikes by id
+export const getBikesById = async (id: string, onSuccess: (data: Bike) => void = () => { }, isAdminReq: boolean = false): Promise<any> => {
+    try {
+        const token = isAdminReq ? localStorage.getItem('adminToken') : localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/bikes/details/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`
+            }
+        });
+        if (response.status === 401) {
+            // logOut();
+        }
+        const data: Bike = await response.json();
+        onSuccess(data);
+        return data;
+    } catch (error) {
+        console.error(`Error getting bike with ID ${id}:`, error);
         throw error;
     }
 };
@@ -82,7 +99,7 @@ export const getTypes = async (): Promise<FilterData> => {
 export const createBike = async (bikeData: FormData): Promise<any> => {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_URL}/bikes/new/newBike`, {
+        const response = await fetch(`${API_URL}/bikes/new`, {
             method: 'POST',
             headers: {
                 // 'Content-Type': 'multipart/form-data',

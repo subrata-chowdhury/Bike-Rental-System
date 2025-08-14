@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import envVars from '../config/config';
 import { isAdmin } from './roleChecker';
+import { io } from '../app';
 
 // Handle user registration
 export const register = async (req: Request, res: Response) => {
@@ -61,26 +62,13 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
         // Create and send token
-        const token = jwt.sign({ id: user._id }, envVars.jwtSecret, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, envVars.jwtSecret, { expiresIn: '1d' });
+
+        io.emit('user_logedin', user);
         res.json({ token });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
-};
-
-// Handle user logout
-export const logoutUser = async (req: Request, res: Response) => {
-    // TODO: Implement user logout logic
-};
-
-// Handle password reset
-export const resetPassword = async (req: Request, res: Response) => {
-    // TODO: Implement password reset logic
-};
-
-// Handle email verification
-export const verifyEmail = async (req: Request, res: Response) => {
-    // TODO: Implement email verification logic
 };
 
 
@@ -112,7 +100,7 @@ export const adminLogin = async (req: Request, res: Response) => {
             return;
         }
         // Create and send token
-        const token = jwt.sign({ id: user._id }, envVars.jwtSecret, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, envVars.jwtSecret, { expiresIn: '1d' });
         res.json({ token });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -121,10 +109,6 @@ export const adminLogin = async (req: Request, res: Response) => {
 
 
 export const adminRegister = async (req: Request, res: Response): Promise<void> => {
-    if (!isAdmin(req)) {
-        res.status(403).json({ message: 'Unauthorized' });
-        return;
-    }
     const { username, email, password } = req.body;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

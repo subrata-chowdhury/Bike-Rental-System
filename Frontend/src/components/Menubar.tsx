@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getUser } from "../scripts/API Calls/userApiCalls";
 import { User } from "../Types";
+import logOut from "../scripts/logOut";
+import bikeIcon from "../assets/bike.svg"
+import userIcon from "../assets/user.svg"
+import LogOutIcon from "../assets/reactIcons/LogOut";
 
-const Menubar: React.FC = (): JSX.Element => {
+const Menubar: React.FC = (): React.JSX.Element => {
     const menus = [
-        { name: 'Home', link: '/Home' },
-        { name: 'About', link: '/' },
+        { name: 'Home', link: '/' },
+        { name: 'About', link: '/about' },
         { name: 'Footer', link: '/' },
-        { name: 'Contact', link: '/' },
+        { name: 'Contact', link: '/contact' },
     ]
-
+    const [showSmallProfilePopup, setShowSmallProfilePopup] = useState(false);
     const [showMenus, setShowMenus] = useState(false);
     useEffect(() => {
         window.onresize = () => {
@@ -29,26 +33,14 @@ const Menubar: React.FC = (): JSX.Element => {
     }, [])
 
     return (
-        <nav className="navbar navbar-expand-sm bg-glass bg-deep-white navbar-light" style={{ zIndex: 10 }}>
-            <div className="container-fluid">
-                <ul className="navbar-nav w-100">
+        <nav className="navbar navbar-expand-sm bg-white navbar-light" style={{ zIndex: 10 }}>
+            <div className="container">
+                <Link to="/" className="navbar-brand fw-bold fs-4 me-5 text-dark d-flex justify-content-center align-items-center">
+                    <img src={bikeIcon} className="me-2" width={40} height={40} alt="logo" />
+                    Bike Rental
+                </Link>
+                <ul className="navbar-nav ms-2 me-auto">
                     <div className="d-flex w-100 justify-content-between">
-                        <div className="dropdown navbar-brand ms-3 me-2 cursor-pointer">
-                            <img
-                                src="user.svg"
-                                width={35}
-                                height={35}
-                                className="p-2 rounded bg-dark dropdown-toggle"
-                                alt="logout"
-                                style={{ background: 'rgba(0,0,0,0.2)' }}
-                                id='smallProfileSection'
-                                data-bs-toggle='dropdown'
-                                aria-expanded='false' />
-                            <div className="dropdown-menu p-4 bg-glass bg-deep-white" aria-labelledby='dropdownMenuButton1'>
-                                <MiniProfile />
-                            </div>
-                        </div>
-
                         <div
                             className="d-flex justify-content-center align-items-center float-end d-sm-none d-block me-1 cursor-pointer"
                             onClick={() => setShowMenus(val => !val)}>
@@ -57,54 +49,56 @@ const Menubar: React.FC = (): JSX.Element => {
                     </div>
                     {
                         showMenus && menus.map((menu, index) => (
-                            <li className="nav-item ms-3 me-3 d-flex justify-content-center" key={index}>
-                                <Link to={menu.link} className="nav-link" style={{ fontWeight: 500 }}>{menu.name}</Link>
+                            <li className="nav-item ms-2 me-2 d-flex justify-content-center" key={index}>
+                                <Link to={menu.link} className="nav-link">{menu.name}</Link>
                             </li>
                         ))
                     }
                 </ul>
+                <div className="position-relative dropdown navbar-brand ms-3 me-2 cursor-pointer">
+                    <img
+                        src={userIcon}
+                        width={35}
+                        height={35}
+                        className="p-2 rounded bg-dark dropdown-toggle"
+                        alt="logout"
+                        style={{ background: 'rgba(0,0,0,0.2)' }}
+                        onClick={() => setShowSmallProfilePopup(val => !val)} />
+                    <div
+                        className={`dropdown-menu p-4 position-fixed bg-white ${showSmallProfilePopup ? 'show' : ''}`}
+                        style={{ right: '60px', top: '60px', maxHeight: '80vh', overflowY: 'auto' }}>
+                        <MiniProfile />
+                    </div>
+                </div>
             </div>
         </nav>
     )
 }
 
-const MiniProfile: React.FC = (): JSX.Element => {
-    const [userDetails, setUserDetails] = useState<User>({
-        _id: "",
-        username: " ",
-        email: "",
-        password: "",
-        role: ""
-    });
+const MiniProfile: React.FC = (): React.JSX.Element => {
+    const [userDetails, setUserDetails] = useState<User | null>(null);
 
     useEffect(() => {
-        getUser().then(data => {
-            setUserDetails(data)
-        })
+        getUser().then(setUserDetails)
     }, [])
 
-    const logout = (): void => {
-        localStorage.removeItem('token')
-        window.location.href = '/';
-        const navigate = useNavigate()
-        navigate('/')
-    }
+    if (!userDetails) return <Link to="/login" className="btn btn-primary w-100">Log In</Link>
 
     return (
-        <div className="d-flex flex-column bg-glass text-center">
-            <img src="user.svg"
+        <div className="d-flex flex-column text-center">
+            <img src={userIcon}
                 width={60}
                 height={60}
                 className="p-3 mb-2 rounded rounded-circle dropdown-toggle mx-auto"
                 style={{ background: 'rgba(0,0,0,0.2)' }}></img>
             <div><span className="fw-bold">Name:</span> {userDetails.username}</div>
-            <div><span className="fw-bold">Email:</span> {userDetails.email}</div>
-            <Link to={'/Profile'} className="btn btn-dark mt-2 border border-2 border-dark w-100">View Profile</Link>
+            <div style={{wordBreak:'break-all'}}><span className="fw-bold" style={{wordBreak:'break-all'}}>Email:</span> {userDetails.email}</div>
+            <Link to={'/profile'} className="btn btn-dark mt-2 border border-2 border-dark w-100">View Profile</Link>
             <button
                 className="btn btn-outline-primary mt-2 border border-2 border-primary w-100 d-flex justify-content-center align-items-center"
-                onClick={logout}>
+                onClick={logOut}>
                 Log Out
-                <img src="log-out.svg" width={18} height={18} className="ms-2"></img>
+                <LogOutIcon size={18} className="ms-2" />
             </button>
         </div>
     )

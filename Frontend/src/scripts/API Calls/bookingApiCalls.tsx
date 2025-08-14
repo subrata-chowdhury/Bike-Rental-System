@@ -18,12 +18,9 @@ export const createBooking = async (bikeId: string, startTime: Date, endTime: Da
             body: JSON.stringify({ bikeId, startTime, endTime }),
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to create booking');
-        }
-
         if (response.status === 401) {
-            logOut();
+            alert("Log in to book");
+            window.location.href = '/login'
         }
 
         if (response.ok) {
@@ -83,11 +80,12 @@ export const getBookingHistoryByUserId = async (onSuccess: (bikesData: BookingDa
             },
         });
 
+        if (response.status === 401) {
+            return null
+        }
+
         if (!response.ok) {
             throw new Error('Failed to get booking');
-        }
-        if (response.status === 401) {
-            logOut();
         }
 
         // Return the booking data
@@ -143,6 +141,10 @@ export const getBookingDetailsThatHasToReturnToday = async (onSuccess: (bikesDat
             }
         });
 
+        if (response.status === 401) {
+            return null
+        }
+
         if (!response.ok) {
             throw new Error('Failed to get booking');
         }
@@ -167,18 +169,16 @@ export const getBookingDetailsThatHasToReturnToday = async (onSuccess: (bikesDat
 
 
 
-export const getBookingByPage = async (page: number, bookingId: string = '', userId: string = '', onSuccess: (data: AdminBookingData) => void = () => { }) => {
+export const getBookingByPage = async (page: number, filterData: { userId: string }, onSuccess: (data: AdminBookingData) => void = () => { }) => {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_BASE_URL}/booking/page/${page}`, {
-            method: 'POST',
+        const response = await fetch(`${API_BASE_URL}/booking/page/${page}?filter=${JSON.stringify(filterData)}`, {
             headers: {
-                'Content-Type': 'application/json',
                 'authorization': `${token}`
             },
-            body: JSON.stringify({ bookingId, userId })
         });
-        if (response.status === 401) {
+        if (response.status === 403 || response.status === 401) {
+            logOut();
         }
         const data: AdminBookingData = await response.json();
         if (response.ok)
@@ -190,33 +190,6 @@ export const getBookingByPage = async (page: number, bookingId: string = '', use
         return data;
     } catch (error) {
         console.error(`Error getting bikes with index ${page}:`, error);
-        throw error;
-    }
-}
-
-export const getBookingCount = async (bookingId: string = '', userId: string = '', onSuccess: (data: number) => void = () => { }) => {
-    try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_BASE_URL}/booking/pages/count`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `${token}`
-            },
-            body: JSON.stringify({ bookingId, userId })
-        });
-        if (response.status === 401) {
-        }
-        const data = await response.json();
-        if (response.ok)
-            onSuccess(data.total)
-        if (response.status === 400) {
-            alert("Invalid User ID")
-            // throw new Error('Invalid User ID');
-        }
-        return data;
-    } catch (error) {
-        console.error(`Error getting bikes count`, error);
         throw error;
     }
 }

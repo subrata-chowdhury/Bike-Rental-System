@@ -13,8 +13,9 @@ export interface IBike extends Document {
     cc: number;
     horsePower: number;
     type: string;
+    weight?: number;
 
-    imageURL: string;
+    images: string[];
 }
 
 const bikeSchema = new Schema<IBike>({
@@ -27,8 +28,9 @@ const bikeSchema = new Schema<IBike>({
     cc: { type: Number, required: true },
     horsePower: { type: Number, required: true },
     type: { type: String, required: true },
+    weight: { type: Number, required: false },
 
-    imageURL: { type: String, required: false }
+    images: { type: [String], required: true }
 });
 
 export { bikeSchema as BikeSchema }

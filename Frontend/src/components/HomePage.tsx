@@ -4,32 +4,34 @@ import Footer from './Footer';
 import Menubar from './Menubar';
 import Filter from './Filter';
 import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
-import { getBikeCounts, getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
-import { getBookingDetailsThatHasToReturnToday } from '../scripts/API Calls/bookingApiCalls';
+import { getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
 import { FilterData } from '../Types';
+import { useOrderdBikes } from '../contexts/OrderdBikesContext';
+import { useSocket } from '../scripts/socket';
 
-const HomePage: React.FC = (): JSX.Element => {
+const HomePage: React.FC = (): React.JSX.Element => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [alertData, setAlertData] = useState<Bike[]>([]);
+    const orderedBikes = useOrderdBikes();
+
     useEffect(() => {
-        getBookingDetailsThatHasToReturnToday((bikesData: Bike[]) => {
-            if (bikesData.length === 0) {
-                return;
-            }
-            setAlertData(bikesData);
-            setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 5000);
-        })
-    }, [])
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        setShowAlert(true);
+        timer = setTimeout(() => {
+            setShowAlert(false);
+        }, 5000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [orderedBikes.orderedBikes])
+
     return (
         <>
             {showAlert && <div
                 className='position-fixed t-0 mt-4 d-flex flex-column'
                 style={{ left: '50%', transform: 'translate(-50%,0)', zIndex: 20 }}>
                 {
-                    alertData.map((booking: Bike) => (
+                    orderedBikes.orderedBikes.map((booking: Bike) => (
                         <div key={booking._id} className="alert alert-danger d-flex" role="alert">
                             Bike with Model&nbsp;<b>{booking.bikeModel}</b>&nbsp;has to be returned today
                             <div
@@ -52,23 +54,42 @@ interface BikeFinderProp {
     header?: string;
 }
 
-export const BikeFinder: React.FC<BikeFinderProp> = ({ header }): JSX.Element => {
+export const BikeFinder: React.FC<BikeFinderProp> = ({ header }): React.JSX.Element => {
     // const [bikeData, setBikeData] = useState<Bike[]>(sampleData);
     const [bikeData, setBikeData] = useState<Bike[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(3)
+    const socketRef = useSocket();
 
     const getBikesByPage = async (page: number, filterData?: FilterData, searchData?: string): Promise<void> => {
         if (page <= 0) return;
         getBikesByIndex((page - 1) * 6, filterData, searchData, (data) => {
-            setBikeData(data as Bike[]);
-        })
-        getBikeCounts(filterData, searchData).then((data: any) => {
-            setNoOfPages(Math.ceil(data.total / 6));
+            setBikeData(data.bikes);
+            setNoOfPages(Math.ceil(data.totalBikes / 6))
         })
     }
+
+    useEffect(() => {
+        if (!socketRef.current) return;
+
+        socketRef.current.on('bike_details_changed', (changeBikeData) => {
+            changeBikeData = changeBikeData.bike;
+            bikeData.map((bike, i) => {
+                if (bike._id === changeBikeData._id) {
+                    let newBikeData = [...bikeData];
+                    newBikeData[i] = changeBikeData;
+                    setBikeData(newBikeData);
+                }
+            })
+        });
+
+        return () => {
+            socketRef.current?.off('bike_details_changed');
+        };
+    }, [socketRef, bikeData]);
+
     return (
         <>
-            <div className='row row-cols-1 row-cols-md-2 mx-auto mt-4 mb-4 filter-result-container'>
+            <div className='bikes-filter-container mx-auto mt-4 mb-4 filter-result-container'>
                 <Filter onChange={getBikesByPage} />
                 <BikeCardsContainer
                     bikeData={bikeData}

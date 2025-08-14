@@ -30,7 +30,8 @@
     backdrop-filter: blur(10px);
 }
 
-.bg-transparant, .bg-trans {
+.bg-transparant,
+.bg-trans {
     background: transparent;
 }
 
@@ -94,6 +95,17 @@
     width: 0;
 }
 
-.modal-backdrop.show{
+.modal-backdrop.show {
     opacity: 0.2;
+}
+
+.bikes-filter-container {
+    display: flex;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .bikes-filter-container {
+        flex-direction: column;
+    }
 }

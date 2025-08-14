@@ -3,10 +3,11 @@ import bcrypt from 'bcrypt';
 import User, { IUser } from "../models/user";
 import Booking from '../models/booking';
 import { isAdmin } from './roleChecker';
+import { isValidObjectId } from 'mongoose';
 
 export const getUser = async (req: Request, res: Response) => {
     try {
-        const id = req.body.user.id;
+        const id = req.headers.user;
         const user: IUser | null = await User.findById(id);
         if (user)
             user.password = "";
@@ -18,7 +19,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
     try {
-        const id = req.body.user.id;
+        const id = req.headers.user;
         const { username, email, password } = req.body;
         const user: IUser | null = await User.findById(id);
         if (!user) {
@@ -44,7 +45,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
     try {
-        const id = req.body.user.id;
+        const id = req.headers.user;
         const { password } = req.body;
 
         const user: IUser | null = await User.findById(id);
@@ -87,24 +88,30 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 
 
-export const getAllUsers = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) {
-        res.status(401).json({ message: 'Unauthorized' });
+export const getUsersByIndex = async (req: Request, res: Response) => {
+    const limit = 7
+    const { pageNo } = req.params
+    const searchData = req.url.split('?')[1] ? new URLSearchParams(req.url.split('?')[1]) : new URLSearchParams();
+    const filterData = JSON.parse(searchData.get('filter') || '{}');
+    const email = filterData.email || '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email.trim())) {
+        res.status(400).json({ message: 'Invalid email format' });
         return;
     }
+
+    const index = (parseInt(pageNo) - 1) * limit
     try {
-        const users = await User.find();
-        res.status(200).json(users);
+        const bookings = await User.find(email ? { email } : {}).skip(index).limit(limit);
+        const total: number = await User.countDocuments(email ? { email } : {});
+        res.status(200).json({ users: bookings, totalUsers: total });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        console.log(error)
+        res.status(500).json({ error: 'Failed to get users' });
     }
 }
 
 export const updateUserByAdmin = async (req: Request, res: Response) => {
-    if (!isAdmin(req)) {
-        res.status(401).json({ message: 'Unauthorized' });
-        return;
-    }
     try {
         const { id, username, email, password, role } = req.body;
 

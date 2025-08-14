@@ -1,58 +1,82 @@
-import React, { useEffect } from 'react';
-import AddUser, { UserDetailsModel } from './AddUser';
-import { deleteUserByAdmin, getAllUsers, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
+import React, { useEffect, useState } from 'react';
+import UserDetailsModel from './UserDetailsModel';
+import { deleteUserByAdmin, getUsersByIndex, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
 import { User } from '../../Types';
+import { adminRegister, register } from '../../scripts/API Calls/authApiCalls';
 
 interface UserProp {
-    logout: () => void;
+
 }
 
-const Users: React.FC<UserProp> = ({ logout }): JSX.Element => {
+const Users: React.FC<UserProp> = (): React.JSX.Element => {
     const [users, setUsers] = React.useState<User[]>([]);
-    function downloadUsers() {
-        getAllUsers((data) => {
-            setUsers(data);
-        }, logout);
+    const [openedUser, setOpenedUser] = useState<number | null>(null);
+    const [searchEmailIdData, setSearchEmailIdData] = useState<string>('');
+
+    function downloadUsers(pageNo: number = 1) {
+        getUsersByIndex(pageNo, { email: searchEmailIdData }, (data) => {
+            setUsers(data.users);
+        });
     }
+
+    function updateUser(userDetails: User) {
+        updateUserByAdmin(userDetails._id, userDetails.username, userDetails.email, userDetails.password, userDetails.role, () => {
+            downloadUsers();
+            alert('User Updated Successfully');
+        })
+    }
+
+    async function onSubmitHandler(userDetails: User) {
+        if (userDetails.role === 'admin')
+            adminRegister(userDetails.username, userDetails.email, userDetails.password, () => {
+                downloadUsers()
+            });
+        else
+            register(userDetails.username, userDetails.email, userDetails.password, () => {
+                downloadUsers()
+            });
+    }
+
     useEffect(() => {
         downloadUsers()
     }, [])
+
     return (
         <>
+            <div className='input-group mb-3'>
+                <input type='text' className='form-control border-dark bg-deep-white' placeholder='Search by Email ID' value={searchEmailIdData} onChange={e => setSearchEmailIdData(e.target.value)} />
+                <button className='btn btn-dark' type='button' onClick={() => downloadUsers(1)}>Search</button>
+            </div>
             <div className=''>
-                {users.map((user) => (
-                    <UserCard key={user.email} {...user} onDelete={downloadUsers} onUpdate={downloadUsers} />
+                {users.map((user, index) => (
+                    <UserCard key={user.email} {...user} onDelete={downloadUsers} onClick={() => setOpenedUser(index)} />
                 ))}
             </div>
-            <AddUser onAdd={downloadUsers} />
+            <button
+                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-4 me-5'
+                style={{ lineHeight: 1, zIndex: 15 }}
+                onClick={() => setOpenedUser(users.length)}>
+                <div className='btn-close' style={{ transform: 'rotate(45deg)' }}></div>
+            </button>
+            {openedUser !== null && <UserDetailsModel heading={users[openedUser] ? "Edit User" : "Add User"} userData={users[openedUser]} submitBtnLabel={users[openedUser] ? 'SAVE' : 'ADD'} onSubmit={users[openedUser] ? updateUser : onSubmitHandler} onClose={() => setOpenedUser(null)} />}
         </>
     );
 };
 
 interface UserCardProp extends User {
-    onUpdate?: () => void
+    onClick?: () => void
     onDelete?: () => void
 }
 
-const UserCard: React.FC<UserCardProp> = ({ _id, username, email, role, onUpdate = () => { }, onDelete = () => { } }): JSX.Element => {
-
-    function updateUser(userDetails: User) {
-        updateUserByAdmin(userDetails._id, userDetails.username, userDetails.email, userDetails.password, userDetails.role, () => {
-            onUpdate()
-            alert('User Updated Successfully');
-        })
-    }
-
+const UserCard: React.FC<UserCardProp> = ({ _id, username, email, role, onClick = () => { }, onDelete = () => { } }): React.JSX.Element => {
     return (
         <>
-            <div className='card bg-glass bg-mid-white mb-2 cursor-pointer'
-                data-bs-toggle="modal"
-                data-bs-target={"#editUser" + email}>
+            <div className='card bg-white mb-2 cursor-pointer' onClick={onClick}>
                 <div className='card-body d-flex flex-row'>
                     <div className='flex-grow-1'>
-                        <div className='m-0 fs-5' style={{ fontWeight: 500, lineHeight: 1.1 }}>{username}</div>
+                        <div className='m-0 fs-6' style={{ fontWeight: 600, lineHeight: 1.1 }}>{username}</div>
                         <span className='m-0'>{email}</span>
-                        <span className={'ms-3' + (role === 'admin' ? ' text-danger' : ' text-success')}>{role}</span>
+                        <span className={'ms-3' + (role === 'admin' ? ' text-danger' : ' text-success')} style={{ fontWeight: 500 }}>{role.charAt(0).toUpperCase() + role.slice(1)}</span>
                     </div>
                     <div className='d-flex justify-content-center align-items-center cursor-pointer me-2' onClick={(e) => {
                         e.stopPropagation()
@@ -64,15 +88,14 @@ const UserCard: React.FC<UserCardProp> = ({ _id, username, email, role, onUpdate
                                     });
                             }
                             else deleteUserByAdmin(_id, () => {
-                                onDelete()
                                 alert('User deleted Successfully');
+                                onDelete()
                             });
                     }}>
                         <img className='' src='delete.svg'></img>
                     </div>
                 </div>
             </div>
-            <UserDetailsModel heading="Edit User" id={"editUser" + email} userData={{ _id, username, password: "", email, role }} submitBtnLabel='SAVE' onSubmit={updateUser} />
         </>
     );
 }

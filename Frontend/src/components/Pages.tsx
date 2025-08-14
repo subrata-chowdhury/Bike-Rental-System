@@ -5,9 +5,9 @@ type PagesProp = {
     noOfPages?: number;
 }
 
-const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): JSX.Element => {
+const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React.JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(1)
-    let pages: JSX.Element[] = [];
+    let pages: React.JSX.Element[] = [];
     if (noOfPages < 12)
         for (let index = 1; index <= noOfPages; index++) {
             pages.push(
@@ -97,7 +97,7 @@ type PageProp = {
     setCurrentPage: (val: number) => void,
 }
 
-const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage }): JSX.Element => {
+const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage }): React.JSX.Element => {
     return (
         <div className={'rounded-circle pages mx-1 cursor-pointer' + (isActive ? ' bg-dark text-light' : ' bg-white text-dark')} onClick={() => {
             setCurrentPage(page)

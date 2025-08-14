@@ -5,7 +5,7 @@ import BASE_URL from './apiUrl';
 const API_URL = `${BASE_URL}/api`;
 
 // Get user details
-export const getUser = async (): Promise<User> => {
+export const getUser = async (): Promise<User | null> => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_URL}/user`, {
@@ -15,7 +15,8 @@ export const getUser = async (): Promise<User> => {
         });
 
         if (!response.ok) {
-            logOut();
+            // logOut();
+            return null
         }
         const data: User = await response.json();
         return data;
@@ -80,25 +81,27 @@ export const deleteUser = async (password: string, onDelete: () => void) => {
 
 // ADMIN CALLS
 
-
-
-export const getAllUsers = async (onSuccess: (data: User[]) => void, logout: () => void): Promise<any> => {
+export const getUsersByIndex = async (page: number, filterData: { email: string }, onSuccess: (data: { users: User[], totalUsers: number }) => void = () => { }) => {
     try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`${API_URL}/user/all`, {
+        const response = await fetch(`${API_URL}/user/page/${page}?filter=${JSON.stringify(filterData)}`, {
             headers: {
                 'authorization': `${token}`
-            }
+            },
         });
-        const data: User[] = await response.json();
-        if (response.ok) {
+        if (response.status === 403 || response.status === 401) {
+            logOut();
+        }
+        const data: { users: User[], totalUsers: number } = await response.json();
+        if (response.ok)
             onSuccess(data);
-        } else if (response.status === 401) {
-            logout();
+        if (response.status === 400) {
+            alert("Invalid email")
+            // throw new Error('Invalid User ID');
         }
         return data;
     } catch (error) {
-        console.error('Error getting users:', error);
+        console.error(`Error getting bikes with index ${page}:`, error);
         throw error;
     }
 }

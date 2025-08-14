@@ -2,17 +2,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import { login, register } from '../scripts/API Calls/authApiCalls';
 import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires';
 import { useNavigate } from 'react-router-dom';
+import { getUser } from '../scripts/API Calls/userApiCalls';
 
-const LogInPage: React.FC = (): JSX.Element => {
+const LogInPage: React.FC = (): React.JSX.Element => {
     const navigate = useNavigate()
 
     // Check if user is already logged in
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            navigate('/Home')
-        }
-    }, [])
+        checkUserLoggedIn();
+    }, []);
 
+    async function checkUserLoggedIn() {
+        const res = await getUser();
+        if (res === null) {
+            localStorage.removeItem('token');
+        } else {
+            navigate('/')
+        }
+    }
 
     // form submit handlers
     async function loginUser(formData: { email: string, password: string }) {
@@ -20,7 +27,7 @@ const LogInPage: React.FC = (): JSX.Element => {
         if (email && password)
             verifyFieldsForLogIn(email, password) ?
                 login(email.trim(), password, () => {
-                    navigate('/Home')
+                    navigate('/')
                 }) : ""
     }
 
@@ -32,7 +39,7 @@ const LogInPage: React.FC = (): JSX.Element => {
 
     return (
         <>
-            <div className='log-in-page form-container'>
+            <div className='log-in-page form-container my-auto'>
                 <h1>
                     <p>Welcome to,</p>
                     <p className='fw-bolder text-primary'>Bike Booker</p>
@@ -72,7 +79,7 @@ export const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBt
     }
 
     return (
-        <div className='card p-4 pt-0 bg-glass bg-mid-white'>
+        <div className='card p-4 pt-0 bg-white'>
             {/* log in form */}
             <form className='form card-body d-flex flex-column' style={{ gap: (!isSignInState ? '0.5rem' : '0.5rem') }}>
                 <ul className="nav justify-content-lg-start justify-content-center flex-0 mb-2" style={{ fontWeight: 600 }} >

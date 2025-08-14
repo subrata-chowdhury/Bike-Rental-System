@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { getBookingByPage, getBookingCount } from '../../scripts/API Calls/bookingApiCalls';
+import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls';
 import Pages from '../Pages';
-import { User, Booking } from '../../Types'
+import { Booking } from '../../Types'
 import Model from '../Model';
+import tick from '../../assets/tick.svg'
 
 interface BookingProps {
     // Define your props here
@@ -10,29 +11,33 @@ interface BookingProps {
 
 type BookingData = Booking & {
     startTime: string,
-    endTime: string
+    endTime: string,
+    userId: {
+        _id: string;
+        username: string;
+        email: string;
+        role: string;
+    }
 }
 
 const BookingComp: React.FC<BookingProps> = () => {
     const [bookingData, setBookingData] = useState<BookingData[]>([])
-    const [usersData, setUsersData] = useState<User[]>([])
     const [noOfPages, setNoOfPages] = useState<number>(0);
+    const [openedBooking, setOpenedBooking] = useState<number | null>(null);
 
-    const searchBookingIdData = '';
     const [searchUserIdData, setSearchUserIdData] = useState<string>('');
 
     async function downloadBookings(page: number) {
-        getBookingByPage(page, searchBookingIdData, searchUserIdData, (data: AdminBookingData) => {
+        getBookingByPage(page, { userId: searchUserIdData }, (data: AdminBookingData) => {
             setBookingData(data.bookingData)
-            setUsersData(data.usersData)
-            getBookingCount(searchBookingIdData, searchUserIdData, (count) => {
-                setNoOfPages(count / 7)
-            })
+            setNoOfPages(data.totalBookings / 7)
         })
     }
+
     useEffect(() => {
         downloadBookings(1)
     }, [])
+
     return (
         <div>
             <div className='d-flex'>
@@ -48,30 +53,63 @@ const BookingComp: React.FC<BookingProps> = () => {
             </div>
             {
                 bookingData.map((booking, i) => (
-                    <BookingCard booking={booking} user={usersData[i]} key={booking._id} />
+                    <BookingCard booking={booking} onClick={() => setOpenedBooking(i)} key={booking._id} />
                 ))
             }
+
             <Pages onPageChange={downloadBookings} noOfPages={noOfPages} />
+
+            {openedBooking !== null && <Model heading="Booking Details" onClose={() => setOpenedBooking(null)}>
+                <div className='modal-body form d-flex flex-column px-5'>
+                    <div>
+                        <h5>User Details:</h5>
+                        <div><span style={{ fontWeight: 500 }}>UserID:</span> {bookingData[openedBooking].userId._id}</div>
+                        <div><span style={{ fontWeight: 500 }}>Username:</span> {bookingData[openedBooking].userId.username}</div>
+                        <div><span style={{ fontWeight: 500 }}>Email:</span> {bookingData[openedBooking].userId.email}</div>
+                        <div><span style={{ fontWeight: 500 }}>Role:</span> {bookingData[openedBooking].userId.role}</div>
+                    </div>
+                    <div className='mt-3'>
+                        <h5>Booking Details:</h5>
+                        <div><span style={{ fontWeight: 500 }}>Bike Model:</span> {bookingData[openedBooking].bike.bikeModel}</div>
+                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
+                            <div><span style={{ fontWeight: 500 }}>Brand:</span> {bookingData[openedBooking].bike.brand}</div>
+                            <div><span style={{ fontWeight: 500 }}>Type:</span> {bookingData[openedBooking].bike.type}</div>
+                        </div>
+                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
+                            <div><span style={{ fontWeight: 500 }}>CC:</span> {bookingData[openedBooking].bike.cc}</div>
+                            <div><span style={{ fontWeight: 500 }}>Price (₹/hr):</span> {bookingData[openedBooking].bike.pricePerHour}</div>
+                        </div>
+                        <div><span style={{ fontWeight: 500 }}>Start Time:</span> {bookingData[openedBooking].startTime.split('T')[0]}</div>
+                        <div><span style={{ fontWeight: 500 }}>End Time:</span> {bookingData[openedBooking].endTime.split('T')[0]}</div>
+                        <div><span style={{ fontWeight: 500 }}>Status:</span> {bookingData[openedBooking].status} {bookingData[openedBooking].status === "returned" && <span className='d-inline-flex align-items-center ms-1'><img src={tick} width={16} height={16} /></span>}</div>
+                    </div>
+                </div>
+                <div className="modal-footer mx-auto">
+                    <button
+                        type="button"
+                        className="btn btn-outline-dark border-2 border-dark"
+                        onClick={() => setOpenedBooking(null)}
+                    >Close</button>
+                </div>
+            </Model>}
         </div>
     );
 };
 
 interface BookingCardProps {
     booking: BookingData;
-    user: User;
+    onClick: () => void;
 }
 
 export type AdminBookingData = {
     bookingData: BookingData[];
-    usersData: User[];
+    totalBookings: number;
 }
 
-const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
+const BookingCard: React.FC<BookingCardProps> = ({ booking, onClick }) => {
     return (
         <>
-            <div className='card bg-glass bg-mid-white mb-2 cursor-pointer'
-                data-bs-toggle="modal"
-                data-bs-target={"#bookingDetails" + booking._id}>
+            <div className='card bg-white mb-2 cursor-pointer' onClick={onClick}>
                 <div className='card-body d-grid' style={{ gridAutoFlow: 'column' }}>
                     <span className='row'>
                         <span className='col' style={{ fontWeight: 500, fontSize: '1rem' }}>{booking.bike.bikeModel}</span>
@@ -86,40 +124,6 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, user }) => {
                     </span>
                 </div>
             </div>
-
-            <Model heading="Booking Details" id={"bookingDetails" + booking._id}>
-                <div className='modal-body form d-flex flex-column px-5'>
-                    <div>
-                        <h5>User Details:</h5>
-                        <div><span style={{ fontWeight: 500 }}>UserID:</span> {booking.userId}</div>
-                        <div><span style={{ fontWeight: 500 }}>Username:</span> {user.username}</div>
-                        <div><span style={{ fontWeight: 500 }}>Email:</span> {user.email}</div>
-                        <div><span style={{ fontWeight: 500 }}>Role:</span> {user.role}</div>
-                    </div>
-                    <div className='mt-3'>
-                        <h5>Booking Details:</h5>
-                        <div><span style={{ fontWeight: 500 }}>Bike Model:</span> {booking.bike.bikeModel}</div>
-                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
-                            <div><span style={{ fontWeight: 500 }}>Brand:</span> {booking.bike.brand}</div>
-                            <div><span style={{ fontWeight: 500 }}>Type:</span> {booking.bike.type}</div>
-                        </div>
-                        <div className='d-grid' style={{ gridAutoFlow: 'column' }}>
-                            <div><span style={{ fontWeight: 500 }}>CC:</span> {booking.bike.cc}</div>
-                            <div><span style={{ fontWeight: 500 }}>Price (₹/hr):</span> {booking.bike.pricePerHour}</div>
-                        </div>
-                        <div><span style={{ fontWeight: 500 }}>Start Time:</span> {booking.startTime.split('T')[0]}</div>
-                        <div><span style={{ fontWeight: 500 }}>End Time:</span> {booking.endTime.split('T')[0]}</div>
-                        <div><span style={{ fontWeight: 500 }}>Status:</span> {booking.status}</div>
-                    </div>
-                </div>
-                <div className="modal-footer mx-auto">
-                    <button
-                        type="button"
-                        className="btn btn-outline-dark border-2 border-dark"
-                        data-bs-dismiss="modal"
-                    >Close</button>
-                </div>
-            </Model>
         </>
     );
 };

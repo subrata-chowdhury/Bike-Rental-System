@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Menubar from "./Menubar";
-import Footer from "./Footer";
 import BikeCardsContainer from "./BikeCard";
 import { getBookingHistoryByUserId, getBookingThatHasToReturn } from "../scripts/API Calls/bookingApiCalls";
 import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls";
 import { Bike, BookingData, User } from "../Types";
+import logOut from "../scripts/logOut";
 
 type Tabs = {
     name: string;
-    component: JSX.Element;
+    component: React.JSX.Element;
 }
 
-const ProfilePage: React.FC = (): JSX.Element => {
+const ProfilePage: React.FC = (): React.JSX.Element => {
     const [activeTab, setActiveTab] = useState<number>(0);
 
     async function updateUserDetails(userDetails: User) {
@@ -58,7 +58,6 @@ const ProfilePage: React.FC = (): JSX.Element => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }
@@ -69,13 +68,13 @@ interface ProfileTabsProp {
     onChange: (index: number) => void
 }
 
-const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): JSX.Element => {
+const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): React.JSX.Element => {
     return (
         <ul className="nav nav-pills flex-column me-3">
             {tabs.map((tab, index) => (
                 <li className="nav-item mb-2" key={index}>
                     <div
-                        className={`nav-link cursor-pointer bg-glass bg-light-white ${activeTab === index ? 'active bg-dark' : ' text-dark'}`}
+                        className={`nav-link cursor-pointer ${activeTab === index ? 'active bg-dark' : ' text-dark bg-white'}`}
                         onClick={() => onChange(index)}>{tab.name}</div>
                 </li>
             ))}
@@ -89,7 +88,7 @@ type UserDetailsProp = {
     onDelete: (userDetails: User) => Promise<void>;
 }
 
-const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Element => {
+const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): React.JSX.Element => {
     const [userDetails, setUserDetails] = useState<User>({
         _id: "",
         username: " ",
@@ -100,7 +99,10 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
 
     useEffect(() => {
         getUser().then(data => {
-            setUserDetails(data)
+            if(data)
+                setUserDetails(data)
+            else 
+                logOut()
         })
     }, [])
 
@@ -118,7 +120,7 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
     }
 
     return (
-        <div className="py-1 px-4 bg-glass bg-light-white rounded-2 mb-3">
+        <div className="py-1 px-4 bg-white rounded-2 mb-3">
             <h1>User Details</h1>
             <div className="d-flex flex-column mb-4">
                 <div className="flex-grow-1">
@@ -175,7 +177,7 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): JSX.Ele
     )
 }
 
-const BookingHistory: React.FC = (): JSX.Element => {
+const BookingHistory: React.FC = (): React.JSX.Element => {
     const [bookingData, setBookingData] = useState<BookingData[]>([]);
     const [allBookings, setAllBookings] = useState<BookingData[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(0);
@@ -197,7 +199,7 @@ const BookingHistory: React.FC = (): JSX.Element => {
     )
 }
 
-const BikeToReturn: React.FC = (): JSX.Element => {
+const BikeToReturn: React.FC = (): React.JSX.Element => {
     const [bookingData, setBookingData] = useState<Bike[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(0);
 

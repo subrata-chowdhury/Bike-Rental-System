@@ -1,52 +1,19 @@
 import React from 'react';
-import { adminRegister, register } from '../../scripts/API Calls/authApiCalls';
 import { User } from '../../Types';
 import Model from '../Model';
 
-interface AddUserProp {
-    onAdd?: () => void
-}
-
-const AddUser: React.FC<AddUserProp> = ({ onAdd = () => { } }) => {
-    async function onSubmitHandler(userDetails: User) {
-        if (userDetails.role === 'admin')
-            adminRegister(userDetails.username, userDetails.email, userDetails.password, () => {
-                onAdd()
-                alert('Admin Added Successfully');
-            });
-        else
-            register(userDetails.username, userDetails.email, userDetails.password, () => {
-                onAdd()
-                alert('User Added Successfully');
-            });
-    }
-
-    return (
-        <div>
-            <button
-                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-4 me-5'
-                style={{ lineHeight: 1, zIndex: 15 }}
-                data-bs-toggle="modal"
-                data-bs-target={"#addUser"}>
-                <div className='btn-close' style={{ transform: 'rotate(45deg)' }}></div>
-            </button>
-            <UserDetailsModel heading="ADD USER" id="addUser" submitBtnLabel='ADD' onSubmit={onSubmitHandler} />
-        </div>
-    );
-};
-
 interface UserDetailsModelProp {
     heading?: string;
-    id: string;
     userData?: User;
     onSubmit?: (userDetails: User) => void;
+    onClose?: () => void;
     submitBtnLabel?: string;
 }
 
-export const UserDetailsModel: React.FC<UserDetailsModelProp> = ({ heading = "USER MODEL", id, userData = { _id: "", username: " ", email: "", password: "", role: "customer" }, onSubmit = () => { }, submitBtnLabel = "SUBMIT" }): JSX.Element => {
+const UserDetailsModel: React.FC<UserDetailsModelProp> = ({ heading = "USER MODEL", userData = { _id: "", username: " ", email: "", password: "", role: "customer" }, onSubmit = () => { }, submitBtnLabel = "SUBMIT", onClose = () => { } }): React.JSX.Element => {
     const [userDetails, setUserDetails] = React.useState<User>({
         _id: userData._id || "",
-        username: userData.username || " ",
+        username: userData.username || "",
         email: userData.email || "",
         password: "",
         role: userData.role || "customer"
@@ -76,28 +43,29 @@ export const UserDetailsModel: React.FC<UserDetailsModelProp> = ({ heading = "US
         e.preventDefault();
         onSubmit({ _id: userData._id, username: userDetails.username, email: userDetails.email, password: userDetails.password, role: userDetails.role });
     }
+
     return (
-        <Model heading={heading} id={id}>
+        <Model heading={heading} onClose={onClose}>
             <div className='modal-body form d-flex flex-column px-5'>
                 <label className='mb-2'>
-                    <b>Name:</b>
+                    <div style={{ fontWeight: 600 }}>Name:</div>
                     <div className='input-group'>
                         <input className='m-0 form-control' name="firstName" value={userDetails.username.split(' ')[0]} onChange={onChangeHandler} placeholder="First Name" />
                         <input className='m-0 form-control' name="lastName" value={userDetails.username.split(' ')[1]} onChange={onChangeHandler} placeholder="Last Name" />
                     </div>
                 </label>
                 <label className='mb-2'>
-                    <b>Email:</b> <input className='m-0 form-control' name="email" value={userDetails.email} onChange={onChangeHandler} placeholder="Email" />
+                    <div style={{ fontWeight: 600 }}>Email:</div> <input className='m-0 form-control' name="email" value={userDetails.email} onChange={onChangeHandler} placeholder="Email" />
                 </label>
                 <label className='mb-2'>
-                    <b>Password:</b> <input className='m-0 form-control' name="password" value={userDetails.password} onChange={onChangeHandler} placeholder="Password" />
+                    <div style={{ fontWeight: 600 }}>Password:</div> <input className='m-0 form-control' name="password" value={userDetails.password} onChange={onChangeHandler} placeholder="Password" />
                 </label>
                 {userData._id && <label className='mb-2'>
-                    <b>User ID:</b> <input className='m-0 form-control' name="_id" disabled readOnly value={userData._id} placeholder="User ID" />
+                    <div style={{ fontWeight: 600 }}>User ID:</div> <input className='m-0 form-control' name="_id" disabled readOnly value={userData._id} placeholder="User ID" />
                 </label>}
 
                 <label className='mb-2'>
-                    <b>Role:</b>
+                    <div style={{ fontWeight: 600 }}>Role:</div>
                     <input type='checkbox' name='role' onChange={onChangeHandler} className='d-none' />
                     <div className='nav nav-pills'>
                         <div className='nav-item'>
@@ -113,7 +81,7 @@ export const UserDetailsModel: React.FC<UserDetailsModelProp> = ({ heading = "US
                 <button
                     type="button"
                     className="btn btn-outline-dark border-2 border-dark"
-                    data-bs-dismiss="modal">Close</button>
+                    onClick={onClose}>Close</button>
                 <button type="button" className="btn btn-outline-dark border-2" onClick={() => {
                     setUserDetails({
                         _id: userData._id,
@@ -129,4 +97,4 @@ export const UserDetailsModel: React.FC<UserDetailsModelProp> = ({ heading = "US
     )
 }
 
-export default AddUser;
+export default UserDetailsModel

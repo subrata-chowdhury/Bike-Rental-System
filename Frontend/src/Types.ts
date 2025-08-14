@@ -16,7 +16,7 @@ export type Bike = {
     horsePower: number;
     type: string;
 
-    imageURL: string;
+    images: string[];
 }
 
 // Type for a User
@@ -50,4 +50,7 @@ export type FilterData = {
     cc: number[];
     type: string[];
     horsePower: number[];
+    isAvailable?: boolean;
+    minPricePerHour?: number;
+    maxPricePerHour?: number;
 }

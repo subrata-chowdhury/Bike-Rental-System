@@ -1,9 +1,12 @@
 import React from 'react'
 import './styles/Footer.css'
+import githubIcon from '../assets/github.svg'
+import linkedinIcon from '../assets/linkedin.svg'
+import atIcon from '../assets/at.svg'
 
-const Footer: React.FC = (): JSX.Element => {
+const Footer: React.FC = (): React.JSX.Element => {
     return (
-        <div id='footer' className='footer mt-auto bg-glass bg-deep-white'>
+        <div id='footer' className='footer mt-auto bg-white' style={{ borderTop: '1px solid rgba(0,0,0,0.175)' }}>
             <div className='container py-5 px-5 px-mid-auto'>
                 <div className='row'>
                     <div className='col-12 col-md-4'>
@@ -18,13 +21,13 @@ const Footer: React.FC = (): JSX.Element => {
                     <div className='col-12 col-md-4 mt-3 mt-md-0'>
                         <h5>Follow Us</h5>
                         <a href='#'>
-                            <img width={30} height={30} className='me-2' src='linkedin.svg' />
+                            <img width={30} height={30} className='me-2' src={linkedinIcon} />
                         </a>
                         <a href='#'>
-                            <img width={30} height={30} className='me-2' src='github.svg' />
+                            <img width={30} height={30} className='me-2' src={githubIcon} />
                         </a>
                         <a href='#'>
-                            <img width={30} height={30} src='at.svg' />
+                            <img width={30} height={30} src={atIcon} />
                         </a>
                     </div>
                 </div>
