@@ -4,14 +4,14 @@ import authMiddleware from '../middlewares/auth';
 import multer from 'multer';
 import path from 'path';
 import { isAdmin } from '../controllers/roleChecker';
+import { deleteImage, uploadImage } from '../controllers/imageController';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/bikeImages'); // Directory to save files
     },
     filename: function (req, file, cb) {
-        const { bikeModel } = req.body;
-        const name = bikeModel + ' (' + Date.now() + ')' + path.extname(file.originalname);
+        const name = Date.now() + path.extname(file.originalname);
         cb(null, name); // Add a timestamp to avoid name conflicts
     }
 });
@@ -26,8 +26,10 @@ router.get('/details/:id', getBikeById);
 
 // ADMIN ROUTES
 
-router.post('/new', authMiddleware, isAdmin, upload.single('image'), createBike);
-router.put('/update/:bikeId', authMiddleware, isAdmin, upload.single('image'), updateBike);
+router.post('/upload/new', authMiddleware, isAdmin, upload.single('image'), uploadImage);
+router.delete('/upload/:name', authMiddleware, isAdmin, upload.single('image'), deleteImage);
+router.post('/new', authMiddleware, isAdmin, createBike);
+router.put('/update/:bikeId', authMiddleware, isAdmin, updateBike);
 router.delete('/delete/:bikeId', authMiddleware, isAdmin, deleteBike);
 
 export default router;

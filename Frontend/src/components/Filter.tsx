@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTypes } from "../scripts/API Calls/bikeApiCalls";
+import { getTypes } from "../scripts/API Calls/bikeApiCalls.ts";
 import { FilterData } from "../Types";
 
 interface FilterProp {

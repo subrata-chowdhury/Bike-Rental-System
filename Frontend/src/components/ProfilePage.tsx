@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Menubar from "./Menubar";
 import BikeCardsContainer from "./BikeCard";
-import { getBookingHistoryByUserId, getBookingThatHasToReturn } from "../scripts/API Calls/bookingApiCalls";
-import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls";
+import { getBookingHistoryByUserId, getBookingThatHasToReturn } from "../scripts/API Calls/bookingApiCalls.ts";
+import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls.ts";
 import { Bike, BookingData, User } from "../Types";
 import logOut from "../scripts/logOut";
 

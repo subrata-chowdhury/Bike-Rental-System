@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls';
+import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls.ts';
 import Pages from '../Pages';
 import { Booking } from '../../Types'
 import Model from '../Model';
 import tick from '../../assets/tick.svg'
+import Plus from '../../assets/reactIcons/Plus';
+import { AdminPanel } from './component/AdminPanel';
+
+const BookingPage = () => {
+    return (
+        <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
+            <AdminPanel />
+            <div className='flex-grow-1'>
+                <BookingComp />
+            </div>
+        </div>
+    )
+}
+
+export default BookingPage;
 
 interface BookingProps {
     // Define your props here
@@ -39,25 +54,30 @@ const BookingComp: React.FC<BookingProps> = () => {
     }, [])
 
     return (
-        <div>
-            <div className='d-flex'>
-                {/* <div className='input-group mb-3'>
-                    <input type='text' className='form-control border-dark bg-deep-white' placeholder='Search by Bike Model' value={searchBookingIdData} onChange={e => setSearchBookingIdData(e.target.value)} />
-                    <button className='btn btn-dark' type='button' id='button-addon2'>Search</button>
-                </div> */}
-
-                <div className='input-group mb-3'>
-                    <input type='text' className='form-control border-dark bg-deep-white' placeholder='Search by User ID' value={searchUserIdData} onChange={e => setSearchUserIdData(e.target.value)} />
-                    <button className='btn btn-dark' type='button' onClick={() => downloadBookings(1)}>Search</button>
+        <>
+            <div className='d-flex justify-content-between p-2 px-3 align-items-center gap-4 bg-white'>
+                <div className='input-group my-auto mr-auto' style={{ maxWidth: '300px' }}>
+                    <input
+                        type='text'
+                        className='form-control border-dark bg-white'
+                        placeholder='Search by User ID'
+                        value={searchUserIdData}
+                        onChange={e => setSearchUserIdData(e.target.value)}
+                        style={{ fontSize: '14px' }} />
+                    <button className='btn btn-dark' type='button' style={{ fontSize: '14px', fontWeight: 600 }} onClick={() => downloadBookings(1)}>Search</button>
+                </div>
+                <div className='btn btn-dark d-flex justify-content-center align-items-center px-3 py-2 ps-2' style={{ fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }} onClick={() => setOpenedBooking(bookingData.length)}>
+                    <span className='me-2 ps-1'><Plus size={20} /></span>New Booking
                 </div>
             </div>
-            {
-                bookingData.map((booking, i) => (
-                    <BookingCard booking={booking} onClick={() => setOpenedBooking(i)} key={booking._id} />
-                ))
-            }
-
-            <Pages onPageChange={downloadBookings} noOfPages={noOfPages} />
+            <div className='p-3'>
+                {
+                    bookingData.map((booking, i) => (
+                        <BookingCard booking={booking} onClick={() => setOpenedBooking(i)} key={booking._id} />
+                    ))
+                }
+                <Pages onPageChange={downloadBookings} noOfPages={noOfPages} />
+            </div>
 
             {openedBooking !== null && <Model heading="Booking Details" onClose={() => setOpenedBooking(null)}>
                 <div className='modal-body form d-flex flex-column px-5'>
@@ -92,7 +112,7 @@ const BookingComp: React.FC<BookingProps> = () => {
                     >Close</button>
                 </div>
             </Model>}
-        </div>
+        </>
     );
 };
 
@@ -127,5 +147,3 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onClick }) => {
         </>
     );
 };
-
-export default BookingComp;

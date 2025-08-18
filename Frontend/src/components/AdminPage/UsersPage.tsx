@@ -1,8 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react'
+import { useEffect, useState } from 'react';
 import UserDetailsModel from './UserDetailsModel';
-import { deleteUserByAdmin, getUsersByIndex, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls';
+import { deleteUserByAdmin, getUsersByIndex, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls.ts';
 import { User } from '../../Types';
-import { adminRegister, register } from '../../scripts/API Calls/authApiCalls';
+import { adminRegister, register } from '../../scripts/API Calls/authApiCalls.ts';
+import Plus from '../../assets/reactIcons/Plus';
+import { AdminPanel } from './component/AdminPanel';
+import deleteIcon from '../../assets/delete.svg';
+
+const UsersPage = () => {
+    return (
+        <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
+            <AdminPanel />
+            <div className='flex-grow-1'>
+                <Users />
+            </div>
+        </div>
+    )
+}
+
+export default UsersPage;
 
 interface UserProp {
 
@@ -43,21 +60,26 @@ const Users: React.FC<UserProp> = (): React.JSX.Element => {
 
     return (
         <>
-            <div className='input-group mb-3'>
-                <input type='text' className='form-control border-dark bg-deep-white' placeholder='Search by Email ID' value={searchEmailIdData} onChange={e => setSearchEmailIdData(e.target.value)} />
-                <button className='btn btn-dark' type='button' onClick={() => downloadUsers(1)}>Search</button>
+            <div className='d-flex justify-content-between p-2 px-3 align-items-center gap-4 bg-white'>
+                <div className='input-group my-auto mr-auto' style={{ maxWidth: '300px' }}>
+                    <input
+                        type='text'
+                        className='form-control border-dark bg-white'
+                        placeholder='Search by Email ID'
+                        value={searchEmailIdData}
+                        onChange={e => setSearchEmailIdData(e.target.value)}
+                        style={{ fontSize: '14px' }} />
+                    <button className='btn btn-dark' type='button' style={{ fontSize: '14px', fontWeight: 600 }} onClick={() => downloadUsers(1)}>Search</button>
+                </div>
+                <div className='btn btn-dark d-flex justify-content-center align-items-center px-3 py-2 ps-2' style={{ fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }} onClick={() => setOpenedUser(users.length)}>
+                    <span className='me-2 ps-1'><Plus size={20} /></span>New User
+                </div>
             </div>
-            <div className=''>
+            <div className='p-3'>
                 {users.map((user, index) => (
                     <UserCard key={user.email} {...user} onDelete={downloadUsers} onClick={() => setOpenedUser(index)} />
                 ))}
             </div>
-            <button
-                className='btn bg-glass bg-deep-white p-3 mt-auto position-fixed end-0 bottom-0 m-4 me-5'
-                style={{ lineHeight: 1, zIndex: 15 }}
-                onClick={() => setOpenedUser(users.length)}>
-                <div className='btn-close' style={{ transform: 'rotate(45deg)' }}></div>
-            </button>
             {openedUser !== null && <UserDetailsModel heading={users[openedUser] ? "Edit User" : "Add User"} userData={users[openedUser]} submitBtnLabel={users[openedUser] ? 'SAVE' : 'ADD'} onSubmit={users[openedUser] ? updateUser : onSubmitHandler} onClose={() => setOpenedUser(null)} />}
         </>
     );
@@ -92,12 +114,10 @@ const UserCard: React.FC<UserCardProp> = ({ _id, username, email, role, onClick 
                                 onDelete()
                             });
                     }}>
-                        <img className='' src='delete.svg'></img>
+                        <img className='' src={deleteIcon}></img>
                     </div>
                 </div>
             </div>
         </>
     );
 }
-
-export default Users;

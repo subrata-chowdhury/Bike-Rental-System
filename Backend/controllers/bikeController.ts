@@ -97,7 +97,7 @@ export const getFilterData = async (req: Request, res: Response) => {
 
 // POST /bikes
 export const createBike = async (req: Request, res: Response) => {
-    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type } = req.body;
+    const { bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, images } = req.body;
 
     // Verify data
     if (!bikeModel || !pricePerHour || !isAvailable || !brand || !cc || !horsePower || !type) {
@@ -105,13 +105,8 @@ export const createBike = async (req: Request, res: Response) => {
         return;
     }
 
-    const imageFile = req.file;
-
-    // if (!imageFile) {
-    //     return res.status(400).send('No file uploaded.');
-    // }
     try {
-        const bike = await Bike.create({ bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, imageURL: imageFile ? (imageFile?.filename) : "" });
+        const bike = await Bike.create({ bikeModel, pricePerHour, isAvailable, brand, cc, horsePower, type, images });
         res.status(201).json(bike);
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });

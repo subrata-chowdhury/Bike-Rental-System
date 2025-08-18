@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
-import { getUser } from "../scripts/API Calls/userApiCalls";
+import { getUser } from "../scripts/API Calls/userApiCalls.ts";
 import { User } from "../Types";
 import logOut from "../scripts/logOut";
 import bikeIcon from "../assets/bike.svg"

@@ -1,4 +1,4 @@
-import { AdminBookingData } from '../../components/AdminPage/Booking';
+import { AdminBookingData } from '../../components/AdminPage/BookingPage';
 import { BookingData } from '../../Types';
 import { Bike } from '../../Types';
 import logOut from '../logOut';

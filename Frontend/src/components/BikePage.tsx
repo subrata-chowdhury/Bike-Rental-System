@@ -3,10 +3,10 @@ import Footer from './Footer';
 import Menubar from './Menubar';
 import { useEffect, useState } from 'react';
 import { Bike } from '../Types';
-import { getBikesById } from '../scripts/API Calls/bikeApiCalls';
+import { getBikesById } from '../scripts/API Calls/bikeApiCalls.ts';
 import bikeIcon from '../assets/bike.svg';
 import tickIcon from '../assets/tick.svg'
-import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
+import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls.ts';
 import { useOrderdBikes } from '../contexts/OrderdBikesContext';
 import { useSocket } from '../scripts/socket';
 
@@ -119,8 +119,13 @@ const BikePage = () => {
                         {orderedBikes.orderedBikes.some(booking => booking._id === bikeDetails._id) && <button
                             className='btn border-2 border-dark w-100 mt-2'
                             onClick={async () => {
+                                if (!bikeDetails._id) {
+                                    alert('Bike ID is missing');
+                                    return;
+                                }
+
                                 await returnBikeByBikeId(bikeDetails._id, () => {
-                                    orderedBikes.removeBike(bikeDetails._id);
+                                    orderedBikes.removeBike(bikeDetails._id || '');
                                     if (id) getBikesById(id, setBikeDetails);
                                 })
                             }}>Return</button>}
@@ -164,6 +169,10 @@ const BikePage = () => {
                                 if (newStartTime > newEndTime) {
                                     alert('Start time cannot be greater than end time')
                                     return
+                                }
+                                if (!bikeDetails._id) {
+                                    alert('Bike ID is missing');
+                                    return;
                                 }
 
                                 await createBooking(bikeDetails._id, newStartTime, newEndTime, () => {

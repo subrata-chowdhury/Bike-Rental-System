@@ -1,7 +1,7 @@
 import React from 'react';
 import { LogInAndSingUpForm } from '../LogInPage';
 import { verifyFieldsForLogIn } from '../../scripts/InputsVerifires';
-import { adminLogin } from '../../scripts/API Calls/authApiCalls';
+import { adminLogin } from '../../scripts/API Calls/authApiCalls.ts';
 
 interface LoginPageProps {
     onLogin: () => void;

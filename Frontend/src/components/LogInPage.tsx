@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { login, register } from '../scripts/API Calls/authApiCalls';
+import { login, register } from '../scripts/API Calls/authApiCalls.ts';
 import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../scripts/API Calls/userApiCalls';
+import { getUser } from '../scripts/API Calls/userApiCalls.ts';
 
 const LogInPage: React.FC = (): React.JSX.Element => {
     const navigate = useNavigate()

@@ -2,7 +2,7 @@
 
 // Type for a bike
 export type Bike = {
-    _id: string;
+    _id?: string;
     // Bike (uniqeness)
     bikeModel: string;
 

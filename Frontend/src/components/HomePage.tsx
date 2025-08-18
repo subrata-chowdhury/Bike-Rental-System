@@ -4,7 +4,7 @@ import Footer from './Footer';
 import Menubar from './Menubar';
 import Filter from './Filter';
 import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
-import { getBikesByIndex } from '../scripts/API Calls/bikeApiCalls';
+import { getBikesByIndex } from '../scripts/API Calls/bikeApiCalls.ts';
 import { FilterData } from '../Types';
 import { useOrderdBikes } from '../contexts/OrderdBikesContext';
 import { useSocket } from '../scripts/socket';

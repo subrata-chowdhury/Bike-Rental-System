@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Bike } from '../Types';
-import { getBookingDetailsThatHasToReturnToday } from '../scripts/API Calls/bookingApiCalls';
+import { getBookingDetailsThatHasToReturnToday } from '../scripts/API Calls/bookingApiCalls.ts';
 
 type OrderdBikesContextType = {
     orderedBikes: Bike[];

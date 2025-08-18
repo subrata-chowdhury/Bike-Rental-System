@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import arrowIcon from '../assets/arrow-right.svg';
 
 type PagesProp = {
     onPageChange?: (index: number) => void;
@@ -76,7 +77,7 @@ const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React.JSX.
                 if (newPage > 0)
                     setCurrentPage(newPage)
             }}>
-                <img src='arrow-right.svg' width={20} style={{ transform: 'rotate(-180deg)' }}></img>
+                <img src={arrowIcon} width={20} style={{ transform: 'rotate(-180deg)' }}></img>
             </div>
             {pages}
             <div className='rounded-circle bg-white pages mx-1 cursor-pointer' onClick={() => {
@@ -85,7 +86,7 @@ const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React.JSX.
                 if (newPage <= noOfPages)
                     setCurrentPage(newPage)
             }}>
-                <img src='arrow-right.svg' width={20}></img>
+                <img src={arrowIcon} width={20}></img>
             </div>
         </div>
     )
