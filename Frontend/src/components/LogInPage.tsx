@@ -3,6 +3,8 @@ import { login, register } from '../scripts/API Calls/authApiCalls.ts';
 import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../scripts/API Calls/userApiCalls.ts';
+import eyeIcon from '../assets/eye.svg';
+import eyeClosedIcon from '../assets/eye-closed.svg';
 
 const LogInPage: React.FC = (): React.JSX.Element => {
     const navigate = useNavigate()
@@ -129,7 +131,7 @@ export const LogInAndSingUpForm: React.FC<LogInAndSingUpFormProp> = ({ onLogInBt
                                     e.preventDefault()
                                     setShowPassword(val => !val)
                                 }}>
-                                    <img src={showPassword ? 'eye-closed.svg' : 'eye.svg'}></img>
+                                    <img src={showPassword ? eyeClosedIcon : eyeIcon}></img>
                                 </button>
                             </div>
                         </label>
@@ -222,7 +224,7 @@ const SignUpForm: React.FC<SignUpFormProp> = ({ setIsSignInState, onSignUpBtnCli
                             e.preventDefault()
                             setShowPassword(val => !val)
                         }}>
-                            <img src={showPassword ? 'eye-closed.svg' : 'eye.svg'}></img>
+                            <img src={showPassword ? eyeClosedIcon : eyeIcon}></img>
                         </button>
                     </div>
                 </label>

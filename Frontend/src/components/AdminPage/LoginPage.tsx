@@ -4,10 +4,10 @@ import { verifyFieldsForLogIn } from '../../scripts/InputsVerifires';
 import { adminLogin } from '../../scripts/API Calls/authApiCalls.ts';
 
 interface LoginPageProps {
-    onLogin: () => void;
+    onLogin?: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+const AdminLoginPage: React.FC<LoginPageProps> = ({ onLogin = () => { } }) => {
     // form submit handlers
     async function loginUser(formData: { email: string, password: string }) {
         const { email, password } = formData;
@@ -29,4 +29,4 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     );
 };
 
-export default LoginPage;
+export default AdminLoginPage;

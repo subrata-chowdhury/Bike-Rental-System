@@ -31,7 +31,7 @@ const bikeSchema = new Schema<IBike>({
     weight: { type: Number, required: false },
 
     images: { type: [String], required: true }
-});
+}, { timestamps: true });
 
 export { bikeSchema as BikeSchema }
 

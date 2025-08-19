@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
 import envVars from '../config/config';
-import { isAdmin } from './roleChecker';
 import { io } from '../app';
 
 // Handle user registration

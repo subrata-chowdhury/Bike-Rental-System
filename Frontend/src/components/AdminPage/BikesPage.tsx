@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { deleteBike, getBikesByIndex } from '../../scripts/API Calls/bikeApiCalls.ts';
 import Filter from '../Filter';
 import Pages from '../Pages';
@@ -8,6 +8,7 @@ import Plus from '../../assets/reactIcons/Plus';
 import { AdminPanel } from "./component/AdminPanel";
 import deleteIcon from '../../assets/delete.svg';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSocket } from '../../scripts/socket.ts';
 
 const BikesPage = () => {
     return (
@@ -26,6 +27,20 @@ const Bikes: React.FC = (): React.JSX.Element => {
     const [bikeData, setBikeData] = useState<Bike[]>([]);
     const [noOfPages, setNoOfPages] = useState<number>(3)
     const navigate = useNavigate();
+    const socketRef = useSocket();
+
+    useEffect(() => {
+        if (!socketRef.current) return;
+
+        socketRef.current.on('bike_details_changed', (bike) => {
+            bike = bike.bike;
+            setBikeData(bike);
+        });
+
+        return () => {
+            socketRef.current?.off('bike_details_changed');
+        };
+    }, [socketRef]);
 
     const getBikesByPage = async (page: number, filterData?: FilterData, searchData?: string | undefined): Promise<void> => {
         if (page <= 0) return;

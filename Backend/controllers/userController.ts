@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import User, { IUser } from "../models/user";
 import Booking from '../models/booking';
-import { isAdmin } from './roleChecker';
-import { isValidObjectId } from 'mongoose';
 
 export const getUser = async (req: Request, res: Response) => {
     try {

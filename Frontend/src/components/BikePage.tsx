@@ -17,13 +17,12 @@ const BikePage = () => {
     const [showBookingPopup, setShowBookingPopup] = useState(false);
     const orderedBikes = useOrderdBikes();
     const socketRef = useSocket();
-    console.log(showBookingPopup)
+
     useEffect(() => {
         if (!socketRef.current) return;
 
         socketRef.current.on('bike_details_changed', (bike) => {
             bike = bike.bike;
-            console.log(bike)
             setBikeDetails(bike);
         });
 

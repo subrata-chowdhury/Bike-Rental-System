@@ -3,7 +3,6 @@ import { IBooking } from '../models/booking';
 import Booking from '../models/booking';
 import Bike, { IBike } from '../models/bike';
 import { isValidObjectId } from 'mongoose';
-import User from '../models/user';
 import { io } from '../app';
 
 // Create a new booking

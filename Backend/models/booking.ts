@@ -17,7 +17,7 @@ const bookingSchema = new Schema<IBooking>({
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     status: { type: String, enum: ['booked', 'returned', 'canceled'], default: 'booked' },
-});
+}, { timestamps: true });
 
 const Booking = model<IBooking>('Booking', bookingSchema);
 export default Booking;
