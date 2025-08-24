@@ -1,19 +1,21 @@
 import './App.css'
 import React, { useEffect } from 'react'
-import LogInPage from './components/LogInPage'
-import HomePage from './components/HomePage'
+import LogInPage from './pages/LogInPage'
+import HomePage from './pages/HomePage'
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom'
-import ProfilePage from './components/ProfilePage'
-import AdminPage from './components/AdminPage/AdminPage'
+import ProfilePage from './pages/ProfilePage'
+import AdminPage from './admin/pages/AdminPage'
 import { useSocket } from './scripts/socket'
-import BikePage from './components/BikePage'
+import BikePage from './pages/BikePage'
 import { OrderdBikesProvider } from './contexts/OrderdBikesContext'
-import BikesPage from './components/AdminPage/BikesPage'
-import UsersPage from './components/AdminPage/UsersPage'
-import BookingPage from './components/AdminPage/BookingPage'
-import AddBikePage from './components/AdminPage/AddBikePage'
-import EditBikePage from './components/AdminPage/EditBikePage'
-import AdminLoginPage from './components/AdminPage/LoginPage'
+import BikesPage from './admin/pages/BikesPage'
+import UsersPage from './admin/pages/UsersPage'
+import AdminBookingPage from './admin/pages/BookingPage'
+import AddBikePage from './admin/pages/AddBikePage'
+import EditBikePage from './admin/pages/EditBikePage'
+import AdminLoginPage from './admin/pages/LoginPage'
+import BookingPage from './pages/BookingPage'
+import BookingDetailsPage from './pages/BookingDetailsPage'
 
 const App: React.FC = (): React.JSX.Element => {
     const socketRef = useSocket();
@@ -37,13 +39,15 @@ const App: React.FC = (): React.JSX.Element => {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="/bookings" element={<BookingPage />} />
+                        <Route path="/bookings/:bookingId" element={<BookingDetailsPage />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/login" element={<LogInPage />} />
                         <Route path='/bike/:id' element={<BikePage />} />
 
                         <Route path="/admin/bikes" element={<BikesPage />} />
                         <Route path="/admin/users" element={<UsersPage />} />
-                        <Route path="/admin/bookings" element={<BookingPage />} />
+                        <Route path="/admin/bookings" element={<AdminBookingPage />} />
                         <Route path="/admin/bikes/new" element={<AddBikePage />} />
                         <Route path="/admin/bikes/:bikeId" element={<EditBikePage />} />
                         <Route path="/admin" element={<AdminPage />} />

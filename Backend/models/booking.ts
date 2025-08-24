@@ -8,6 +8,7 @@ export interface IBooking extends Document {
     startTime: Date;
     endTime: Date;
     status: string;
+    statusLogs: { status: string, timestamp: Date }[];
 }
 
 const bookingSchema = new Schema<IBooking>({
@@ -16,7 +17,8 @@ const bookingSchema = new Schema<IBooking>({
     bike: { type: BikeSchema, required: true },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
-    status: { type: String, enum: ['booked', 'returned', 'canceled'], default: 'booked' },
+    status: { type: String, enum: ['booked', 'picked up', 'return requested', 'returned', 'canceled'], default: 'booked' },
+    statusLogs: { type: [{ status: { type: String, enum: ['booked', 'picked up', 'return requested', 'returned', 'canceled'] }, timestamp: { type: Date, default: Date.now } }], default: [] }
 }, { timestamps: true });
 
 const Booking = model<IBooking>('Booking', bookingSchema);

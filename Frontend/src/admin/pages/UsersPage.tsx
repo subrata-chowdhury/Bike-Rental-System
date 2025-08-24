@@ -1,11 +1,11 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
-import UserDetailsModel from './UserDetailsModel';
+import UserDetailsModel from '../components/UserDetailsModel.tsx';
 import { deleteUserByAdmin, getUsersByIndex, updateUserByAdmin } from '../../scripts/API Calls/userApiCalls.ts';
-import { User } from '../../Types';
+import { User } from '../../Types.ts';
 import { adminRegister, register } from '../../scripts/API Calls/authApiCalls.ts';
-import Plus from '../../assets/reactIcons/Plus';
-import { AdminPanel } from './component/AdminPanel';
+import Plus from '../../assets/reactIcons/Plus.tsx';
+import { AdminPanel } from '../components/AdminPanel.tsx';
 import deleteIcon from '../../assets/delete.svg';
 
 const UsersPage = () => {

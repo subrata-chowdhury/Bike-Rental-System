@@ -1,6 +1,6 @@
 import React from 'react';
-import { LogInAndSingUpForm } from '../LogInPage';
-import { verifyFieldsForLogIn } from '../../scripts/InputsVerifires';
+import { LogInAndSingUpForm } from '../../pages/LogInPage.tsx';
+import { verifyFieldsForLogIn } from '../../scripts/InputsVerifires.ts';
 import { adminLogin } from '../../scripts/API Calls/authApiCalls.ts';
 
 interface LoginPageProps {

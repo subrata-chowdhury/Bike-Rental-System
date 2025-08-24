@@ -1,9 +1,9 @@
-import LogOutIcon from '../../../assets/reactIcons/LogOut';
-import UserIcon from '../../../assets/reactIcons/User';
-import BikeIcon from '../../../assets/reactIcons/Bike';
-import BookingIcon from '../../../assets/reactIcons/Booking';
+import LogOutIcon from '../../assets/reactIcons/LogOut';
+import UserIcon from '../../assets/reactIcons/User';
+import BikeIcon from '../../assets/reactIcons/Bike';
+import BookingIcon from '../../assets/reactIcons/Booking';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import HomeIcon from '../../../assets/reactIcons/Home';
+import HomeIcon from '../../assets/reactIcons/Home';
 
 export type Tabs = {
     href: string;

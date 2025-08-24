@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { deleteBike, getBikesByIndex } from '../../scripts/API Calls/bikeApiCalls.ts';
-import Filter from '../Filter';
-import Pages from '../Pages';
-import { Bike, FilterData } from '../../Types';
+import Filter from '../../components/Filter.tsx';
+import Pages from '../../components/Pages.tsx';
+import { Bike, FilterData } from '../../Types.ts';
 import tick from '../../assets/tick.svg';
-import Plus from '../../assets/reactIcons/Plus';
-import { AdminPanel } from "./component/AdminPanel";
+import Plus from '../../assets/reactIcons/Plus.tsx';
+import { AdminPanel } from "../components/AdminPanel.tsx";
 import deleteIcon from '../../assets/delete.svg';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSocket } from '../../scripts/socket.ts';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../../Types';
-import Model from '../Model';
+import Model from '../../components/Model';
 
 interface UserDetailsModelProp {
     heading?: string;

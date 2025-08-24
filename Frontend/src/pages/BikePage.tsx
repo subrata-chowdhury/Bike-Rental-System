@@ -1,14 +1,14 @@
 import { useParams } from 'react-router-dom';
-import Footer from './Footer';
-import Menubar from './Menubar';
+import Footer from '../components/Footer.tsx';
+import Menubar from '../components/Menubar.tsx';
 import { useEffect, useState } from 'react';
-import { Bike } from '../Types';
+import { Bike } from '../Types.ts';
 import { getBikesById } from '../scripts/API Calls/bikeApiCalls.ts';
 import bikeIcon from '../assets/bike.svg';
 import tickIcon from '../assets/tick.svg'
 import { createBooking, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls.ts';
-import { useOrderdBikes } from '../contexts/OrderdBikesContext';
-import { useSocket } from '../scripts/socket';
+import { useOrderdBikes } from '../contexts/OrderdBikesContext.tsx';
+import { useSocket } from '../scripts/socket.ts';
 
 const BikePage = () => {
     const { id } = useParams(); // Access dynamic id
@@ -127,7 +127,7 @@ const BikePage = () => {
                                     orderedBikes.removeBike(bikeDetails._id || '');
                                     if (id) getBikesById(id, setBikeDetails);
                                 })
-                            }}>Return</button>}
+                            }}>Request Return</button>}
                     </div>
                 </div>
             </div> : <div>No bike details available</div>}

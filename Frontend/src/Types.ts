@@ -37,6 +37,9 @@ export type Booking = {
     startTime: Date | string;
     endTime: Date | string;
     status: string;
+    statusLogs: { status: string, timestamp: string }[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type BookingData = Bike & {

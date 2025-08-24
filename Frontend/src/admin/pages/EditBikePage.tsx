@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import BikeForm from './BikeForm'
+import { useEffect, useState } from 'react';
+import BikeForm from '../components/BikeForm'
 import { Bike } from '../../Types';
+import { useLocation } from 'react-router-dom';
 
-const AddBikePage = () => {
+const EditBikePage = () => {
     const [bikeDetails, setBikeDetails] = useState<Bike>({
         bikeModel: '',
         pricePerHour: 0,
@@ -13,10 +14,15 @@ const AddBikePage = () => {
         type: '',
         images: []
     });
+    const location = useLocation();
+
+    useEffect(() => {
+        setBikeDetails(location.state)
+    }, [location.state]);
 
     return (
         <BikeForm bikeDetails={bikeDetails} onChange={setBikeDetails} />
     )
 }
 
-export default AddBikePage
+export default EditBikePage

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Bike } from '../Types';
-import { getBookingDetailsThatHasToReturnToday } from '../scripts/API Calls/bookingApiCalls.ts';
+import { getBookings } from '../scripts/API Calls/bookingApiCalls.ts';
 
 type OrderdBikesContextType = {
     orderedBikes: Bike[];
@@ -35,11 +35,15 @@ export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
-        getBookingDetailsThatHasToReturnToday((bikesData: Bike[]) => {
-            if (bikesData.length === 0) {
+        getBookings(0, { endTime: { $lt: new Date().toISOString() }, status: 'picked up' }, (data) => {
+            const bikes: Bike[] = [];
+            data.bookings.forEach(booking => {
+                bikes.push(booking.bike)
+            })
+            if (bikes.length === 0) {
                 return;
             }
-            setOrderedBikes(bikesData);
+            setOrderedBikes(bikes);
         })
     }, [])
 

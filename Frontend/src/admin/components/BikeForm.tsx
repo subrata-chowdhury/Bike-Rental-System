@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createBike, deleteBike, getTypes, updateBike } from "../../scripts/API Calls/bikeApiCalls.ts";
-import { Bike, FilterData } from "../../Types";
-import { AdminPanel } from "./component/AdminPanel";
-import ImageInput from "./component/ImageInput";
+import { Bike, FilterData } from "../../Types.ts";
+import { AdminPanel } from "./AdminPanel.tsx";
+import ImageInput from "./ImageInput.tsx";
 import { useNavigate } from "react-router-dom";
 
 const BikeForm = ({ bikeDetails, onChange }: { bikeDetails: Bike, onChange: (updatedBike: Bike) => void }) => {

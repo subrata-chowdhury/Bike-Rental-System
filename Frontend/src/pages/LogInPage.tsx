@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { login, register } from '../scripts/API Calls/authApiCalls.ts';
-import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires';
+import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires.ts';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../scripts/API Calls/userApiCalls.ts';
 import eyeIcon from '../assets/eye.svg';

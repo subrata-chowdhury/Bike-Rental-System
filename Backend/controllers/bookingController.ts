@@ -51,6 +51,8 @@ export const createBooking = async (req: Request, res: Response) => {
             status: 'booked'
         });
         const savedBooking = await newBooking.save();
+        savedBooking.statusLogs.push({ status: 'booked', timestamp: new Date() });
+        await savedBooking.save();
 
         bike.isAvailable = false;
         await bike.save();
@@ -62,92 +64,66 @@ export const createBooking = async (req: Request, res: Response) => {
     }
 };
 
-// Get bookings by user ID
-export const getBookingHistoryByUserId = async (req: Request, res: Response) => {
+export const getBookingsByUserId = async (req: Request, res: Response) => {
     try {
         const userId = req.headers.user;
+        const { index } = req.params;
+        const searchData = req.url.split('?')[1] ? new URLSearchParams(req.url.split('?')[1]) : new URLSearchParams();
+        const filterData = JSON.parse(searchData.get('filter') || '{}');
 
-        const bookings = await Booking.find({ userId, status: { $ne: 'booked' } })
-            .sort({ endTime: -1 })
-            .populate('bikeId', null, Bike);
-        const bikeList: any = [];
-        for (let i = 0; i < bookings.length; i++) {
-            bikeList.push(bookings[i].bikeId);
-        }
-
-        res.status(200).json(bikeList);
+        const bookings = await Booking.find({ userId, ...filterData }).skip(parseInt(index)).limit(6).sort({ endTime: -1 }).populate('bikeId', null, Bike);
+        const count = await Booking.countDocuments({ userId, ...filterData });
+        res.status(200).json({ bookings: bookings, totalBookings: count });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to get bookings by user ID' });
-    }
-};
-
-export const getBookingThatHasToReturnByUserId = async (req: Request, res: Response) => {
-    try {
-        const userId = req.headers.user;
-        const bookings = await Booking.find({ userId, status: 'booked' }).populate('bikeId', null, Bike);
-        if (!bookings) {
-            res.status(404).json({ error: 'Booking not found' });
-            return;
-        }
-        const bikeList: any[] = [];
-        for (let i = 0; i < bookings.length; i++) {
-            bikeList.push(bookings[i].bikeId);
-        }
-        res.status(200).json(bikeList);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to get bookings by user ID' });
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
-// Return a bike by bike ID
-export const returnBikeByBikeId = async (req: Request, res: Response) => {
+// pick a bike by bike ID
+export const pickBikeByBikeId = async (req: Request, res: Response) => {
     try {
         const { bikeId } = req.params;
-        const bike = await Bike.findById(bikeId);
-        if (!bike) {
-            res.status(404).json({ error: 'Bike not found' });
-            return;
-        }
-        bike.isAvailable = true;
-        await bike.save();
 
         const booking = await Booking.findOne({ bikeId: bikeId, status: 'booked' });
         if (booking) {
-            booking.status = 'returned';
+            booking.status = 'picked up';
+            booking.statusLogs.push({ status: 'picked up', timestamp: new Date() });
+            booking.endTime = new Date();
             await booking.save();
         } else {
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
-        io.emit('bike_details_changed', { bike });
-        res.status(200).json({ message: 'Bike returned successfully' });
+        // io.emit('bike_details_changed', { bike });
+        res.status(200).json({ message: 'Bike picked up successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to return bike' });
+        res.status(500).json({ error: 'Failed to pick up bike' });
     }
 }
 
-export const getBookingThatHasToReturnToday = async (req: Request, res: Response) => {
-    const userId = req.headers.user;
+
+// Return a bike by bike ID
+export const returnBikeByBikeId = async (req: Request, res: Response) => {
     try {
-        const bookings = await Booking.find({ endTime: { $lt: new Date() }, status: 'booked', userId });
-        if (!bookings) {
+        const { bikeId } = req.params;
+
+        const booking = await Booking.findOne({ bikeId: bikeId, status: 'picked up' });
+        if (booking) {
+            booking.status = 'return requested';
+            booking.statusLogs.push({ status: 'return requested', timestamp: new Date() });
+            booking.endTime = new Date();
+            await booking.save();
+        } else {
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
-        const bikeList: IBike[] = [];
-        for (let i = 0; i < bookings.length; i++) {
-            const bike = await Bike.findById(bookings[i].bikeId);
-            if (bike) {
-                bikeList[i] = bike;
-            } else {
-                bikeList[i] = bookings[i].bike;
-            }
-        }
-        res.status(200).json(bikeList);
+        res.status(200).json({ message: 'Return requested for bike created successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to get bookings by user ID' });
+        res.status(500).json({ error: 'Failed to create return request for bike' });
     }
 }
+
 
 
 
@@ -180,3 +156,25 @@ export const getBookingByIndex = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to get bookings' });
     }
 };
+
+
+// accept a bike by bike ID
+export const acceptReturnRequestByBikeId = async (req: Request, res: Response) => {
+    try {
+        const { bikeId } = req.params;
+
+        const booking = await Booking.findOne({ bikeId: bikeId, status: 'return requested' });
+        if (booking) {
+            booking.status = 'returned';
+            booking.statusLogs.push({ status: 'returned', timestamp: new Date() });
+            booking.endTime = new Date();
+            await booking.save();
+        } else {
+            res.status(404).json({ error: 'Booking not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Return request accepted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to accept return request' });
+    }
+}

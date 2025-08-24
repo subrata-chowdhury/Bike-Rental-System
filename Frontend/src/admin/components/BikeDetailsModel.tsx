@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Model from '../Model';
+import Model from '../../components/Model';
 import { Bike } from '../../Types';
 
 export type BikeDetailsInput = Bike & {

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { AdminPanel } from './component/AdminPanel.tsx';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
+import { AdminPanel } from '../components/AdminPanel.tsx';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, XAxis, YAxis, CartesianGrid, BarChart, Bar, Rectangle } from "recharts";
 import apiUrl from '../../scripts/API Calls/apiUrl.ts';
+import { useSocket } from '../../scripts/socket.ts';
+import { useNavigate } from 'react-router-dom';
 
 const COLORS = ["#50b454ff", "#F44336"]; // Green for available, Red for not available
 
@@ -21,8 +23,26 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
         { name: "Not Available", value: 0 },
     ]);
     const [revenueData, setRevenueData] = useState<{ month: number, revenue: number }[]>([]);
+    const socketRef = useSocket();
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (!socketRef.current) return;
+
+        socketRef.current.on('bike_details_changed', () => {
+            getStatisticsDetails()
+        });
+
+        return () => {
+            socketRef.current?.off('bike_details_changed');
+        };
+    }, [socketRef]);
+
+    useEffect(() => {
+        getStatisticsDetails();
+    }, [])
+
+    async function getStatisticsDetails() {
         const token = localStorage.getItem('adminToken');
         fetch(apiUrl + "/api/statistics?year=" + new Date().getFullYear(), {
             headers: {
@@ -35,21 +55,33 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                     { name: "Available Bikes", value: values.counts.available },
                     { name: "Not Available", value: values.counts.notAvailable },
                 ])
-                setRevenueData(values.totalRevenue)
+                setRevenueData(() => {
+                    const valuesData = [...values.totalRevenue];
+                    valuesData.forEach((e, i) => {
+                        if (e === null) {
+                            valuesData[i] = { month: i, revenue: 0 }
+                        }
+                    })
+                    return valuesData
+                })
+            }
+            if(res.status === 401) {
+                localStorage.removeItem('adminToken');
+                navigate('/admin/login');
             }
         })
-    }, [])
+    }
 
     return (
         <>
             <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
                 <AdminPanel />
                 <div className='flex-grow-1' style={{ padding: '2rem' }}>
-                    <h1 className='text-center'>Admin Dashboard</h1>
+                    <h2 className='mb-4'>Admin Dashboard</h2>
                     <div className='d-flex gap-2'>
                         <div className='card p-2 px-3'>
                             <h5 className="text-xl font-semibold mb-4">Total Revenue</h5>
-                            <ResponsiveContainer width={450} height={300}>
+                            <ResponsiveContainer width={400} height="100%">
                                 <BarChart
                                     width={500}
                                     height={300}
@@ -66,7 +98,8 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="revenue" fill="#8884d8" />
+                                    <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+                                    {/* <Bar dataKey="month" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} /> */}
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>

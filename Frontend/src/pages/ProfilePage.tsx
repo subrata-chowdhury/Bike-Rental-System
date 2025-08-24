@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Menubar from "./Menubar";
-import BikeCardsContainer from "./BikeCard";
-import { getBookingHistoryByUserId, getBookingThatHasToReturn } from "../scripts/API Calls/bookingApiCalls.ts";
+import Menubar from "../components/Menubar.tsx";
 import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls.ts";
-import { Bike, BookingData, User } from "../Types";
-import logOut from "../scripts/logOut";
+import { User } from "../Types.ts";
+import logOut from "../scripts/logOut.ts";
 
 type Tabs = {
     name: string;
@@ -40,12 +38,6 @@ const ProfilePage: React.FC = (): React.JSX.Element => {
     const tabs: Tabs[] = [{
         name: 'User Details',
         component: <UserDetails onUpdate={updateUserDetails} onDelete={deleteUserAccount} />
-    }, {
-        name: 'Booking History',
-        component: <BookingHistory />
-    }, {
-        name: 'Bike to Return',
-        component: <BikeToReturn />
     }]
     return (
         <div className="h-100 d-flex flex-column">
@@ -68,7 +60,7 @@ interface ProfileTabsProp {
     onChange: (index: number) => void
 }
 
-const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): React.JSX.Element => {
+export const ProfileTabs: React.FC<ProfileTabsProp> = ({ tabs, activeTab, onChange }): React.JSX.Element => {
     return (
         <ul className="nav nav-pills flex-column me-3">
             {tabs.map((tab, index) => (
@@ -174,55 +166,6 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): React.J
                 </div>
             </div>
         </div>
-    )
-}
-
-const BookingHistory: React.FC = (): React.JSX.Element => {
-    const [bookingData, setBookingData] = useState<BookingData[]>([]);
-    const [allBookings, setAllBookings] = useState<BookingData[]>([]);
-    const [noOfPages, setNoOfPages] = useState<number>(0);
-    useEffect(() => {
-        getBookingHistoryByUserId((data) => {
-            setAllBookings(data);
-            setBookingData(data.slice(0, 6))
-            setNoOfPages(Math.ceil(data.length / 6))
-        })
-    }, [])
-    return (
-        <BikeCardsContainer
-            bikeData={bookingData}
-            noOfPages={noOfPages}
-            onPageChange={async i => {
-                i = i - 1;
-                setBookingData(allBookings.slice(i * 6, (i + 1) * 6))
-            }} />
-    )
-}
-
-const BikeToReturn: React.FC = (): React.JSX.Element => {
-    const [bookingData, setBookingData] = useState<Bike[]>([]);
-    const [noOfPages, setNoOfPages] = useState<number>(0);
-
-    function getReturnBikesByIndex(index: number) {
-        getBookingThatHasToReturn((bikesData: Bike[]) => {
-            setBookingData(bikesData.slice(index * 6, (index + 1) * 6))
-            setNoOfPages(Math.ceil(bikesData.length / 6))
-        })
-    }
-
-    useEffect(() => {
-        getReturnBikesByIndex(0)
-    }, [])
-
-    return (
-        <BikeCardsContainer
-            bikeData={bookingData}
-            noOfPages={noOfPages}
-            onPageChange={async i => {
-                i = i - 1;
-                getReturnBikesByIndex(i)
-            }}
-            showReturnBtn={true} />
     )
 }
 

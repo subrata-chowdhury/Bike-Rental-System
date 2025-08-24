@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import './styles/HomePage.css';
-import Footer from './Footer';
-import Menubar from './Menubar';
-import Filter from './Filter';
-import BikeCardsContainer, { BikeCardProp as Bike } from './BikeCard';
+import '../styles/HomePage.css';
+import Footer from '../components/Footer.tsx';
+import Menubar from '../components/Menubar.tsx';
+import Filter from '../components/Filter.tsx';
+import BikeCardsContainer, { BikeCardProp as Bike } from '../components/BikeCard.tsx';
 import { getBikesByIndex } from '../scripts/API Calls/bikeApiCalls.ts';
-import { FilterData } from '../Types';
-import { useOrderdBikes } from '../contexts/OrderdBikesContext';
-import { useSocket } from '../scripts/socket';
+import { FilterData } from '../Types.ts';
+import { useOrderdBikes } from '../contexts/OrderdBikesContext.tsx';
+import { useSocket } from '../scripts/socket.ts';
 
 const HomePage: React.FC = (): React.JSX.Element => {
     const [showAlert, setShowAlert] = useState<boolean>(false);

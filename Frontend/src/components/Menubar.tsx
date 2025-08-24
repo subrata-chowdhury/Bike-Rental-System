@@ -11,7 +11,7 @@ const Menubar: React.FC = (): React.JSX.Element => {
     const menus = [
         { name: 'Home', link: '/' },
         { name: 'About', link: '/about' },
-        { name: 'Footer', link: '/' },
+        { name: 'Bookings', link: '/bookings' },
         { name: 'Contact', link: '/contact' },
     ]
     const [showSmallProfilePopup, setShowSmallProfilePopup] = useState(false);

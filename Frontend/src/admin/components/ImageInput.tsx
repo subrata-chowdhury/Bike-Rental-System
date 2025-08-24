@@ -1,7 +1,7 @@
 import React from 'react'
-import { deleteImage, uploadFile } from '../../../scripts/API Calls/imageApiCalls.ts';
-import BASE_URL from '../../../scripts/API Calls/apiUrl.ts';
-import deleteIcon from '../../../assets/delete.svg';
+import { deleteImage, uploadFile } from '../../scripts/API Calls/imageApiCalls.ts';
+import BASE_URL from '../../scripts/API Calls/apiUrl.ts';
+import deleteIcon from '../../assets/delete.svg';
 
 type Props = {
     values: string[];

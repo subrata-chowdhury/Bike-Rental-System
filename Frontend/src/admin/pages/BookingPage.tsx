@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls.ts';
-import Pages from '../Pages';
-import { Booking } from '../../Types'
-import Model from '../Model';
+import Pages from '../../components/Pages.tsx';
+import { Booking } from '../../Types.ts'
+import Model from '../../components/Model.tsx';
 import tick from '../../assets/tick.svg'
-import Plus from '../../assets/reactIcons/Plus';
-import { AdminPanel } from './component/AdminPanel';
+import Plus from '../../assets/reactIcons/Plus.tsx';
+import { AdminPanel } from '../components/AdminPanel.tsx';
 
-const BookingPage = () => {
+const AdminBookingPage = () => {
     return (
         <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
             <AdminPanel />
@@ -18,7 +18,7 @@ const BookingPage = () => {
     )
 }
 
-export default BookingPage;
+export default AdminBookingPage;
 
 interface BookingProps {
     // Define your props here
@@ -99,8 +99,8 @@ const BookingComp: React.FC<BookingProps> = () => {
                             <div><span style={{ fontWeight: 500 }}>CC:</span> {bookingData[openedBooking].bike.cc}</div>
                             <div><span style={{ fontWeight: 500 }}>Price (₹/hr):</span> {bookingData[openedBooking].bike.pricePerHour}</div>
                         </div>
-                        <div><span style={{ fontWeight: 500 }}>Start Time:</span> {bookingData[openedBooking].startTime.split('T')[0]}</div>
-                        <div><span style={{ fontWeight: 500 }}>End Time:</span> {bookingData[openedBooking].endTime.split('T')[0]}</div>
+                        <div><span style={{ fontWeight: 500 }}>Start Time:</span> {bookingData[openedBooking].startTime}</div>
+                        <div><span style={{ fontWeight: 500 }}>End Time:</span> {bookingData[openedBooking].endTime}</div>
                         <div><span style={{ fontWeight: 500 }}>Status:</span> {bookingData[openedBooking].status} {bookingData[openedBooking].status === "returned" && <span className='d-inline-flex align-items-center ms-1'><img src={tick} width={16} height={16} /></span>}</div>
                     </div>
                 </div>

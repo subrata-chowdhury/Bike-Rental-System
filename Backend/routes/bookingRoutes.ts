@@ -1,16 +1,15 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex } from '../controllers/bookingController';
+import { createBooking, getBookingThatHasToReturnToday, getBookingHistoryByUserId, returnBikeByBikeId, getBookingThatHasToReturnByUserId, getBookingByIndex, getBookingThatHasRequestedToReturn, pickBikeByBikeId, getBookingThatHasToPickedUpByUserId, getBookingsByUserId } from '../controllers/bookingController';
 import { isAdmin } from '../controllers/roleChecker';
 
 const router = express.Router();
 
 // router.delete('/:bookId', authMiddleware, );
-router.get('/', authMiddleware, getBookingHistoryByUserId);
-router.get('/returnBikes', authMiddleware, getBookingThatHasToReturnByUserId);
-router.get('/bookingDetailsOfToday', authMiddleware, getBookingThatHasToReturnToday);
-router.post('/bike/:bikeId', authMiddleware, returnBikeByBikeId);
+router.get('/:index', authMiddleware, getBookingsByUserId);
 router.post('/', authMiddleware, createBooking);
+router.post('/bike/:bikeId', authMiddleware, returnBikeByBikeId);
+router.post('/bike/pick/:bikeId', authMiddleware, pickBikeByBikeId);
 
 
 // ADMIN ROUTES

@@ -1,5 +1,5 @@
-import { AdminBookingData } from '../../components/AdminPage/BookingPage';
-import { BookingData } from '../../Types';
+import { AdminBookingData } from '../../admin/pages/BookingPage';
+import { Booking } from '../../Types';
 import { Bike } from '../../Types';
 import logOut from '../logOut';
 import apiUrl from './apiUrl';
@@ -36,10 +36,10 @@ export const createBooking = async (bikeId: string, startTime: Date, endTime: Da
     }
 };
 
-export const getBookingThatHasToReturn = async (onSuccess: (bikesData: Bike[]) => void) => {
+export const getBookings = async (page: number = 0, filterData: { [key: string]: string | { [key: string]: string | string[] } }, onSuccess: (data: { bookings: Booking[], totalBookings: number }) => void): Promise<{ bookings: Booking[], totalBookings: number } | null> => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/booking/returnBikes`, {
+        const response = await fetch(`${API_BASE_URL}/booking/${page}?filter=${JSON.stringify({ ...filterData })}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': `${token}`,
@@ -51,10 +51,10 @@ export const getBookingThatHasToReturn = async (onSuccess: (bikesData: Bike[]) =
             throw new Error('Failed to get booking');
         }
         if (response.status === 401) {
-            logOut();
+            // logOut();
         }
 
-        const data: Bike[] = await response.json();
+        const data: { bookings: Booking[], totalBookings: number } = await response.json();
 
         if (response.ok) {
             onSuccess(data)
@@ -64,43 +64,10 @@ export const getBookingThatHasToReturn = async (onSuccess: (bikesData: Bike[]) =
         return data;
     } catch (error) {
         console.error(error);
+        return null
         // Handle error
     }
 }
-
-export const getBookingHistoryByUserId = async (onSuccess: (bikesData: BookingData[]) => void) => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/booking/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `${token}`,
-                // Add any additional headers if required
-            },
-        });
-
-        if (response.status === 401) {
-            return null
-        }
-
-        if (!response.ok) {
-            throw new Error('Failed to get booking');
-        }
-
-        // Return the booking data
-        const data: BookingData[] = await response.json();
-
-        if (response.ok) {
-            onSuccess(data)
-        }
-
-        return data;
-    } catch (error) {
-        console.error(error);
-        // Handle error
-    }
-};
 
 export const returnBikeByBikeId = async (bikeId: string, onSuccess: () => void = () => { }) => {
     try {
