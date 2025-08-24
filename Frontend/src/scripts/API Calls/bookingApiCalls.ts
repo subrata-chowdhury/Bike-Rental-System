@@ -1,6 +1,5 @@
 import { AdminBookingData } from '../../admin/pages/BookingPage';
 import { Booking } from '../../Types';
-import { Bike } from '../../Types';
 import logOut from '../logOut';
 import apiUrl from './apiUrl';
 const API_BASE_URL = apiUrl + '/api';
@@ -98,34 +97,35 @@ export const returnBikeByBikeId = async (bikeId: string, onSuccess: () => void =
     }
 };
 
-export const getBookingDetailsThatHasToReturnToday = async (onSuccess: (bikesData: Bike[]) => void) => {
+
+export const pickBikeByBikeId = async (bikeId: string, onSuccess: () => void = () => { }) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/booking/bookingDetailsOfToday`, {
+        const response = await fetch(`${API_BASE_URL}/booking/bike/pick/${bikeId}`, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'authorization': `${token}`,
                 // Add any additional headers if required
             }
         });
 
-        if (response.status === 401) {
-            return null
-        }
-
         if (!response.ok) {
-            throw new Error('Failed to get booking');
+            throw new Error('Failed to update booking');
         }
 
-        const data: Bike[] = await response.json();
+        if (response.ok) {
+            onSuccess();
+            alert("Bike Picked Successfully")
+        }
 
-        if (response.ok) onSuccess(data)
-
+        const data = await response.json();
         return data;
     } catch (error) {
         console.error(error);
         // Handle error
     }
-}
+};
 
 
 
