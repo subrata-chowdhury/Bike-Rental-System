@@ -6,6 +6,7 @@ import logOut from "../scripts/logOut";
 import bikeIcon from "../assets/bike.svg"
 import userIcon from "../assets/user.svg"
 import LogOutIcon from "../assets/reactIcons/LogOut";
+import barIcon from "../assets/bars.svg"
 
 const Menubar: React.FC = (): React.JSX.Element => {
     const menus = [
@@ -16,20 +17,10 @@ const Menubar: React.FC = (): React.JSX.Element => {
     ]
     const [showSmallProfilePopup, setShowSmallProfilePopup] = useState(false);
     const [showMenus, setShowMenus] = useState(false);
-    useEffect(() => {
-        window.onresize = () => {
-            if (window.innerWidth > 576) {
-                setShowMenus(true)
-            } else {
-                setShowMenus(false)
-            }
-        }
+    const [userDetails, setUserDetails] = useState<User | null>(null);
 
-        if (window.innerWidth > 576) {
-            setShowMenus(true)
-        } else {
-            setShowMenus(false)
-        }
+    useEffect(() => {
+        getUser().then(setUserDetails)
     }, [])
 
     return (
@@ -39,23 +30,21 @@ const Menubar: React.FC = (): React.JSX.Element => {
                     <img src={bikeIcon} className="me-2" width={40} height={40} alt="logo" />
                     Bike Rental
                 </Link>
-                <ul className="navbar-nav ms-2 me-auto">
-                    <div className="d-flex w-100 justify-content-between">
-                        <div
-                            className="d-flex justify-content-center align-items-center float-end d-sm-none d-block me-1 cursor-pointer"
-                            onClick={() => setShowMenus(val => !val)}>
-                            <img src="./bars.svg" width={25} height={25}></img>
-                        </div>
-                    </div>
+                <ul className="navbar-nav menus ms-2 me-auto">
                     {
-                        showMenus && menus.map((menu, index) => (
+                        menus.map((menu, index) => (
                             <li className="nav-item ms-2 me-2 d-flex justify-content-center" key={index}>
                                 <Link to={menu.link} className="nav-link">{menu.name}</Link>
                             </li>
                         ))
                     }
                 </ul>
-                <div className="position-relative dropdown navbar-brand ms-3 me-2 cursor-pointer">
+                <div
+                    className="d-flex justify-content-center align-items-center float-end d-md-none d-block me-1 cursor-pointer"
+                    onClick={() => setShowMenus(val => !val)}>
+                    <img src={barIcon} width={25} height={25}></img>
+                </div>
+                <div className="position-relative dropdown navbar-brand ms-3 me-2 d-md-block d-none cursor-pointer">
                     <img
                         src={userIcon}
                         width={35}
@@ -67,22 +56,41 @@ const Menubar: React.FC = (): React.JSX.Element => {
                     <div
                         className={`dropdown-menu p-4 position-fixed bg-white ${showSmallProfilePopup ? 'show' : ''}`}
                         style={{ right: '60px', top: '60px', maxHeight: '80vh', overflowY: 'auto' }}>
-                        <MiniProfile />
+                        <MiniProfile userDetails={userDetails} />
                     </div>
                 </div>
+                {showMenus && <div className="position-fixed d-flex top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" onClick={() => setShowMenus(false)}>
+                    <div className="bg-white h-100" style={{ width: '80%' }} onClick={e => e.stopPropagation()}>
+                        {userDetails && <Link to={'/profile'} className="text-decoration-none text-dark">
+                            <div className="d-flex flex-column text-center">
+                                <img src={userIcon}
+                                    width={60}
+                                    height={60}
+                                    className="p-3 mb-2 rounded rounded-circle dropdown-toggle mx-auto mt-5"
+                                    style={{ background: 'rgba(0,0,0,0.2)' }}></img>
+                                <div>{userDetails.username}</div>
+                                <div style={{ wordBreak: 'break-all' }}>{userDetails.email}</div>
+                            </div>
+                        </Link>}
+                        <div className="navbar-nav d-flex flex-column my-auto mt-5">
+                            {menus.map((menu, index) => (
+                                <li className="nav-item ms-2 me-2 d-flex justify-content-center" key={index}>
+                                    <Link to={menu.link} className="nav-link">{menu.name}</Link>
+                                </li>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="bg-white p-2 mb-auto" style={{ borderTopRightRadius: 5, borderBottomRightRadius: 5 }}>
+                        <button type="button" className="btn-close" onClick={() => setShowMenus(false)} aria-label="Close"></button>
+                    </div>
+                </div>}
             </div>
-        </nav>
+        </nav >
     )
 }
 
-const MiniProfile: React.FC = (): React.JSX.Element => {
-    const [userDetails, setUserDetails] = useState<User | null>(null);
-
-    useEffect(() => {
-        getUser().then(setUserDetails)
-    }, [])
-
-    if (!userDetails) return <Link to="/login" className="btn btn-primary w-100">Log In</Link>
+const MiniProfile = ({ userDetails }: { userDetails: User | null }): React.JSX.Element => {
+    if (userDetails === null) return <Link to="/login" className="btn btn-primary w-100">Log In</Link>
 
     return (
         <div className="d-flex flex-column text-center">
@@ -92,7 +100,7 @@ const MiniProfile: React.FC = (): React.JSX.Element => {
                 className="p-3 mb-2 rounded rounded-circle dropdown-toggle mx-auto"
                 style={{ background: 'rgba(0,0,0,0.2)' }}></img>
             <div><span className="fw-bold">Name:</span> {userDetails.username}</div>
-            <div style={{wordBreak:'break-all'}}><span className="fw-bold" style={{wordBreak:'break-all'}}>Email:</span> {userDetails.email}</div>
+            <div style={{ wordBreak: 'break-all' }}><span className="fw-bold" style={{ wordBreak: 'break-all' }}>Email:</span> {userDetails.email}</div>
             <Link to={'/profile'} className="btn btn-dark mt-2 border border-2 border-dark w-100">View Profile</Link>
             <button
                 className="btn btn-outline-primary mt-2 border border-2 border-primary w-100 d-flex justify-content-center align-items-center"

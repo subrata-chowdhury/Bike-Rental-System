@@ -53,8 +53,8 @@ const BikePage = () => {
     return (
         <>
             <Menubar />
-            {bikeDetails ? <div className='container d-flex flex-grow-1 mt-4 mb-4'>
-                <div className='me-4 d-flex flex-column gap-2'>
+            {bikeDetails ? <div className='container d-flex flex-column flex-md-row gap-4 gap-md-0 flex-grow-1 mt-4 mb-4'>
+                <div className='me-4 d-flex flex-column gap-2' style={{ maxWidth: '100%', overflowX: 'auto' }}>
                     {bikeDetails.images.map((imageURL, i) => (
                         <img
                             key={imageURL}
