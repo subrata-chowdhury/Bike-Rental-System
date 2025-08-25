@@ -16,6 +16,7 @@ import EditBikePage from './admin/pages/EditBikePage'
 import AdminLoginPage from './admin/pages/LoginPage'
 import BookingPage from './pages/BookingPage'
 import BookingDetailsPage from './pages/BookingDetailsPage'
+import AcceptReturnRequestPage from './admin/pages/AcceptReturnRequestPage'
 
 const App: React.FC = (): React.JSX.Element => {
     const socketRef = useSocket();
@@ -48,6 +49,7 @@ const App: React.FC = (): React.JSX.Element => {
                         <Route path="/admin/bikes" element={<BikesPage />} />
                         <Route path="/admin/users" element={<UsersPage />} />
                         <Route path="/admin/bookings" element={<AdminBookingPage />} />
+                        <Route path="/admin/return-requests" element={<AcceptReturnRequestPage />} />
                         <Route path="/admin/bikes/new" element={<AddBikePage />} />
                         <Route path="/admin/bikes/:bikeId" element={<EditBikePage />} />
                         <Route path="/admin" element={<AdminPage />} />

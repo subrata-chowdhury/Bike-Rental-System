@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls.ts';
+import { acceptReturnRequest, getBookingByPage } from '../../scripts/API Calls/bookingApiCalls.ts';
 import Pagination from '../../components/Pagination.tsx';
 import { Booking } from '../../Types.ts'
 import Model from '../../components/Model.tsx';
@@ -7,7 +7,7 @@ import tick from '../../assets/tick.svg'
 import Plus from '../../assets/reactIcons/Plus.tsx';
 import { AdminPanel } from '../components/AdminPanel.tsx';
 
-const AdminBookingPage = () => {
+const AcceptReturnRequestPage = () => {
     return (
         <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
             <AdminPanel />
@@ -18,7 +18,7 @@ const AdminBookingPage = () => {
     )
 }
 
-export default AdminBookingPage;
+export default AcceptReturnRequestPage;
 
 interface BookingProps {
     // Define your props here
@@ -43,7 +43,7 @@ const BookingComp: React.FC<BookingProps> = () => {
     const [searchUserIdData, setSearchUserIdData] = useState<string>('');
 
     async function downloadBookings(page: number) {
-        getBookingByPage(page, { userId: searchUserIdData }, (data: AdminBookingData) => {
+        getBookingByPage(page, { userId: searchUserIdData, status: 'return requested' }, (data: AdminBookingData) => {
             setBookingData(data.bookingData)
             setNoOfPages(data.totalBookings / 7)
         })
@@ -104,12 +104,17 @@ const BookingComp: React.FC<BookingProps> = () => {
                         <div><span style={{ fontWeight: 500 }}>Status:</span> <span className='d-inline-flex align-items-center'>{bookingData[openedBooking].status} {bookingData[openedBooking].status === "returned" && <img src={tick} width={16} height={16} className='my-auto ms-1' />}</span></div>
                     </div>
                 </div>
-                <div className="modal-footer mx-auto">
+                <div className="modal-footer px-auto">
                     <button
                         type="button"
                         className="btn btn-outline-dark border-2 border-dark"
                         onClick={() => setOpenedBooking(null)}
                     >Close</button>
+                    <button
+                        type="button"
+                        className="btn btn-dark border-2 border-dark"
+                        onClick={() => acceptReturnRequest(bookingData[openedBooking].bikeId, () => { setOpenedBooking(null); downloadBookings(1); })}
+                    >Accept</button>
                 </div>
             </Model>}
         </>

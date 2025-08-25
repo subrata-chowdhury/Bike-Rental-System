@@ -31,6 +31,10 @@ const tabsData: Tabs[] = [{
 {
     href: '/admin/bookings',
     icon: <BookingIcon size={20} />,
+},
+{
+    href: '/admin/return-requests',
+    icon: <BookingIcon size={20} />,
 }]
 
 export const AdminPanel: React.FC<AdminPanelProp> = ({ tabs = tabsData }): React.JSX.Element | null => {

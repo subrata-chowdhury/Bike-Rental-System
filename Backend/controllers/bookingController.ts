@@ -140,17 +140,15 @@ export const getBookingByIndex = async (req: Request, res: Response) => {
     const { pageNo } = req.params
     const searchData = req.url.split('?')[1] ? new URLSearchParams(req.url.split('?')[1]) : new URLSearchParams();
     const filterData = JSON.parse(searchData.get('filter') || '{}');
-    const userId = filterData.userId || null;
-    if (userId)
-        if (!isValidObjectId(userId)) {
+    if (filterData?.userId)
+        if (!isValidObjectId(filterData.userId)) {
             res.status(400).json({ error: 'Invalid user ID' });
             return;
         }
-
     const index = (parseInt(pageNo) - 1) * limit
     try {
-        const bookings = await Booking.find(userId ? { userId } : {}).skip(index).limit(limit).sort({ endTime: -1 }).populate('bike').populate('userId');
-        const total: number = await Booking.countDocuments(userId ? { userId } : {});
+        const bookings = await Booking.find(filterData).skip(index).limit(limit).sort({ endTime: -1 }).populate('bike').populate('userId');
+        const total: number = await Booking.countDocuments({ ...filterData });
         res.status(200).json({ bookingData: bookings, totalBookings: total });
     } catch (error) {
         console.log(error)
@@ -165,15 +163,24 @@ export const acceptReturnRequestByBikeId = async (req: Request, res: Response) =
         const { bikeId } = req.params;
 
         const booking = await Booking.findOne({ bikeId: bikeId, status: 'return requested' });
+        const bike = await Bike.findById(booking?.bikeId);
+        if (!bike) {
+            res.status(404).json({ error: 'Bike not found' });
+            return;
+        }
         if (booking) {
             booking.status = 'returned';
             booking.statusLogs.push({ status: 'returned', timestamp: new Date() });
             booking.endTime = new Date();
             await booking.save();
+            bike.isAvailable = false;
+            await bike.save();
+
         } else {
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
+        io.emit('bike_details_changed', { bike });
         io.emit('booking_details_changed', { booking });
         res.status(200).json({ message: 'Return request accepted successfully' });
     } catch (error) {

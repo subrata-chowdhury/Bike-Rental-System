@@ -136,7 +136,12 @@ export const pickBikeByBikeId = async (bikeId: string, onSuccess: () => void = (
 
 
 
-export const getBookingByPage = async (page: number, filterData: { userId: string }, onSuccess: (data: AdminBookingData) => void = () => { }) => {
+export const getBookingByPage = async (page: number, filterData: { [key: string]: string }, onSuccess: (data: AdminBookingData) => void = () => { }) => {
+    for (const key in filterData) {
+        if (!filterData[key]) {
+            delete filterData[key];
+        }
+    }
     try {
         const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_BASE_URL}/booking/page/${page}?filter=${JSON.stringify(filterData)}`, {
@@ -158,5 +163,24 @@ export const getBookingByPage = async (page: number, filterData: { userId: strin
     } catch (error) {
         console.error(`Error getting bikes with index ${page}:`, error);
         throw error;
+    }
+}
+
+export async function acceptReturnRequest(bikeId: string, onSuccess: () => void = () => { }) {
+    try {
+        const res = await fetch(API_BASE_URL + '/booking/accept-return/' + bikeId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${localStorage.getItem('adminToken')}`,
+            }
+        });
+        if (res.ok) {
+            alert("Return Request Accepted");
+            onSuccess();
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Failed to accept return request");
     }
 }
