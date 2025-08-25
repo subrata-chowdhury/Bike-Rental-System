@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Booking } from '../Types'
 import Menubar from '../components/Menubar'
 import { getBookings } from '../scripts/API Calls/bookingApiCalls'
-import Pages from '../components/Pages'
+import Pagination from '../components/Pagination'
 import { Link } from 'react-router-dom'
 
 const BookingPage = () => {
@@ -68,7 +68,7 @@ const BookingHistory: React.FC = (): React.JSX.Element => {
         <div className='pb-4'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
-                <Pages noOfPages={noOfPages} onPageChange={getBookingData} />
+                <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
             </> : <h4 className='text-center'>No Booking Data</h4>}
         </div>
     )
@@ -106,7 +106,7 @@ const BikeToReturn: React.FC = (): React.JSX.Element => {
         <div className='pb-4'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
-                <Pages noOfPages={noOfPages} onPageChange={getBookingData} />
+                <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
             </> : <h4 className='text-center'>No Booking Data</h4>}
 
         </div>
@@ -133,7 +133,7 @@ const ReturnRequestedBikes: React.FC = (): React.JSX.Element => {
         <div className='pb-4'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
-                <Pages noOfPages={noOfPages} onPageChange={getBookingData} />
+                <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
             </> : <h4 className='text-center'>No Booking Data</h4>}
         </div>
     )
@@ -158,7 +158,7 @@ const BikesThatNeedToPickedUp: React.FC = (): React.JSX.Element => {
         <div className='pb-4'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
-                <Pages noOfPages={noOfPages} onPageChange={getBookingData} />
+                <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
             </> : <h4 className='text-center'>No Booking Data</h4>}
         </div>
     )

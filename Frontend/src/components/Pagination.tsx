@@ -6,7 +6,7 @@ type PagesProp = {
     noOfPages?: number;
 }
 
-const Pages: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React.JSX.Element => {
+const Pagination: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React.JSX.Element => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     let pages: React.JSX.Element[] = [];
     if (noOfPages < 12)
@@ -102,4 +102,4 @@ const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage, onCl
     )
 }
 
-export default Pages
+export default Pagination

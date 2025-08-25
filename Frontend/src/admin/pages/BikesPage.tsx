@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { deleteBike, getBikesByIndex } from '../../scripts/API Calls/bikeApiCalls.ts';
 import Filter from '../../components/Filter.tsx';
-import Pages from '../../components/Pages.tsx';
+import Pagination from '../../components/Pagination.tsx';
 import { Bike, FilterData } from '../../Types.ts';
 import tick from '../../assets/tick.svg';
 import Plus from '../../assets/reactIcons/Plus.tsx';
@@ -69,7 +69,7 @@ const Bikes: React.FC = (): React.JSX.Element => {
                             />
                         )) : <h4 className='text-center'>Add a Bike First</h4>}
                     </div>
-                    <Pages onPageChange={getBikesByPage} noOfPages={noOfPages} />
+                    <Pagination onPageChange={getBikesByPage} noOfPages={noOfPages} />
                 </div>
             </div>
         </>

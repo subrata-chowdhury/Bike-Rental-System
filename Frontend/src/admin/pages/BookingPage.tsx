@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getBookingByPage } from '../../scripts/API Calls/bookingApiCalls.ts';
-import Pages from '../../components/Pages.tsx';
+import Pagination from '../../components/Pagination.tsx';
 import { Booking } from '../../Types.ts'
 import Model from '../../components/Model.tsx';
 import tick from '../../assets/tick.svg'
@@ -76,7 +76,7 @@ const BookingComp: React.FC<BookingProps> = () => {
                         <BookingCard booking={booking} onClick={() => setOpenedBooking(i)} key={booking._id} />
                     ))
                 }
-                <Pages onPageChange={downloadBookings} noOfPages={noOfPages} />
+                <Pagination onPageChange={downloadBookings} noOfPages={noOfPages} />
             </div>
 
             {openedBooking !== null && <Model heading="Booking Details" onClose={() => setOpenedBooking(null)}>

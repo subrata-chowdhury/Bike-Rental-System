@@ -95,7 +95,7 @@ export const pickBikeByBikeId = async (req: Request, res: Response) => {
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
-        // io.emit('bike_details_changed', { bike });
+        io.emit('booking_details_changed', { booking });
         res.status(200).json({ message: 'Bike picked up successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to pick up bike' });
@@ -118,6 +118,7 @@ export const returnBikeByBikeId = async (req: Request, res: Response) => {
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
+        io.emit('booking_details_changed', { booking });
         res.status(200).json({ message: 'Return requested for bike created successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to create return request for bike' });
@@ -173,6 +174,7 @@ export const acceptReturnRequestByBikeId = async (req: Request, res: Response) =
             res.status(404).json({ error: 'Booking not found' });
             return;
         }
+        io.emit('booking_details_changed', { booking });
         res.status(200).json({ message: 'Return request accepted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to accept return request' });

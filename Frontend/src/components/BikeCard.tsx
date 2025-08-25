@@ -1,5 +1,5 @@
 import React from 'react';
-import Pages from './Pages';
+import Pagination from './Pagination';
 import { Bike } from '../Types';
 import { useNavigate } from 'react-router-dom';
 import bikeIcon from '../assets/bike.svg';
@@ -43,7 +43,7 @@ export const BikeCardsContainer: React.FC<BikeCardsContainerProp> = ({
                         ))
                 }
             </div>
-            <Pages onPageChange={onPageChange} noOfPages={noOfPages} />
+            <Pagination onPageChange={onPageChange} noOfPages={noOfPages} />
         </div>
     )
 }
