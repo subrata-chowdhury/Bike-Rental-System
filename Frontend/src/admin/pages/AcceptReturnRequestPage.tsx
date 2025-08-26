@@ -4,7 +4,6 @@ import Pagination from '../../components/Pagination.tsx';
 import { Booking } from '../../Types.ts'
 import Model from '../../components/Model.tsx';
 import tick from '../../assets/tick.svg'
-import Plus from '../../assets/reactIcons/Plus.tsx';
 import { AdminPanel } from '../components/AdminPanel.tsx';
 
 const AcceptReturnRequestPage = () => {
@@ -40,10 +39,10 @@ const BookingComp: React.FC<BookingProps> = () => {
     const [noOfPages, setNoOfPages] = useState<number>(0);
     const [openedBooking, setOpenedBooking] = useState<number | null>(null);
 
-    const [searchUserIdData, setSearchUserIdData] = useState<string>('');
+    const [searchBookingIdData, setSearchBookingIdData] = useState<string>('');
 
     async function downloadBookings(page: number) {
-        getBookingByPage(page, { userId: searchUserIdData, status: 'return requested' }, (data: AdminBookingData) => {
+        getBookingByPage(page, { _id: searchBookingIdData, status: 'return requested' }, (data: AdminBookingData) => {
             setBookingData(data.bookingData)
             setNoOfPages(data.totalBookings / 7)
         })
@@ -60,24 +59,23 @@ const BookingComp: React.FC<BookingProps> = () => {
                     <input
                         type='text'
                         className='form-control border-dark bg-white'
-                        placeholder='Search by User ID'
-                        value={searchUserIdData}
-                        onChange={e => setSearchUserIdData(e.target.value)}
+                        placeholder='Search by Booking ID'
+                        value={searchBookingIdData}
+                        onChange={e => setSearchBookingIdData(e.target.value)}
                         style={{ fontSize: '14px' }} />
                     <button className='btn btn-dark' type='button' style={{ fontSize: '14px', fontWeight: 600 }} onClick={() => downloadBookings(1)}>Search</button>
                 </div>
-                <div className='btn btn-dark d-flex justify-content-center align-items-center px-3 py-2 ps-2' style={{ fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap' }} onClick={() => setOpenedBooking(bookingData.length)}>
-                    <span className='me-2 ps-1'><Plus size={20} /></span>New Booking
-                </div>
             </div>
-            <div className='p-3'>
+            {bookingData.length > 0 ? <div className='p-3'>
                 {
                     bookingData.map((booking, i) => (
                         <BookingCard booking={booking} onClick={() => setOpenedBooking(i)} key={booking._id} />
                     ))
                 }
                 <Pagination onPageChange={downloadBookings} noOfPages={noOfPages} />
-            </div>
+            </div> : <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+                <h5 className='text-muted'>No bookings found</h5>
+            </div>}
 
             {openedBooking !== null && <Model heading="Booking Details" onClose={() => setOpenedBooking(null)}>
                 <div className='modal-body form d-flex flex-column px-5'>

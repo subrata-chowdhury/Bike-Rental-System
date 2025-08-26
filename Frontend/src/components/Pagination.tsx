@@ -62,14 +62,16 @@ const Pagination: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React
             )
         }
     }
-    
+
     return (
         <div className='d-flex justify-content-center mt-3'>
             <div className='rounded-circle bg-white pages mx-1 cursor-pointer' onClick={() => {
                 let newPage = currentPage;
                 newPage--
-                if (newPage > 0)
+                if (newPage > 0) {
                     setCurrentPage(newPage)
+                    onPageChange?.(newPage);
+                }
             }}>
                 <img src={arrowIcon} width={20} style={{ transform: 'rotate(-180deg)' }}></img>
             </div>
@@ -77,8 +79,10 @@ const Pagination: React.FC<PagesProp> = ({ onPageChange, noOfPages = 3 }): React
             <div className='rounded-circle bg-white pages mx-1 cursor-pointer' onClick={() => {
                 let newPage = currentPage;
                 newPage++
-                if (newPage <= noOfPages)
+                if (newPage <= noOfPages) {
                     setCurrentPage(newPage)
+                    onPageChange?.(newPage);
+                }
             }}>
                 <img src={arrowIcon} width={20}></img>
             </div>
@@ -93,7 +97,7 @@ type PageProp = {
     onClick?: (index: number) => void;
 }
 
-const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage, onClick = () => {} }): React.JSX.Element => {
+const Page: React.FC<PageProp> = ({ page, isActive = false, setCurrentPage, onClick = () => { } }): React.JSX.Element => {
     return (
         <div className={'rounded-circle pages mx-1 cursor-pointer' + (isActive ? ' bg-dark text-light' : ' bg-white text-dark')} onClick={() => {
             setCurrentPage(page);

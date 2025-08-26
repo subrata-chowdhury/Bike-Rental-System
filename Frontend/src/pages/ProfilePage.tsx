@@ -3,6 +3,7 @@ import Menubar from "../components/Menubar.tsx";
 import { deleteUser, getUser, updateUser } from "../scripts/API Calls/userApiCalls.ts";
 import { User } from "../Types.ts";
 import logOut from "../scripts/logOut.ts";
+import userIcon from "../assets/user.svg"
 
 type Tabs = {
     name: string;
@@ -91,9 +92,9 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): React.J
 
     useEffect(() => {
         getUser().then(data => {
-            if(data)
+            if (data)
                 setUserDetails(data)
-            else 
+            else
                 logOut()
         })
     }, [])
@@ -112,58 +113,60 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): React.J
     }
 
     return (
-        <div className="py-1 px-4 bg-white rounded-2 mb-3">
-            <h1>User Details</h1>
-            <div className="d-flex flex-column mb-4">
-                <div className="flex-grow-1">
-                    <div className="form-group">
-                        <label htmlFor="username" className="mb-1 fw-bold">User Name</label>
-                        <div className="input-group" id="username">
-                            <input
-                                type="text"
-                                id="firstName"
-                                className="form-control bg-glass bg-deep-white"
-                                placeholder="First Name"
-                                value={userDetails.username.split(' ')[0]}
-                                onChange={inputOnChangeHandler} />
-                            <input
-                                type="text"
-                                id="lastName"
-                                className="form-control bg-glass bg-deep-white"
-                                placeholder="Last Name"
-                                value={userDetails.username.split(' ')[1]}
-                                onChange={inputOnChangeHandler} />
-                        </div>
-                    </div>
-                    <div className="form-group mt-3">
-                        <label htmlFor="email" className="mb-1 fw-bold">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            className="form-control bg-glass bg-deep-white"
-                            placeholder="Email"
-                            value={userDetails.email}
-                            onChange={inputOnChangeHandler} />
-                    </div>
-                    <div className="form-group mt-3">
-                        <label htmlFor="password" className="mb-1 fw-bold">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="form-control bg-glass bg-deep-white"
-                            placeholder="Enter your password"
-                            value={userDetails.password}
-                            onChange={inputOnChangeHandler} />
-                    </div>
+        <div className="py-3 px-4 bg-white rounded-2 mb-3 d-flex flex-column">
+            <img src={userIcon}
+                width={100}
+                height={100}
+                className="p-4 mb-2 rounded rounded-circle dropdown-toggle mx-auto"
+                style={{ background: 'rgba(0,0,0,0.2)' }} />
+            <h6 className="mb-0 text-center">{userDetails.username}</h6>
+            <div className="text-center" style={{ wordBreak: 'break-all', fontSize: '0.8rem' }}>{userDetails.email}</div>
+            <div className="form-group mt-2">
+                <label htmlFor="username" className="mb-1 fw-bold">User Name</label>
+                <div className="input-group" id="username">
+                    <input
+                        type="text"
+                        id="firstName"
+                        className="form-control bg-glass bg-deep-white"
+                        placeholder="First Name"
+                        value={userDetails.username.split(' ')[0]}
+                        onChange={inputOnChangeHandler} />
+                    <input
+                        type="text"
+                        id="lastName"
+                        className="form-control bg-glass bg-deep-white"
+                        placeholder="Last Name"
+                        value={userDetails.username.split(' ')[1]}
+                        onChange={inputOnChangeHandler} />
                 </div>
-                <div className="mt-4">
-                    <button className="btn btn-primary" onClick={() => {
-                        onUpdate(userDetails);
-                    }}>Update Details</button>
-                    <button className="btn btn-danger ms-3" onClick={() => {
-                        onDelete(userDetails);
-                    }}>Delete Account</button>
+                <div className="form-group mt-3">
+                    <label htmlFor="email" className="mb-1 fw-bold">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        className="form-control bg-glass bg-deep-white"
+                        placeholder="Email"
+                        value={userDetails.email}
+                        onChange={inputOnChangeHandler} />
                 </div>
+                <div className="form-group mt-3">
+                    <label htmlFor="password" className="mb-1 fw-bold">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        className="form-control bg-glass bg-deep-white"
+                        placeholder="Enter your password"
+                        value={userDetails.password}
+                        onChange={inputOnChangeHandler} />
+                </div>
+            </div>
+            <div className="mt-4 mb-1">
+                <button className="btn btn-primary" onClick={() => {
+                    onUpdate(userDetails);
+                }}>Update Details</button>
+                <button className="btn text-danger ms-3" style={{ fontWeight: 600 }} onClick={() => {
+                    onDelete(userDetails);
+                }}>Delete my Account</button>
             </div>
         </div>
     )

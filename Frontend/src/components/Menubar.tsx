@@ -60,18 +60,20 @@ const Menubar: React.FC = (): React.JSX.Element => {
                     </div>
                 </div>
                 {showMenus && <div className="position-fixed d-flex top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" onClick={() => setShowMenus(false)}>
-                    <div className="bg-white h-100" style={{ width: '80%' }} onClick={e => e.stopPropagation()}>
-                        {userDetails && <Link to={'/profile'} className="text-decoration-none text-dark">
+                    <div className="bg-white h-100 d-flex flex-column" style={{ width: '80%' }} onClick={e => e.stopPropagation()}>
+                        <Link to={'/profile'} className="text-decoration-none text-dark">
                             <div className="d-flex flex-column text-center">
                                 <img src={userIcon}
-                                    width={60}
-                                    height={60}
-                                    className="p-3 mb-2 rounded rounded-circle dropdown-toggle mx-auto mt-5"
-                                    style={{ background: 'rgba(0,0,0,0.2)' }}></img>
-                                <div>{userDetails.username}</div>
-                                <div style={{ wordBreak: 'break-all' }}>{userDetails.email}</div>
+                                    width={100}
+                                    height={100}
+                                    className="p-4 mb-2 rounded rounded-circle dropdown-toggle mx-auto mt-4"
+                                    style={{ background: 'rgba(0,0,0,0.2)' }} />
+                                {userDetails ? <>
+                                    <h6 className="mb-0 text-center">{userDetails.username}</h6>
+                                    <div className="text-center" style={{ wordBreak: 'break-all', fontSize: '0.8rem' }}>{userDetails.email}</div>
+                                </> : <Link to="/login" className="btn btn-primary w-100">Log In</Link>}
                             </div>
-                        </Link>}
+                        </Link>
                         <div className="navbar-nav d-flex flex-column my-auto mt-5">
                             {menus.map((menu, index) => (
                                 <li className="nav-item ms-2 me-2 d-flex justify-content-center" key={index}>
@@ -79,6 +81,13 @@ const Menubar: React.FC = (): React.JSX.Element => {
                                 </li>
                             ))}
                         </div>
+                        {userDetails && <button
+                            style={{ width: '80%' }}
+                            className="btn btn-outline-primary mt-auto mx-auto mb-4 border border-2 border-primary d-flex justify-content-center align-items-center"
+                            onClick={logOut}>
+                            Log Out
+                            <LogOutIcon size={18} className="ms-2" />
+                        </button>}
                     </div>
                     <div className="bg-white p-2 mb-auto" style={{ borderTopRightRadius: 5, borderBottomRightRadius: 5 }}>
                         <button type="button" className="btn-close" onClick={() => setShowMenus(false)} aria-label="Close"></button>

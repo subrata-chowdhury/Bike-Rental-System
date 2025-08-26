@@ -14,8 +14,8 @@ const Footer: React.FC = (): React.JSX.Element => {
                         <p>123, ABC Street, XYZ City, Country</p>
                     </div>
                     <div className='col-12 col-md-4 mt-3 mt-md-0'>
-                        <h5>Contact</h5>
-                        <p>Phone: 1234567890</p>
+                        <h5>Contact Us</h5>
+                        <p>Phone: +91 XXXXX-XXXXX</p>
                         <p>Email: subratachowdhury7000@gmail.com</p>
                     </div>
                     <div className='col-12 col-md-4 mt-3 mt-md-0'>

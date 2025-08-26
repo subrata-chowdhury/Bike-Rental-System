@@ -25,20 +25,18 @@ const BookingPage = () => {
     return (
         <div className="h-100 d-flex flex-column">
             <Menubar />
-            <div className="container mt-4">
-                <div className="d-flex flex-column flex-md-row">
-                    <ul className="nav nav-pills flex-column me-3">
-                        {tabs.map((tab, index) => (
-                            <li className="nav-item mb-2" key={index}>
-                                <div
-                                    className={`nav-link cursor-pointer ${activeTab === index ? 'active bg-dark' : ' text-dark bg-white'}`}
-                                    onClick={() => setActiveTab(index)}>{tab.name}</div>
-                            </li>
-                        ))}
-                    </ul>
-                    <div className="flex-grow-1">
-                        {tabs[activeTab].component}
-                    </div>
+            <div className="container mt-4 d-flex flex-column flex-md-row h-100">
+                <ul className="nav nav-pills flex-column me-3">
+                    {tabs.map((tab, index) => (
+                        <li className="nav-item mb-2" key={index}>
+                            <div
+                                className={`nav-link cursor-pointer ${activeTab === index ? 'active bg-dark' : ' text-dark bg-white'}`}
+                                onClick={() => setActiveTab(index)}>{tab.name}</div>
+                        </li>
+                    ))}
+                </ul>
+                <div className="flex-grow-1">
+                    {tabs[activeTab].component}
                 </div>
             </div>
         </div>
@@ -65,11 +63,13 @@ const BookingHistory: React.FC = (): React.JSX.Element => {
     }
 
     return (
-        <div className='pb-4'>
+        <div className='pb-4 h-100'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
                 <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
-            </> : <h4 className='text-center'>No Booking Data</h4>}
+            </> : <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+                <h5 className='text-muted'>No bookings found</h5>
+            </div>}
         </div>
     )
 }
@@ -103,11 +103,13 @@ const BikeToReturn: React.FC = (): React.JSX.Element => {
     }
 
     return (
-        <div className='pb-4'>
+        <div className='pb-4 h-100'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
                 <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
-            </> : <h4 className='text-center'>No Booking Data</h4>}
+            </> : <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+                <h5 className='text-muted'>No bookings found</h5>
+            </div>}
 
         </div>
     )
@@ -130,11 +132,13 @@ const ReturnRequestedBikes: React.FC = (): React.JSX.Element => {
     }
 
     return (
-        <div className='pb-4'>
+        <div className='pb-4 h-100'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
                 <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
-            </> : <h4 className='text-center'>No Booking Data</h4>}
+            </> : <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+                <h5 className='text-muted'>No bookings found</h5>
+            </div>}
         </div>
     )
 }
@@ -155,11 +159,13 @@ const BikesThatNeedToPickedUp: React.FC = (): React.JSX.Element => {
     }
 
     return (
-        <div className='pb-4'>
+        <div className='pb-4 h-100'>
             {bookingData.length > 0 ? <>
                 {bookingData.map(booking => <BookingCard key={booking._id} booking={booking} />)}
                 <Pagination noOfPages={noOfPages} onPageChange={getBookingData} />
-            </> : <h4 className='text-center'>No Booking Data</h4>}
+            </> : <div className='d-flex flex-column justify-content-center align-items-center h-100'>
+                <h5 className='text-muted'>No bookings found</h5>
+            </div>}
         </div>
     )
 }
