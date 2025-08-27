@@ -57,7 +57,7 @@ const BookingHistory: React.FC = (): React.JSX.Element => {
     }, [])
 
     async function getBookingData(index: number) {
-        const res = await getBookings(index, { status: { $in: ['returned', 'canceled'] } }, (data) => {
+        const res = await getBookings(index, { status: { $in: ['returned', 'cancelled'] } }, (data) => {
             setBookingData(data.bookings);
             setNoOfPages(Math.ceil(data.totalBookings / 6))
         })

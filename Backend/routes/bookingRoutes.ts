@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleware from '../middlewares/auth';
-import { createBooking, returnBikeByBikeId, getBookingByIndex, pickBikeByBikeId,  getBookingsByUserId, acceptReturnRequestByBikeId } from '../controllers/bookingController';
+import { createBooking, returnBikeByBikeId, getBookingByIndex, pickBikeByBikeId,  getBookingsByUserId, acceptReturnRequestByBikeId, cancelBookingByBikeId } from '../controllers/bookingController';
 import { isAdmin } from '../controllers/roleChecker';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/:index', authMiddleware, getBookingsByUserId);
 router.post('/', authMiddleware, createBooking);
 router.post('/bike/:bikeId', authMiddleware, returnBikeByBikeId);
+router.post('/cancel/:bikeId', authMiddleware, cancelBookingByBikeId);
 router.post('/bike/pick/:bikeId', authMiddleware, pickBikeByBikeId);
 
 

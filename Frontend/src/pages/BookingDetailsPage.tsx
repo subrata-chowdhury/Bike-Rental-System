@@ -3,7 +3,7 @@ import Menubar from '../components/Menubar';
 import { Booking } from '../Types';
 import bikeIcon from '../assets/bike.svg';
 import tickIcon from '../assets/tick.svg';
-import { pickBikeByBikeId, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
+import { cancelBookingByBikeId, pickBikeByBikeId, returnBikeByBikeId } from '../scripts/API Calls/bookingApiCalls';
 import { useSocket } from '../scripts/socket';
 import { useEffect, useState } from 'react';
 
@@ -56,11 +56,12 @@ const BookingDetailsPage = () => {
                     <div>Order Modified at: {new Date(bookingData.updatedAt).toLocaleString()}</div>
                 </div>
                 <div className='d-flex justify-content-end mt-2'>
+                    {bookingData.status === 'booked' && <button className='btn btn-outline-dark border-2 border-dark me-2' onClick={() => cancelBookingByBikeId(bookingData.bikeId)}>Cancel Booking</button>}
                     {bookingData.status === 'booked' && <button className='btn btn-dark' onClick={() => { if (bookingData?.bike?._id) pickBikeByBikeId(bookingData.bike._id) }}>Pick Up</button>}
                     {bookingData.status === 'picked up' && <button className='btn btn-dark' onClick={() => { if (bookingData?.bike?._id) returnBikeByBikeId(bookingData.bike._id) }}>Request Return</button>}
                     {bookingData.status === 'return requested' && <div>Return Requested</div>}
                     {bookingData.status === 'returned' && <div className='d-flex alight-items-center gap-2 me-2'><img src={tickIcon} width={20} height={20} className='my-auto' />Bike Returned</div>}
-                    {bookingData.status === 'canceled' && <div>Booking Canceled</div>}
+                    {bookingData.status === 'cancelled' && <div>Booking Canceled</div>}
                 </div>
             </div>
         </>

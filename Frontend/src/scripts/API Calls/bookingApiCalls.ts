@@ -129,6 +129,36 @@ export const pickBikeByBikeId = async (bikeId: string, onSuccess: () => void = (
 
 
 
+export const cancelBookingByBikeId = async (bikeId: string, onSuccess: () => void = () => { }) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/booking/cancel/${bikeId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `${token}`,
+                // Add any additional headers if required
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update booking');
+        }
+
+        if (response.ok) {
+            onSuccess();
+            alert("Booking Cancelled Successfully")
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        // Handle error
+    }
+};
+
+
 
 
 // ADMIN API CALLS

@@ -188,3 +188,35 @@ export const acceptReturnRequestByBikeId = async (req: Request, res: Response) =
         res.status(500).json({ error: 'Failed to accept return request' });
     }
 }
+
+
+// cancel a booking by bike ID
+export const cancelBookingByBikeId = async (req: Request, res: Response) => {
+    try {
+        const { bikeId } = req.params;
+
+        const booking = await Booking.findOne({ bikeId: bikeId, status: 'booked' });
+        const bike = await Bike.findById(booking?.bikeId);
+        if (!bike) {
+            res.status(404).json({ error: 'Bike not found' });
+            return;
+        }
+        if (booking) {
+            booking.status = 'cancelled';
+            booking.statusLogs.push({ status: 'cancelled', timestamp: new Date() });
+            booking.endTime = new Date();
+            await booking.save();
+            bike.isAvailable = true;
+            await bike.save();
+
+        } else {
+            res.status(404).json({ error: 'Booking not found' });
+            return;
+        }
+        io.emit('bike_details_changed', { bike });
+        io.emit('booking_details_changed', { booking });
+        res.status(200).json({ message: 'cancelled booking successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to cancel booking' });
+    }
+}
