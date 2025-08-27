@@ -41,14 +41,29 @@ export const getStatistics = async (req: Request, res: Response) => {
         const revenues: { month: number, revenue: number }[] = [];
         bookings.forEach(booking => {
             const month = new Date(booking.startTime).getMonth();
-            const revenue = Math.floor((new Date(booking.endTime).getTime() - new Date(booking.startTime).getTime()) / 1000 / 60) * (booking.bike.pricePerHour / 60);
+            const revenue = Math.floor(Math.abs(new Date(booking.endTime).getTime() - new Date(booking.startTime).getTime()) / 1000 / 60) * (booking.bike.pricePerHour / 60);
             revenues[month] = {
                 month: month,
                 revenue: (revenues[month]?.revenue || 0) + revenue
             };
         });
+        const statusCounts = await Booking.aggregate([
+            {
+                $group: {
+                    _id: "$status",          // group by status
+                    count: { $sum: 1 }       // count documents
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    name: "$_id",          // rename _id to name
+                    count: 1
+                }
+            }
+        ]);
 
-        res.status(200).json({ counts, totalRevenue: revenues });
+        res.status(200).json({ counts, totalRevenue: revenues, statusCounts });
     } catch (error) {
         res.status(500).json({ error: 'Failed to get bike availability counts' });
         throw error;

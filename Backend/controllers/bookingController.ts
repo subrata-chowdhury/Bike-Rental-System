@@ -50,15 +50,16 @@ export const createBooking = async (req: Request, res: Response) => {
             endTime,
             status: 'booked'
         });
-        const savedBooking = await newBooking.save();
-        savedBooking.statusLogs.push({ status: 'booked', timestamp: new Date() });
-        await savedBooking.save();
+        await newBooking.save();
+        newBooking.statusLogs.push({ status: 'booked', timestamp: new Date() });
+        await newBooking.save();
 
         bike.isAvailable = false;
         await bike.save();
 
         io.emit('bike_details_changed', { bike });
-        res.status(201).json(savedBooking);
+        io.emit('booking_details_changed', { booking: newBooking });
+        res.status(201).json(newBooking);
     } catch (error) {
         res.status(500).json({ error: 'Failed to create booking' });
     }
@@ -145,7 +146,7 @@ export const getBookingByIndex = async (req: Request, res: Response) => {
             res.status(400).json({ error: 'Invalid user ID' });
             return;
         }
-    const index = (parseInt(pageNo) - 1) * limit
+    const index = (parseInt(pageNo)) * limit
     try {
         const bookings = await Booking.find(filterData).skip(index).limit(limit).sort({ endTime: -1 }).populate('bike').populate('userId');
         const total: number = await Booking.countDocuments({ ...filterData });
@@ -173,7 +174,7 @@ export const acceptReturnRequestByBikeId = async (req: Request, res: Response) =
             booking.statusLogs.push({ status: 'returned', timestamp: new Date() });
             booking.endTime = new Date();
             await booking.save();
-            bike.isAvailable = false;
+            bike.isAvailable = true;
             await bike.save();
 
         } else {

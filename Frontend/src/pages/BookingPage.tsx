@@ -4,6 +4,7 @@ import Menubar from '../components/Menubar'
 import { getBookings } from '../scripts/API Calls/bookingApiCalls'
 import Pagination from '../components/Pagination'
 import { Link } from 'react-router-dom'
+import logOut from '../scripts/logOut'
 
 const BookingPage = () => {
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -55,11 +56,14 @@ const BookingHistory: React.FC = (): React.JSX.Element => {
         getBookingData(0)
     }, [])
 
-    function getBookingData(index: number) {
-        getBookings(index, { status: { $in: ['returned', 'canceled'] } }, (data) => {
+    async function getBookingData(index: number) {
+        const res = await getBookings(index, { status: { $in: ['returned', 'canceled'] } }, (data) => {
             setBookingData(data.bookings);
             setNoOfPages(Math.ceil(data.totalBookings / 6))
         })
+        if (res === null) {
+            logOut();
+        }
     }
 
     return (

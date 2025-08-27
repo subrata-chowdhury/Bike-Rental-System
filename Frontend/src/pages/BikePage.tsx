@@ -35,8 +35,8 @@ const BikePage = () => {
         if (id) getBikesById(id, setBikeDetails);
     }, [id]);
 
-    const [newStartTime, setStartTime] = useState<Date>(new Date());
-    const [newEndTime, setEndTime] = useState<Date>(new Date());
+    const [startTime, setStartTime] = useState<Date>(new Date());
+    const [endTime, setEndTime] = useState<Date>(new Date());
 
     function toDatetimeLocal(date: Date): string {
         const pad = (n: number) => String(n).padStart(2, '0');
@@ -115,7 +115,7 @@ const BikePage = () => {
                             disabled={!bikeDetails.isAvailable}
                             className={`btn rounded-1 border-2 w-100 btn-dark ${bikeDetails.isAvailable ? '' : 'disabled'}`}
                             onClick={() => setShowBookingPopup(val => !val)}>Book</button>
-                        {orderedBikes.orderedBikes.some(booking => booking._id === bikeDetails._id) && <button
+                        {orderedBikes.orderedBikes.filter(booking => booking._id === bikeDetails._id).length > 0 && <button
                             className='btn border-2 border-dark w-100 mt-2'
                             onClick={async () => {
                                 if (!bikeDetails._id) {
@@ -142,14 +142,14 @@ const BikePage = () => {
                                 type="datetime-local"
                                 id='startTime'
                                 className='form-control'
-                                value={toDatetimeLocal(newStartTime)}
+                                value={toDatetimeLocal(startTime)}
                                 onChange={e => { setStartTime(new Date(e.target.value)); console.log(e.target.value) }} />
                             <label htmlFor='endTime'>End Time:</label>
                             <input
                                 type='datetime-local'
                                 id='endTime'
                                 className='form-control'
-                                value={toDatetimeLocal(newEndTime)}
+                                value={toDatetimeLocal(endTime)}
                                 onChange={e => setEndTime(new Date(e.target.value))} />
                         </div>
                         <button
@@ -157,15 +157,15 @@ const BikePage = () => {
                             onClick={async () => {
                                 const currentData = new Date()
                                 currentData.setHours(0, 0, 0, 0)
-                                if (newStartTime < currentData) {
+                                if (startTime < currentData) {
                                     alert('Start time cannot be in the past')
                                     return
                                 }
-                                if (newEndTime < currentData) {
+                                if (endTime < currentData) {
                                     alert('End time cannot be in the past')
                                     return
                                 }
-                                if (newStartTime > newEndTime) {
+                                if (startTime > endTime) {
                                     alert('Start time cannot be greater than end time')
                                     return
                                 }
@@ -174,8 +174,7 @@ const BikePage = () => {
                                     return;
                                 }
 
-                                await createBooking(bikeDetails._id, newStartTime, newEndTime, () => {
-                                    orderedBikes.addBike(bikeDetails);
+                                await createBooking(bikeDetails._id, startTime, endTime, () => {
                                     setShowBookingPopup(false);
                                     if (id) getBikesById(id, setBikeDetails);
                                 })

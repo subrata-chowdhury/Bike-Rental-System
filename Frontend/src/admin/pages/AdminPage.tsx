@@ -22,7 +22,13 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
         { name: "Available Bikes", value: 0 },
         { name: "Not Available", value: 0 },
     ]);
-    const [revenueData, setRevenueData] = useState<{ month: number, revenue: number }[]>([]);
+    const [bookingStatusData, setBookingStatusData] = useState([
+        { name: "Booked", count: 0 },
+        { name: "Picked Up", count: 0 },
+        { name: "Returned", count: 0 },
+        { name: "Cancelled", count: 0 },
+    ]);
+    const [revenueData, setRevenueData] = useState<{ month: string, revenue: number }[]>([]);
     const socketRef = useSocket();
     const navigate = useNavigate();
 
@@ -62,10 +68,15 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                             valuesData[i] = { month: i, revenue: 0 }
                         }
                     })
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    valuesData.forEach((_, i) => {
+                        valuesData[i] = { month: months[i], revenue: valuesData[i].revenue }
+                    })
                     return valuesData
                 })
+                setBookingStatusData(values.statusCounts);
             }
-            if(res.status === 401) {
+            if (res.status === 401) {
                 localStorage.removeItem('adminToken');
                 navigate('/admin/login');
             }
@@ -78,10 +89,10 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                 <AdminPanel />
                 <div className='flex-grow-1' style={{ padding: '2rem' }}>
                     <h2 className='mb-4'>Admin Dashboard</h2>
-                    <div className='d-flex gap-2'>
-                        <div className='card p-2 px-3'>
+                    <div className='gap-2'>
+                        <div className='card d-inline-flex p-2 px-3 me-2'>
                             <h5 className="text-xl font-semibold mb-4">Total Revenue</h5>
-                            <ResponsiveContainer width={400} height="100%">
+                            <ResponsiveContainer width={500} height={300}>
                                 <BarChart
                                     width={500}
                                     height={300}
@@ -98,13 +109,13 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
+                                    <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} radius={[10, 10, 0, 0]} />
                                     {/* <Bar dataKey="month" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} /> */}
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="card p-2 px-3">
-                            <h5 className="text-xl font-semibold mb-4">Available vs Not Available Bikes</h5>
+                        <div className="card d-inline-flex p-2 px-3 me-2 mt-2">
+                            <h5 className="text-xl font-semibold mb-4">Bike Availability</h5>
                             <ResponsiveContainer width={300} height={300}>
                                 <PieChart>
                                     <Pie
@@ -112,12 +123,40 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                         cx="50%"
                                         cy="50%"
                                         innerRadius={50}
-                                        outerRadius={60}
+                                        outerRadius={75}
                                         paddingAngle={5}
-                                        cornerRadius={10}
+                                        cornerRadius={5}
                                         dataKey="value"
+                                        startAngle={180}          // 🔥 Start at 180 degrees
+                                        endAngle={0}
                                     >
                                         {donutChartData.map((_, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
+                        
+                        <div className="card d-inline-flex p-2 px-3 me-2 mt-2">
+                            <h5 className="text-xl font-semibold mb-4">Booking Status</h5>
+                            <ResponsiveContainer width={300} height={300}>
+                                <PieChart>
+                                    <Pie
+                                        data={bookingStatusData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={50}
+                                        outerRadius={75}
+                                        paddingAngle={5}
+                                        cornerRadius={5}
+                                        dataKey="count"
+                                        startAngle={180}          // 🔥 Start at 180 degrees
+                                        endAngle={0}
+                                    >
+                                        {bookingStatusData.map((_, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>

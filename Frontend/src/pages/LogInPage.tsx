@@ -44,7 +44,7 @@ const LogInPage: React.FC = (): React.JSX.Element => {
             <div className='log-in-page form-container my-auto'>
                 <h1>
                     <p>Welcome to,</p>
-                    <p className='fw-bolder text-primary'>Bike Booker</p>
+                    <p className='fw-bolder text-primary'>Bike Rental</p>
                 </h1>
                 <LogInAndSingUpForm onLogInBtnClick={loginUser} onSignUpBtnClick={registerUser} />
             </div>

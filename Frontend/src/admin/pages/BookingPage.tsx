@@ -50,7 +50,7 @@ const BookingComp: React.FC<BookingProps> = () => {
     }
 
     useEffect(() => {
-        downloadBookings(1)
+        downloadBookings(0)
     }, [])
 
     return (
@@ -129,20 +129,14 @@ export type AdminBookingData = {
 const BookingCard: React.FC<BookingCardProps> = ({ booking, onClick }) => {
     return (
         <>
-            <div className='card bg-white mb-2 cursor-pointer' onClick={onClick}>
-                <div className='card-body d-grid' style={{ gridAutoFlow: 'column' }}>
-                    <span className='row'>
-                        <span className='col' style={{ fontWeight: 500, fontSize: '1rem' }}>{booking.bike.bikeModel}</span>
-                        <span className='ms-4 col'>{booking.bike.brand}</span>
-                    </span>
-                    <span className='row'>
-                        <span className='ms-4 col'>{booking.startTime.split('T')[0]}</span>
-                        <span className='ms-4 col'>{booking.endTime.split('T')[0]}</span>
-                    </span>
-                    <span className='d-flex flex-column'>
-                        <span className={'ms-4' + (booking.status === 'returned' ? " text-success" : " text-danger")}>{booking.status}</span>
-                    </span>
+            <div className='card card-body d-flex flex-row justify-content-between align-items-center mb-2 text-decoration-none' key={booking._id} onClick={onClick}>
+                <div>
+                    <h6 className='mb-0'>{booking.bike.bikeModel}</h6>
+                    <div>{booking.bike.brand}</div>
+                    <div>{new Date(booking.startTime).toLocaleString()} - {new Date(booking.endTime).toLocaleString()}</div>
                 </div>
+                <h6 className={'ms-4' + (booking.status === 'returned' ? " text-success" : " text-danger")}>{booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</h6>
+                <h5 className='mb-0 me-2'>{(booking.bike.pricePerHour/60).toFixed(2)}₹/min</h5>
             </div>
         </>
     );

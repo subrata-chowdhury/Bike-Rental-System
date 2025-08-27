@@ -14,7 +14,7 @@ export const createBooking = async (bikeId: string, startTime: Date, endTime: Da
                 'authorization': `${token}`,
                 // Add any additional headers if required
             },
-            body: JSON.stringify({ bikeId, startTime, endTime }),
+            body: JSON.stringify({ bikeId, startTime: startTime.toISOString(), endTime: endTime.toISOString() }),
         });
 
         if (response.status === 401) {
@@ -46,14 +46,14 @@ export const getBookings = async (page: number = 0, filterData: { [key: string]:
             },
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to get booking');
-        }
         if (response.status === 401) {
-            // logOut();
+            return null;
+        }
+        if (!response.ok) {
+            return null;
         }
 
-        const data: { bookings: Booking[], totalBookings: number } = await response.json();
+        const data: { bookings: Booking[], totalBookings: number  } = await response.json();
 
         if (response.ok) {
             onSuccess(data)

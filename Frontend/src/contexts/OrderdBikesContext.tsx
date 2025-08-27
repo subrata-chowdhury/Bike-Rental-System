@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Bike } from '../Types';
 import { getBookings } from '../scripts/API Calls/bookingApiCalls.ts';
+import { useSocket } from '../scripts/socket.ts';
 
 type OrderdBikesContextType = {
     orderedBikes: Bike[];
@@ -21,6 +22,7 @@ export const useOrderdBikes = () => {
 
 export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
     const [orderedBikes, setOrderedBikes] = useState<Bike[]>([]);
+    const socket = useSocket();
 
     const addBike = (bike: Bike) => {
         setOrderedBikes(prev => [...prev, bike]);
@@ -34,8 +36,30 @@ export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
         setOrderedBikes([]);
     };
 
+
     useEffect(() => {
-        getBookings(0, { endTime: { $lt: new Date().toISOString() }, status: 'picked up' }, (data) => {
+        if (!socket.current) return;
+
+        socket.current.on('booking_details_changed', () => {
+            getBookings(0, { status: 'picked up' }, (data) => {
+                const bikes: Bike[] = [];
+                data.bookings.forEach(booking => {
+                    bikes.push(booking.bike)
+                })
+                if (bikes.length === 0) {
+                    return;
+                }
+                setOrderedBikes(bikes);
+            })
+        });
+
+        return () => {
+            socket.current?.off('booking_details_changed');
+        };
+    }, [socket]);
+
+    useEffect(() => {
+        getBookings(0, { status: 'picked up' }, (data) => {
             const bikes: Bike[] = [];
             data.bookings.forEach(booking => {
                 bikes.push(booking.bike)

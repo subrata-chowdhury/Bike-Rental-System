@@ -113,7 +113,7 @@ const UserDetails: React.FC<UserDetailsProp> = ({ onUpdate, onDelete }): React.J
     }
 
     return (
-        <div className="py-3 px-4 bg-white rounded-2 mb-3 d-flex flex-column">
+        <div className="py-3 px-4 bg-white rounded-2 mb-3 d-flex flex-column shadow-md">
             <img src={userIcon}
                 width={100}
                 height={100}

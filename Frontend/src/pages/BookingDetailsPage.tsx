@@ -38,7 +38,7 @@ const BookingDetailsPage = () => {
                         <h2 className='mb-0 mt-3'>{bookingData.bike.pricePerHour}₹/hr</h2>
                     </div>
                     <div>
-                        <img width={80} height={80} src={bookingData.bike.images[0] ? bookingData.bike.images[0] : bikeIcon} />
+                        <img width={80} height={80} src={bookingData.bike.images[0] ? 'http://localhost:5000/uploads/' + bookingData.bike.images[0] : bikeIcon} />
                     </div>
                 </div>
                 {bookingData.statusLogs?.length > 0 && <div className='card card-body mt-2'>
