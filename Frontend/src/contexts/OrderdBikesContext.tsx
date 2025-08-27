@@ -23,6 +23,7 @@ export const useOrderdBikes = () => {
 export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
     const [orderedBikes, setOrderedBikes] = useState<Bike[]>([]);
     const socket = useSocket();
+    const location = window.location;
 
     const addBike = (bike: Bike) => {
         setOrderedBikes(prev => [...prev, bike]);
@@ -41,6 +42,26 @@ export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
         if (!socket.current) return;
 
         socket.current.on('booking_details_changed', () => {
+            if (!location.pathname.split('/').includes('admin'))
+                getBookings(0, { status: 'picked up' }, (data) => {
+                    const bikes: Bike[] = [];
+                    data.bookings.forEach(booking => {
+                        bikes.push(booking.bike)
+                    })
+                    if (bikes.length === 0) {
+                        return;
+                    }
+                    setOrderedBikes(bikes);
+                })
+        });
+
+        return () => {
+            socket.current?.off('booking_details_changed');
+        };
+    }, [socket]);
+
+    useEffect(() => {
+        if (!location.pathname.split('/').includes('admin'))
             getBookings(0, { status: 'picked up' }, (data) => {
                 const bikes: Bike[] = [];
                 data.bookings.forEach(booking => {
@@ -51,24 +72,6 @@ export const OrderdBikesProvider = ({ children }: { children: ReactNode }) => {
                 }
                 setOrderedBikes(bikes);
             })
-        });
-
-        return () => {
-            socket.current?.off('booking_details_changed');
-        };
-    }, [socket]);
-
-    useEffect(() => {
-        getBookings(0, { status: 'picked up' }, (data) => {
-            const bikes: Bike[] = [];
-            data.bookings.forEach(booking => {
-                bikes.push(booking.bike)
-            })
-            if (bikes.length === 0) {
-                return;
-            }
-            setOrderedBikes(bikes);
-        })
     }, [])
 
     return (

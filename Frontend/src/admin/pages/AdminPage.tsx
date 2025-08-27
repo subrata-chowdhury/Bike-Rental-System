@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { AdminPanel } from '../components/AdminPanel.tsx';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, XAxis, YAxis, CartesianGrid, BarChart, Bar, Rectangle } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, XAxis, YAxis, CartesianGrid, BarChart, Bar, Rectangle, LegendPayload } from "recharts";
 import apiUrl from '../../scripts/API Calls/apiUrl.ts';
 import { useSocket } from '../../scripts/socket.ts';
 import { useNavigate } from 'react-router-dom';
 
-const COLORS = ["#50b454ff", "#F44336"]; // Green for available, Red for not available
+const COLORS = ["#7E5DED", "#C65DED", "#9889F8", "#5D84ED", "#ED5DCC"]; // Green for available, Red for not available
 
 export type Tabs = {
     name: string;
@@ -87,7 +87,7 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
         <>
             <div className='d-flex flex-column flex-grow-1 flex-md-row h-100'>
                 <AdminPanel />
-                <div className='flex-grow-1' style={{ padding: '2rem' }}>
+                <div className='flex-grow-1' style={{ padding: '2rem', maxHeight: '100vh', overflowY: 'auto' }}>
                     <h2 className='mb-4'>Admin Dashboard</h2>
                     <div className='gap-2'>
                         <div className='card d-inline-flex p-2 px-3 me-2'>
@@ -108,8 +108,8 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                     <XAxis dataKey="month" />
                                     <YAxis />
                                     <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="revenue" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} radius={[10, 10, 0, 0]} />
+                                    <Legend content={<CustomLegend />} />
+                                    <Bar dataKey="revenue" fill="#5D84ED" activeBar={<Rectangle fill="pink" stroke="blue" />} radius={[10, 10, 0, 0]} />
                                     {/* <Bar dataKey="month" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} /> */}
                                 </BarChart>
                             </ResponsiveContainer>
@@ -135,11 +135,11 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                         ))}
                                     </Pie>
                                     <Tooltip />
-                                    <Legend />
+                                    <Legend content={<CustomLegend />} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
-                        
+
                         <div className="card d-inline-flex p-2 px-3 me-2 mt-2">
                             <h5 className="text-xl font-semibold mb-4">Booking Status</h5>
                             <ResponsiveContainer width={300} height={300}>
@@ -150,10 +150,10 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                         cy="50%"
                                         innerRadius={50}
                                         outerRadius={75}
-                                        paddingAngle={5}
-                                        cornerRadius={5}
+                                        paddingAngle={0}
+                                        cornerRadius={4}
                                         dataKey="count"
-                                        startAngle={180}          // 🔥 Start at 180 degrees
+                                        startAngle={360}          // 🔥 Start at 180 degrees
                                         endAngle={0}
                                     >
                                         {bookingStatusData.map((_, index) => (
@@ -161,7 +161,7 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
                                         ))}
                                     </Pie>
                                     <Tooltip />
-                                    <Legend />
+                                    <Legend content={<CustomLegend />} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
@@ -173,3 +173,29 @@ const AdminPage: React.FC<AdminPageProp> = ({ }): React.JSX.Element => {
 }
 
 export default AdminPage;
+
+
+const CustomLegend = ({ payload }: { payload?: LegendPayload[] }) => {
+    return (
+        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", alignItems: "center", flexWrap: "wrap", justifyContent: 'center', gap: '10px' }}>
+            {payload?.map((entry, index) => (
+                <li
+                    key={`item-${index}`}
+                    style={{ display: "flex", alignItems: "center", marginBottom: 4, color: entry.color ?? "#ccc" }}
+                >
+                    <span
+                        style={{
+                            display: "inline-block",
+                            width: "12px",
+                            height: "12px",
+                            borderRadius: "50%",
+                            backgroundColor: entry.color ?? "#ccc",
+                            marginRight: 6,
+                        }}
+                    />
+                    {(entry.value || '').charAt(0).toUpperCase() + entry.value?.slice(1)}
+                </li>
+            ))}
+        </ul>
+    );
+};
