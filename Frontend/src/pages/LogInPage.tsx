@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { login, register } from '../scripts/API Calls/authApiCalls.ts';
-import { verifyFieldsForLogIn, verifyFieldsForRegister } from '../scripts/InputsVerifires.ts';
 import { useNavigate } from 'react-router-dom';
 import { getUser } from '../scripts/API Calls/userApiCalls.ts';
 import eyeIcon from '../assets/eye.svg';
@@ -26,17 +25,27 @@ const LogInPage: React.FC = (): React.JSX.Element => {
     // form submit handlers
     async function loginUser(formData: { email: string, password: string }) {
         const { email, password } = formData;
-        if (email && password)
-            verifyFieldsForLogIn(email, password) ?
-                login(email.trim(), password, () => {
-                    navigate('/')
-                }) : ""
+        if (email && password) {
+            alert("Please fill all the fields");
+            return
+        }
+
+        if (email === '' || password === '') {
+            alert("Please fill all the fields");
+            return;
+        }
+        login(email.trim(), password, () => {
+            navigate('/')
+        });
     }
 
     async function registerUser(formData: { email: string, password: string, firstName: string, lastName: string }) {
         const { email, password, firstName, lastName } = formData;
-        if (verifyFieldsForRegister(email, password, password, firstName, lastName))
-            await register(firstName.trim() + ' ' + lastName.trim(), email.trim(), password, () => { });
+        if (firstName === '' || lastName === '' || email === '' || password === '') {
+            alert("Please fill all the fields");
+            return;
+        }
+        await register(firstName.trim() + ' ' + lastName.trim(), email.trim(), password, () => { });
     }
 
     return (

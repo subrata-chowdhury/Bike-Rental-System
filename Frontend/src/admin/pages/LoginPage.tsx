@@ -1,6 +1,5 @@
 import React from 'react';
 import { LogInAndSingUpForm } from '../../pages/LogInPage.tsx';
-import { verifyFieldsForLogIn } from '../../scripts/InputsVerifires.ts';
 import { adminLogin } from '../../scripts/API Calls/authApiCalls.ts';
 
 interface LoginPageProps {
@@ -11,11 +10,18 @@ const AdminLoginPage: React.FC<LoginPageProps> = ({ onLogin = () => { } }) => {
     // form submit handlers
     async function loginUser(formData: { email: string, password: string }) {
         const { email, password } = formData;
-        if (email && password)
-            verifyFieldsForLogIn(email, password) ?
-                adminLogin(email.trim(), password, () => {
-                    onLogin();
-                }) : ""
+        if (email && password) {
+            alert("Please fill all the fields");
+            return
+        }
+
+        if (email === '' || password === '') {
+            alert("Please fill all the fields");
+            return;
+        }
+        adminLogin(email.trim(), password, () => {
+            onLogin();
+        })
     }
 
     return (
