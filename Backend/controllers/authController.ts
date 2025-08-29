@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/user';
-import envVars from '../config/config';
 import { io } from '../app';
 
 // Handle user registration
@@ -61,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
         // Create and send token
-        const token = jwt.sign({ id: user._id, role: user.role }, envVars.jwtSecret, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1d' });
 
         io.emit('user_logedin', user);
         res.json({ token });
@@ -99,7 +98,7 @@ export const adminLogin = async (req: Request, res: Response) => {
             return;
         }
         // Create and send token
-        const token = jwt.sign({ id: user._id, role: user.role }, envVars.jwtSecret, { expiresIn: '1d' });
+        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, { expiresIn: '1d' });
         res.json({ token });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });

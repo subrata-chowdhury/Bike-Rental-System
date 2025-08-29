@@ -6,11 +6,12 @@ import bikeRoutes from './routes/bikeRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import statisticsRoutes from './routes/statisticsRoutes';
 
-import config from './config/config';
 import cors from 'cors';
 import connectDB from './config/db';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
 
 const app = express();
 
@@ -51,7 +52,7 @@ app.use('/api/bikes', bikeRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/statistics', statisticsRoutes);
 
-const PORT = config.port || 5000;
+const PORT = 5000;
 httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import envVariables from '../config/config';
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization || req.cookies.authorization;
@@ -9,7 +8,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
         return;
     }
     try {
-        const decoded = jwt.verify(token, envVariables.jwtSecret) as { [key: string]: any };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { [key: string]: any };
         req.headers.user = decoded.id;
         req.headers.role = decoded.role;
         next();

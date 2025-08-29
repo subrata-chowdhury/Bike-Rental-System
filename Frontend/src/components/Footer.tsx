@@ -31,23 +31,21 @@ const Footer: React.FC = (): React.JSX.Element => {
                             </Link>
                         </div>
                     </div>
-                    <div className=''>
-                        <div className='inline-flex flex-col'>
-                            <h6 className="text-base font-semibold mb-2">Follow Us</h6>
-                            <ul className='flex flex-col gap-1'>
-                                {[{ label: 'Facebook', href: "#" },
-                                { label: 'Instagram', href: "#" },
-                                { label: 'LinkedIn', href: "#" },
-                                { label: 'YouTube', href: "#" }].map((link, index) => (
-                                    <li key={index} className="mb-1 text-sm">
-                                        <a href={link.href} className="text-decoration-none text-dark">
-                                            {link.label}
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+                    {/* <div className='inline-flex flex-col'>
+                        <h6 className="text-base font-semibold mb-2">Follow Us</h6>
+                        <ul className='flex flex-col gap-1'>
+                            {[{ label: 'Facebook', href: "#" },
+                            { label: 'Instagram', href: "#" },
+                            { label: 'LinkedIn', href: "#" },
+                            { label: 'YouTube', href: "#" }].map((link, index) => (
+                                <li key={index} className="mb-1 text-sm">
+                                    <a href={link.href} className="text-decoration-none text-dark">
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div> */}
                 </div>
 
                 <div className="d-flex mt-3 pt-3 justify-content-between" style={{ borderTop: '1px solid gray' }}>
